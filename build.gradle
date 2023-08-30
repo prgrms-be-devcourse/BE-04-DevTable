@@ -16,6 +16,7 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExt
 }
 
 repositories {
@@ -37,6 +38,9 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// rest docs
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
@@ -45,7 +49,33 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.named('asciidoctor') {
+ext { // 전역 변수
+	snippetsDir = file('build/generated-snippets')
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	configurations 'asciidoctorExt'
+	baseDirFollowsSourceFile()
 	inputs.dir snippetsDir
 	dependsOn test
+	outputDir file('build/docs/asciidoc')
+}
+
+task copyAsciidoc(type: Copy) {
+	from "build/docs/asciidoc/"
+	into "src/main/resources/static/docs"
+	include "index.html"
+
+	doFirst {
+		delete "src/main/resources/static/docs/index.html"
+	}
+	dependsOn asciidoctor
+}
+
+build {
+	dependsOn copyAsciidoc
 }

@@ -1,0 +1,17 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Dev Table REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Dev-Table-API]]
+== Dev Table API
+
+[[Hello]]
+== Hello Get 요청
+operation::hello[snippets = 'http-request,http-response,request-body,response-fields']
