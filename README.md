@@ -16,3 +16,5 @@
 |[김도연](https://github.com/joyfulviper)|[문종운](https://github.com/bombo-dev)|[한희나](https://github.com/heenahan)|[앨런](https://github.com/hongbin-dev)|[이태현](https://github.com/taehyunnn)|
 |<img src='https://avatars.githubusercontent.com/u/79970349?v=4' width="200px">|<img src='https://avatars.githubusercontent.com/u/74203371?v=4' width="200px">|<img src='https://avatars.githubusercontent.com/u/83766322?v=4' width="200px">|<img src='https://avatars.githubusercontent.com/u/33685054?v=4' width="200px">|<img src='https://avatars.githubusercontent.com/u/53414145?v=4' width="200px">
 ## Update Record
+
+Jira PR 테스트
