@@ -204,4 +204,6 @@ gradle-app.setting
 *.yaml
 *.yml
 
+### SCHEMA ###
+*.sql
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,java,gradle
