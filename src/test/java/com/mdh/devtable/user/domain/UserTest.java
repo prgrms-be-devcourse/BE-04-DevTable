@@ -11,14 +11,14 @@ class UserTest {
     @DisplayName("비밀번호를 정상적으로 확인한다.")
     void testConfirmPassword_MatchingPasswords() {
         // given
-        User user = User.builder()
+        var user = User.builder()
                 .id(1L)
                 .email("test@example.com")
                 .role(Role.GUEST)
                 .password("password123")
                 .build();
 
-        String confirmPassword = "password123";
+        var confirmPassword = "password123";
 
         // when & then
         // No exception should be thrown
@@ -32,14 +32,14 @@ class UserTest {
     @DisplayName("비밀번호 확인이 알맞지 않으면 예외를 던진다")
     void testConfirmPassword_NonMatchingPasswords() {
         // given
-        User user = User.builder()
+        var user = User.builder()
                 .id(1L)
                 .email("test@example.com")
                 .role(Role.GUEST)
                 .password("password123")
                 .build();
 
-        String confirmPassword = "wrongPassword";
+        var confirmPassword = "wrongPassword";
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> user.confirmPassword(confirmPassword));
