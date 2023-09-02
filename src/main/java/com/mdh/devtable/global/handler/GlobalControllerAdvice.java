@@ -30,14 +30,4 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(),
                 problemDetail), HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<ProblemDetail>> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        var uri = request.getRequestURI();
-        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setInstance(URI.create(uri));
-
-        return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(),
-                problemDetail), HttpStatus.BAD_REQUEST);
-    }
 }
