@@ -35,7 +35,7 @@ public class User extends BaseTimeEntity {
 
     public void confirmPassword(String password) {
         if (!password.equals(this.password)) {
-            throw new IllegalArgumentException("Password and confirm password do not match");
+            throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
         }
     }
 }
