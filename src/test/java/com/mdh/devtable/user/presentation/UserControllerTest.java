@@ -145,7 +145,7 @@ class UserControllerTest extends RestDocsSupport {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.data.detail").value("비밀번호와 비밀번호 확인이 일치하지 않습니다."))
-                .andDo(document("user-sign-up",
+                .andDo(document("user-sign-up-invalid-password-check",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
