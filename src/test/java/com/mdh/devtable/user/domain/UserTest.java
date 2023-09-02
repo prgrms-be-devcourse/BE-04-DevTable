@@ -9,7 +9,7 @@ class UserTest {
 
     @Test
     @DisplayName("비밀번호를 정상적으로 확인한다.")
-    void testConfirmPassword_MatchingPasswords() {
+    void testConfirmPasswordMatchingPasswords() {
         // given
         var user = User.builder()
                 .email("test@example.com")
@@ -25,7 +25,7 @@ class UserTest {
 
     @Test
     @DisplayName("비밀번호 확인이 알맞지 않으면 예외를 던진다")
-    void testConfirmPassword_NonMatchingPasswords() {
+    void testConfirmPasswordNonMatchingPasswords() {
         // given
         var user = User.builder()
                 .email("test@example.com")
