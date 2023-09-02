@@ -2,16 +2,23 @@ package com.mdh.devtable.waiting;
 
 import com.mdh.devtable.global.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Table(name = "waiting")
+@Table(name = "waitings")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Waiting extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "waiting_status", length = 31, nullable = false)
@@ -20,7 +27,9 @@ public class Waiting extends BaseTimeEntity {
     @Column(name = "postponed_count", nullable = false)
     private int postponedCount;
 
-    public Waiting() {
+    @Builder
+    public Waiting(Long userId) {
+        this.userId = userId;
         this.waitingStatus = WaitingStatus.PROGRESS;
         this.postponedCount = 0;
     }
