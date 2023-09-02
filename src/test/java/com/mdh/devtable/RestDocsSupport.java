@@ -1,6 +1,7 @@
 package com.mdh.devtable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mdh.devtable.global.handler.GlobalControllerAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -22,6 +23,7 @@ public abstract class RestDocsSupport {
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
         this.mockMvc = MockMvcBuilders.standaloneSetup(initController())
+                .setControllerAdvice(new GlobalControllerAdvice())
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider)
                         .operationPreprocessors()

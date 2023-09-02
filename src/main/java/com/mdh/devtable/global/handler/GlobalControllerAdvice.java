@@ -5,6 +5,7 @@ import com.mdh.devtable.global.error.ValidationError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,7 +16,7 @@ import java.net.URI;
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ApiResponse<ProblemDetail> handleValidation(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<ProblemDetail>> handleValidation(MethodArgumentNotValidException e, HttpServletRequest request) {
         var uri = request.getRequestURI();
         var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
         problemDetail.setInstance(URI.create(uri));
@@ -26,6 +27,17 @@ public class GlobalControllerAdvice {
                 .map(ValidationError::of)
                 .toList());
 
-        return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail);
+        return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(),
+                problemDetail), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<ProblemDetail>> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
+        var uri = request.getRequestURI();
+        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problemDetail.setInstance(URI.create(uri));
+
+        return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(),
+                problemDetail), HttpStatus.BAD_REQUEST);
     }
 }
