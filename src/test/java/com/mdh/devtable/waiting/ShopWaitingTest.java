@@ -15,8 +15,8 @@ class ShopWaitingTest {
     @DisplayName("매장의 웨이팅 정보를 생성 할 수 있다.")
     void createShopWaitingTest() {
         //given
-        Long shopId = 1L;
-        int maximumWaiting = 10;
+        var shopId = 1L;
+        var maximumWaiting = 10;
 
         //when
         var shopWaiting = ShopWaiting
@@ -35,8 +35,8 @@ class ShopWaitingTest {
     @DisplayName("매장의 웨이팅 정보를 생성 시 최대 허용 인원수가 1 미만이면 안된다.")
     void createShopWaitingExTest() {
         //given
-        Long shopId = 1L;
-        int maximumWaiting = 0;
+        var shopId = 1L;
+        var maximumWaiting = 0;
 
         //when & then
         assertThatThrownBy(() -> ShopWaiting.builder()
@@ -52,8 +52,8 @@ class ShopWaitingTest {
     @DisplayName("매장의 웨이팅 상태를 다른 상태로 업데이트 할 수 있다.")
     void updateShopWaitingStatusTest(ShopWaitingStatus shopWaitingStatus) {
         //given
-        Long shopId = 1L;
-        int maximumWaiting = 10;
+        var shopId = 1L;
+        var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
                 .builder()
@@ -72,8 +72,8 @@ class ShopWaitingTest {
     @DisplayName("매장의 웨이팅 상태를 같은 상태로 업데이트 할 수 없다.")
     void updateShopWaitingStatusExTest() {
         //given
-        Long shopId = 1L;
-        int maximumWaiting = 10;
+        var shopId = 1L;
+        var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
                 .builder()
@@ -92,8 +92,8 @@ class ShopWaitingTest {
     @DisplayName("매장의 웨이팅 허용 인원 수를 설정 할 수 있다.")
     void updateShopWaitingMaximumTest(int changeMaximumWaiting) {
         //given
-        Long shopId = 1L;
-        int maximumWaiting = 10;
+        var shopId = 1L;
+        var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
                 .builder()
@@ -112,8 +112,8 @@ class ShopWaitingTest {
     @DisplayName("매장의 웨이팅 허용 인원 수를 1 미만으로 설정 할 수 없다.")
     void updateShopWaitingMaximumExTest() {
         //given
-        Long shopId = 1L;
-        int maximumWaiting = 10;
+        var shopId = 1L;
+        var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
                 .builder()
