@@ -15,7 +15,7 @@ class WaitingTest {
     @DisplayName("Waiting을 생성하면 웨이팅 상태가 PROGRESS이고, 미루기 횟수는 0이여야 한다.")
     public void waitingConstructorTest() {
         //given
-        var waiting = new Waiting();
+        var waiting = new Waiting(0L);
 
         //when
 
@@ -28,7 +28,7 @@ class WaitingTest {
     @DisplayName("Waiting의 상태가 Progress이면 미루기 횟수를 증가 시킬 수 있다.")
     public void addWaitingPostponeCountTest() {
         //given
-        var waiting = new Waiting();
+        var waiting = new Waiting(0L);
 
         //when
         waiting.addPostponedCount();
@@ -43,7 +43,7 @@ class WaitingTest {
     @DisplayName("Waiting의 상태가 Progress가 아니면 미루기 횟수를 증가 시킬 수 없다.")
     public void addWaitingPostponeCountStatusExTest(WaitingStatus waitingStatus) {
         //given
-        var waiting = new Waiting();
+        var waiting = new Waiting(0L);
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
@@ -58,7 +58,7 @@ class WaitingTest {
     @DisplayName("Waiting의 미루기 횟수가 2회 일 때, 미루기 횟수를 증가시키면 예외가 발생한다.")
     public void addWaitingPostponeCountExTest() {
         //given
-        var waiting = new Waiting();
+        var waiting = new Waiting(0L);
 
         //when
         waiting.addPostponedCount();
@@ -75,7 +75,7 @@ class WaitingTest {
     @DisplayName("Waiting의 상태가 PROGRESS라면 다른 상태로 변경이 가능하다.")
     public void changeWaitingStatusTest(WaitingStatus waitingStatus) {
         //given
-        var waiting = new Waiting();
+        var waiting = new Waiting(0L);
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
@@ -89,7 +89,7 @@ class WaitingTest {
     @DisplayName("Waiting의 상태가 PROGRESS가 아니라면 다른 상태로 변경이 불가능하다.")
     public void changeWaitingStatusExTest(WaitingStatus waitingStatus) {
         //given
-        var waiting = new Waiting();
+        var waiting = new Waiting(0L);
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
