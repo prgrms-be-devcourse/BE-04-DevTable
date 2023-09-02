@@ -1,7 +1,7 @@
 package com.mdh.devtable.user.application;
 
 import com.mdh.devtable.user.infra.persistence.UserRepository;
-import com.mdh.devtable.user.presentation.SignUpRequest;
+import com.mdh.devtable.user.presentation.dto.SignUpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

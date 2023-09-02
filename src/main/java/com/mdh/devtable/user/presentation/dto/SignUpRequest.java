@@ -1,4 +1,4 @@
-package com.mdh.devtable.user.presentation;
+package com.mdh.devtable.user.presentation.dto;
 
 import com.mdh.devtable.global.util.RegularExpression;
 import com.mdh.devtable.user.domain.Role;
@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 
+@FieldMatch(first = "password", second = "passwordCheck", message = "비밀번호가 일치하지 않습니다.")
 public record SignUpRequest(
 
         @Pattern(regexp = RegularExpression.EMAIL, message = "이메일 형식에 맞게 입력해 주세요.")

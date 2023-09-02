@@ -2,6 +2,7 @@ package com.mdh.devtable.user.presentation;
 
 import com.mdh.devtable.global.ApiResponse;
 import com.mdh.devtable.user.application.UserService;
+import com.mdh.devtable.user.presentation.dto.SignUpRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
