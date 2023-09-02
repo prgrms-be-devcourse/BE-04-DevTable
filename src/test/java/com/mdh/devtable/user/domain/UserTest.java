@@ -12,7 +12,6 @@ class UserTest {
     void testConfirmPassword_MatchingPasswords() {
         // given
         var user = User.builder()
-                .id(1L)
                 .email("test@example.com")
                 .role(Role.GUEST)
                 .password("password123")
@@ -29,7 +28,6 @@ class UserTest {
     void testConfirmPassword_NonMatchingPasswords() {
         // given
         var user = User.builder()
-                .id(1L)
                 .email("test@example.com")
                 .role(Role.GUEST)
                 .password("password123")
