@@ -21,11 +21,7 @@ class UserTest {
         var confirmPassword = "password123";
 
         // when & then
-        // No exception should be thrown
         assertDoesNotThrow(() -> user.confirmPassword(confirmPassword));
-
-        // then
-        // If no exception is thrown, the test passes
     }
 
     @Test
