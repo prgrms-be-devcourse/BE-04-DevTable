@@ -14,9 +14,6 @@ import lombok.NoArgsConstructor;
 public class ShopWaiting extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "shop_id", nullable = false)
     private Long shopId;
 
