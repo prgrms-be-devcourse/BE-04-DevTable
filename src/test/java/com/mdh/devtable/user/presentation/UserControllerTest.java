@@ -34,7 +34,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @Test
     @DisplayName("회원가입을 한다.")
-    public void sign_up() throws Exception {
+    void signUp() throws Exception {
         //given
         var signUpRequest = new SignUpRequest("test@example.com", "password123", "password123");
         var expectedId = 1L;
@@ -64,7 +64,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @Test
     @DisplayName("회원가입시 email을 잘못 입력한다.")
-    public void sign_up_exception1() throws Exception {
+    void signUpException1() throws Exception {
         //given
         var signUpRequest = new SignUpRequest("tesexample.com", "password123", "password123");
 
@@ -98,7 +98,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @Test
     @DisplayName("회원가입시 password를 잘못 입력한다.")
-    public void sign_up_exception2() throws Exception {
+    void signUpException2() throws Exception {
         // given
         var signUpRequest = new SignUpRequest("test@example.com", "invalid", "invalid");
 
@@ -132,7 +132,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @Test
     @DisplayName("회원가입시 password 확인을 잘못 입력한다.")
-    public void sign_up_exception3() throws Exception {
+    void signUpException3() throws Exception {
         //given
         var signUpRequest = new SignUpRequest("test@example.com", "password123", "password1234"); // 비밀번호와 비밀번호 확인이 다름
         when(userService.signUp(signUpRequest)).thenThrow(new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다."));
