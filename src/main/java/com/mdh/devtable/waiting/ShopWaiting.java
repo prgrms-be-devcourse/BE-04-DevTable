@@ -45,6 +45,10 @@ public class ShopWaiting extends BaseTimeEntity {
         this.maximumWaiting = maximumWaiting;
     }
 
+    public boolean isOpenWaitingStatus() {
+        return this.shopWaitingStatus == ShopWaitingStatus.OPEN;
+    }
+
     private void validMaximumWaiting(int maximumWaiting) {
         if (maximumWaiting < 1) {
             throw new IllegalArgumentException("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");

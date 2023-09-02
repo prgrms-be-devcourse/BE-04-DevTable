@@ -17,6 +17,10 @@ public class Waiting extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "shop_id", referencedColumnName = "id")
+    private ShopWaiting shopWaiting;
+
     @Column(name = "user_id")
     private Long userId;
 
@@ -28,12 +32,15 @@ public class Waiting extends BaseTimeEntity {
     private int postponedCount;
 
     @Builder
-    public Waiting(Long userId) {
+    public Waiting(ShopWaiting shopWaiting, Long userId) {
+        if (!shopWaiting.isOpenWaitingStatus()) {
+            throw new IllegalStateException("매장이 오픈 상태가 아니면 웨이팅을 등록 할 수 없습니다.");
+        }
+        this.shopWaiting = shopWaiting;
         this.userId = userId;
         this.waitingStatus = WaitingStatus.PROGRESS;
         this.postponedCount = 0;
     }
-
 
     // 비즈니스 메서드
     public void addPostponedCount() {
