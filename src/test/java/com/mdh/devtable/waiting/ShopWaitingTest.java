@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShopWaitingTest {
 
@@ -20,10 +21,12 @@ class ShopWaitingTest {
 
         //when
         var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+            .builder()
+            .shopId(shopId)
+            .maximumWaitingPeople(2)
+            .minimumWaitingPeople(1)
+            .maximumWaiting(maximumWaiting)
+            .build();
 
         //then
         assertThat(shopWaiting.getShopId()).isEqualTo(shopId);
@@ -40,11 +43,11 @@ class ShopWaitingTest {
 
         //when & then
         assertThatThrownBy(() -> ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
+            .shopId(shopId)
+            .maximumWaiting(maximumWaiting)
+            .build())
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -56,10 +59,10 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+            .builder()
+            .shopId(shopId)
+            .maximumWaiting(maximumWaiting)
+            .build();
 
         //when
         shopWaiting.changeShopWaitingStatus(shopWaitingStatus);
@@ -76,15 +79,15 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+            .builder()
+            .shopId(shopId)
+            .maximumWaiting(maximumWaiting)
+            .build();
 
         //when & then
         assertThatThrownBy(() -> shopWaiting.changeShopWaitingStatus(shopWaiting.getShopWaitingStatus()))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("매장의 웨이팅 상태를 동일한 상태로 변경 할 수 없습니다.");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("매장의 웨이팅 상태를 동일한 상태로 변경 할 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -96,10 +99,10 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+            .builder()
+            .shopId(shopId)
+            .maximumWaiting(maximumWaiting)
+            .build();
 
         //when
         shopWaiting.updateShopWaiting(changeMaximumWaiting);
@@ -116,14 +119,33 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+            .builder()
+            .shopId(shopId)
+            .maximumWaiting(maximumWaiting)
+            .build();
 
         //when & then
         assertThatThrownBy(() -> shopWaiting.updateShopWaiting(0))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("매장의 유아 가능 여부를 설정할 수 있다.")
+    void updateChildEnabled() {
+        // given
+        var shopId = 1L;
+        var maximumWaiting = 5;
+        var shopWaiting = ShopWaiting.builder()
+            .shopId(shopId)
+            .maximumWaiting(maximumWaiting)
+            .build();
+
+        // when
+        var newChildEnabled = true;
+        shopWaiting.updateChildEnabled(newChildEnabled);
+
+        // then
+        assertTrue(shopWaiting.isChildEnabled());
     }
 }
