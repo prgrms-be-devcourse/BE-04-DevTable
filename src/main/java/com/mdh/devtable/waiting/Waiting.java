@@ -28,7 +28,7 @@ public class Waiting extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "shop_id", referencedColumnName = "id")
+    @JoinColumn(name = "shop_id")
     private ShopWaiting shopWaiting;
 
     @Column(name = "user_id")
