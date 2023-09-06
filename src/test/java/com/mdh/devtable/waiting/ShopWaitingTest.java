@@ -1,5 +1,7 @@
 package com.mdh.devtable.waiting;
 
+import com.mdh.devtable.waiting.domain.ShopWaiting;
+import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

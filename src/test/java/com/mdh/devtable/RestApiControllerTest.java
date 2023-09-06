@@ -15,10 +15,11 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@WebMvcTest(RestApiController.class)
-@MockBean(JpaMetamodelMappingContext.class)
+@WebMvcTest(RestApiController.class)
+//@MockBean(JpaMetamodelMappingContext.class)
 class RestApiControllerTest extends RestDocsSupport {
 
     @Override
@@ -41,11 +42,14 @@ class RestApiControllerTest extends RestDocsSupport {
                 .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isOk())
-//                .andExpect((ResultMatcher) content().string(response))
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").value("hello"))
+                .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("hello",
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태코드"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("값")
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("값"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버시간")
                         )));
     }
 }

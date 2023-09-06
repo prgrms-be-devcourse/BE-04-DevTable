@@ -1,18 +1,20 @@
 package com.mdh.devtable.ownerwaitng.application;
 
 import com.mdh.devtable.ownerwaitng.presentaion.OwnerWaitingChangeRequest;
-import com.mdh.devtable.waiting.ShopWaiting;
-import com.mdh.devtable.waiting.ShopWaitingRepository;
-import com.mdh.devtable.waiting.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.ShopWaiting;
+import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
+import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 
+@ActiveProfiles("test")
 @SpringBootTest
 @Transactional
 class OwnerWaitingServiceTest {

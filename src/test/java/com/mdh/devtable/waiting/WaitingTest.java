@@ -1,5 +1,10 @@
 package com.mdh.devtable.waiting;
 
+import com.mdh.devtable.waiting.domain.ShopWaiting;
+import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.Waiting;
+import com.mdh.devtable.waiting.domain.WaitingPeople;
+import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

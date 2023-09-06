@@ -2,7 +2,7 @@ package com.mdh.devtable.ownerwaitng.application;
 
 import com.mdh.devtable.ownerwaitng.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaitng.presentaion.OwnerWaitingChangeRequest;
-import com.mdh.devtable.waiting.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

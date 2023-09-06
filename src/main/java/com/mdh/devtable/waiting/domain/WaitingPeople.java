@@ -1,4 +1,4 @@
-package com.mdh.devtable.waiting;
+package com.mdh.devtable.waiting.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
