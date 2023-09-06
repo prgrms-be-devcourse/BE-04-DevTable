@@ -1,4 +1,4 @@
-package com.mdh.devtable.waiting;
+package com.mdh.devtable.waiting.domain;
 
 import com.mdh.devtable.global.BaseTimeEntity;
 import jakarta.persistence.Column;

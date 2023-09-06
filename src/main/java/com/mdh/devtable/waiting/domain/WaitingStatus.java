@@ -1,4 +1,4 @@
-package com.mdh.devtable.waiting;
+package com.mdh.devtable.waiting.domain;
 
 public enum WaitingStatus {
 
