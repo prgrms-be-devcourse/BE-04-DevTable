@@ -1,7 +1,7 @@
 package com.mdh.devtable.waiting.application;
 
-import com.mdh.devtable.waiting.ShopWaiting;
-import com.mdh.devtable.waiting.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.ShopWaiting;
+import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import com.mdh.devtable.waiting.infra.persistence.WaitingRepository;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
