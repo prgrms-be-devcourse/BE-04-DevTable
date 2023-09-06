@@ -16,7 +16,7 @@ public class OwnerWaitingService {
     private final OwnerWaitingRepository ownerWaitingRepository;
 
     @Transactional
-    public void changShopWaitingStatus(Long shopId, OwnerWaitingChangeRequest request) {
+    public void changeShopWaitingStatus(Long shopId, OwnerWaitingChangeRequest request) {
         var shopWaiting = ownerWaitingRepository.findByShopId(shopId)
                 .orElseThrow(() -> new NoSuchElementException("매장 웨이팅 조회 결과가 없습니다."));
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.valueOf(request.waitingStatus()));
