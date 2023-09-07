@@ -1,17 +1,7 @@
 package com.mdh.devtable.waiting.domain;
 
 import com.mdh.devtable.global.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +24,9 @@ public class Waiting extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "waiting_number", nullable = false)
+    private int waitingNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "waiting_status", length = 31, nullable = false)
     private WaitingStatus waitingStatus;
@@ -54,6 +47,7 @@ public class Waiting extends BaseTimeEntity {
         validChildEnable(shopWaiting, waitingPeople);
         this.shopWaiting = shopWaiting;
         this.userId = userId;
+        this.waitingNumber = shopWaiting.getWaitingCount();
         this.waitingStatus = WaitingStatus.PROGRESS;
         this.postponedCount = 0;
         this.waitingPeople = waitingPeople;

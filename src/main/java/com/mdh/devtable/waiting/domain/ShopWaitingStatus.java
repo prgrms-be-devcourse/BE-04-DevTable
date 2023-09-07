@@ -9,4 +9,8 @@ public enum ShopWaitingStatus {
     CLOSE("영업 종료");
 
     private final String statusMessage;
+
+    public boolean isCloseWaitingStatus() {
+        return this == ShopWaitingStatus.CLOSE;
+    }
 }

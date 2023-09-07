@@ -19,6 +19,7 @@ public class WaitingService {
 
     private final WaitingRepository waitingRepository;
     private final ShopWaitingRepository shopWaitingRepository;
+    private final WaitingServiceValidator waitingServiceValidator;
     private final WaitingLine waitingLine;
 
     @Transactional
@@ -27,9 +28,17 @@ public class WaitingService {
         var shopWaiting = shopWaitingRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalStateException("해당 매장에 웨이팅 정보가 존재하지 않습니다. shopId : " + shopId));
 
-        var waitingPeople = createWaitingPeople(waitingCreateRequest);
 
         var userId = waitingCreateRequest.userId();
+
+        if (waitingServiceValidator.isExistsWaiting(userId)) {
+            throw new IllegalStateException("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
+
+        }
+        shopWaiting.addWaitingCount();
+
+        var waitingPeople = createWaitingPeople(waitingCreateRequest);
+
         var waiting = Waiting.builder()
                 .shopWaiting(shopWaiting)
                 .waitingPeople(waitingPeople)
