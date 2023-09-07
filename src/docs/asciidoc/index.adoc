@@ -17,7 +17,28 @@ endif::[]
 
 operation::hello[snippets = 'http-request,http-response,request-body,response-fields']
 
+[[User]]
+== User 회원가입 요청
+
+operation::user-sign-up[snippets = 'http-request,http-response,request-body,response-fields']
+
+== User 패스워드 불일치
+
+operation::user-sign-up[snippets = 'http-request,http-response,request-body,response-fields']
+
 [[Waiting]]
+== Waiting 생성
+
+operation::waiting-create[snippets = 'http-request,http-response,request-body,response-fields']
+
+== Waiting 생성 허용 범위 예외
+
+operation::waiting-create-valid-count[snippets = 'http-request,http-response,request-body,response-fields']
+
+== Waiting 입력 값 예외
+
+operation::waiting-create-valid-null[snippets = 'http-request,http-response,request-body,response-fields']
+
 == Waiting 취소
 
 operation::waiting-cancel[snippets = 'http-request,http-response,request-body,response-fields']
