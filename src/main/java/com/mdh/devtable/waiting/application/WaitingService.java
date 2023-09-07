@@ -27,7 +27,7 @@ public class WaitingService {
         var shopWaiting = shopWaitingRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalStateException("해당 매장에 웨이팅 정보가 존재하지 않습니다. shopId : " + shopId));
 
-        WaitingPeople waitingPeople = createWaitingPeople(waitingCreateRequest);
+        var waitingPeople = createWaitingPeople(waitingCreateRequest);
 
         var userId = waitingCreateRequest.userId();
         var waiting = Waiting.builder()

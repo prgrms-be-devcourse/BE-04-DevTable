@@ -39,7 +39,7 @@ public class PlainWaitingLine implements WaitingLine {
             throw new IllegalStateException("현재 매장에 등록 된 웨이팅이 아닙니다. shopId : " + shopId + "waitingId : " + waitingId);
         }
 
-        WaitingInfo waitingInfo = new WaitingInfo(waitingId, createdDate);
+        var waitingInfo = new WaitingInfo(waitingId, createdDate);
         var waitingInfos = waitingLine.get(shopId);
         waitingInfos.remove(waitingInfo);
     }
