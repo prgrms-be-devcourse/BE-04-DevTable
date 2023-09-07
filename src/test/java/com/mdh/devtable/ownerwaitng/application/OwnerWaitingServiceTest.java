@@ -5,6 +5,7 @@ import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import org.assertj.core.api.Assertions;
 import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,6 +13,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CountDownLatch;
@@ -19,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+@ActiveProfiles("lock")
 @SpringBootTest
 @Transactional
 class OwnerWaitingServiceTest {
@@ -63,14 +67,6 @@ class OwnerWaitingServiceTest {
         var successCount = new AtomicInteger(0);
         var failedCount = new AtomicInteger(0);
         var lockConflictCount = new AtomicInteger(0);
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(1L)
-                .maximumWaitingPeople(2)
-                .minimumWaitingPeople(1)
-                .maximumWaiting(10)
-                .build();
-        shopWaitingRepository.save(shopWaiting);
 
         //when
         for (int i = 0; i < threadCount; i++) {
