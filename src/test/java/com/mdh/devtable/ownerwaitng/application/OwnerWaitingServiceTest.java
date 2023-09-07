@@ -1,34 +1,62 @@
 package com.mdh.devtable.ownerwaitng.application;
 
+import com.mdh.devtable.ownerwaitng.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
-import com.mdh.devtable.waiting.domain.ShopWaiting;
-import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
-import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
-import org.assertj.core.api.Assertions;
+import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerWaitingStatusChangeRequest;
+import com.mdh.devtable.waiting.domain.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
-@ActiveProfiles("test")
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 class OwnerWaitingServiceTest {
 
-    @Autowired
-    private OwnerWaitingService ownerWaitingService;
+    @Mock
+    private OwnerWaitingRepository ownerWaitingRepository;
 
-    @Autowired
-    private ShopWaitingRepository shopWaitingRepository;
+    @InjectMocks
+    private OwnerWaitingService ownerWaitingService;
 
     @DisplayName("매장 웨이팅 상태를 변경할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"OPEN", "BREAK_TIME"})
     void changeShopWaitingStatus(String status) {
+        //given
+        var shopId = 1L;
+        var shopWaiting = ShopWaiting
+                .builder()
+                .shopId(shopId)
+                .maximumWaitingPeople(2)
+                .minimumWaitingPeople(1)
+                .maximumWaiting(10)
+                .build();
+        var request = new OwnerShopWaitingStatusChangeRequest(ShopWaitingStatus.valueOf(status));
+        given(ownerWaitingRepository.findShopWaitingByShopId(shopId)).willReturn(Optional.of(shopWaiting));
+
+        // when
+        ownerWaitingService.changeShopWaitingStatus(shopId, request);
+
+        // then
+        verify(ownerWaitingRepository, times(1)).findShopWaitingByShopId(shopId);
+        Assertions.assertEquals(ShopWaitingStatus.valueOf(status), shopWaiting.getShopWaitingStatus());
+    }
+
+    @DisplayName("손님의 웨이팅 상태를 변경할 수 있다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"PROGRESS", "CANCEL", "NO_SHOW", "VISITED"})
+    void changeWaitingStatus(String status) {
         //given
         var shopWaiting = ShopWaiting
                 .builder()
@@ -37,14 +65,22 @@ class OwnerWaitingServiceTest {
                 .minimumWaitingPeople(1)
                 .maximumWaiting(10)
                 .build();
-        shopWaitingRepository.save(shopWaiting);
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        var waitingId = 1L;
+        var waiting = Waiting.builder()
+                .shopWaiting(shopWaiting)
+                .userId(1L)
+                .waitingPeople(new WaitingPeople(1, 0))
+                .build();
 
-        //when
-        var request = new OwnerShopWaitingStatusChangeRequest(ShopWaitingStatus.valueOf(status));
-        ownerWaitingService.changeShopWaitingStatus(shopWaiting.getShopId(), request);
+        var request = new OwnerWaitingStatusChangeRequest(WaitingStatus.valueOf(status));
+        given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
 
-        //then
-        var updatedShopWaiting = shopWaitingRepository.findById(shopWaiting.getShopId()).orElseThrow();
-        Assertions.assertThat(ShopWaitingStatus.valueOf(status)).isEqualTo(updatedShopWaiting.getShopWaitingStatus());
+        // when
+        ownerWaitingService.changeWaitingStatus(waitingId, request);
+
+        // then
+        verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
+        Assertions.assertEquals(WaitingStatus.valueOf(status), waiting.getWaitingStatus());
     }
 }
