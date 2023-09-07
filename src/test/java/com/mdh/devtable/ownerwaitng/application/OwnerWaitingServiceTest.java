@@ -1,9 +1,9 @@
 package com.mdh.devtable.ownerwaitng.application;
 
 import com.mdh.devtable.ownerwaitng.presentaion.OwnerWaitingChangeRequest;
-import com.mdh.devtable.waiting.ShopWaiting;
-import com.mdh.devtable.waiting.ShopWaitingRepository;
-import com.mdh.devtable.waiting.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.ShopWaiting;
+import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
+import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +26,7 @@ class OwnerWaitingServiceTest {
     @DisplayName("매장 웨이팅 상태를 변경할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"OPEN", "BREAK_TIME"})
-    void changShopWaitingStatus(String status) {
+    void changeShopWaitingStatus(String status) {
         //given
         var shopWaiting = ShopWaiting
                 .builder()
