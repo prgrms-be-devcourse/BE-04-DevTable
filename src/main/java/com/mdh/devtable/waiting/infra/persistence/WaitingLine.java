@@ -8,5 +8,7 @@ public interface WaitingLine {
 
     int findRank(Long shopId, Long waitingId, LocalDateTime createdDate);
 
+    int findTotalWaiting(Long shopId);
+  
     void cancel(Long shopId, Long waitingId, LocalDateTime createdDate);
 }

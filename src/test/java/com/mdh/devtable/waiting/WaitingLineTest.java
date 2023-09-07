@@ -36,6 +36,29 @@ class WaitingLineTest {
     }
 
     @Test
+    @DisplayName("특정 매장의 실시간 웨이팅 수를 확인한다.")
+    void findShopTotalWaitingTest() {
+        //given
+        var shopId = 1L;
+        var waitingId1 = 1L;
+        var waitingId1Time = LocalDateTime.now();
+        var waitingId2 = 2L;
+        var waitingId2Time = waitingId1Time.plusMinutes(1);
+        var waitingId3 = 3L;
+        var waitingId3Time = waitingId2Time.plusMinutes(1);
+
+        var waitingLine = new PlainWaitingLine();
+        waitingLine.save(shopId, waitingId1, waitingId1Time);
+        waitingLine.save(shopId, waitingId2, waitingId2Time);
+        waitingLine.save(shopId, waitingId3, waitingId3Time);
+    
+        //when
+        var totalWaiting = waitingLine.findTotalWaiting(shopId);
+      
+        //then
+        assertThat(totalWaiting).isEqualTo(3);
+    }
+  
     @DisplayName("매장에서 웨이팅이 취소가 되면 순위가 변경된다.")
     void cancelWaitingTest() {
         //given
