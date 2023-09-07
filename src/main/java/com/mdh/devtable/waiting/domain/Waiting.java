@@ -95,4 +95,3 @@ public class Waiting extends BaseTimeEntity {
     }
 
 }
-
