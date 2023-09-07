@@ -82,6 +82,10 @@ public class ShopWaiting extends BaseTimeEntity {
     }
 
     public void addWaitingCount() {
+        if (this.shopWaitingStatus.isCloseWaitingStatus()) {
+            throw new IllegalStateException("닫혀있는 상태에서는 발급번호 개수가 증가할 수 없습니다.");
+        }
+
         this.waitingCount++;
     }
 
