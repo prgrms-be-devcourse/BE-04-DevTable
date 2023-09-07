@@ -14,53 +14,56 @@ class ShopTest {
     @DisplayName("Shop을 생성하면 북마크 수는 0이어야 한다")
     void shopConstructorTest() {
         // given
+        var userId = 1L;
+
         var shopDetails = ShopDetails.builder()
-            .url("www.example.com")
-            .holiday("일요일")
-            .openingHours("11시")
-            .phoneNumber("01012345678")
-            .info("정보")
-            .introduce("introduce")
-            .build();
+                .url("www.example.com")
+                .holiday("일요일")
+                .openingHours("11시")
+                .phoneNumber("01012345678")
+                .info("정보")
+                .introduce("introduce")
+                .build();
 
         var shopAddress = ShopAddress.builder()
-            .address("가로수길 31-3, 301호")
-            .zipcode("11111")
-            .latitude("123.123")
-            .longitude("123.123")
-            .build();
+                .address("가로수길 31-3, 301호")
+                .zipcode("11111")
+                .latitude("123.123")
+                .longitude("123.123")
+                .build();
 
         var region = Region.builder()
-            .city("서울시")
-            .district("강남구")
-            .build();
+                .city("서울시")
+                .district("강남구")
+                .build();
 
         // when
         Shop shop = Shop.builder()
-            .name("Test Shop")
-            .description("This is a test shop")
-            .shopType(ShopType.KOREAN) // 가정: ShopType 열거형에 TYPE1이 있음
-            .shopDetails(shopDetails)
-            .shopAddress(shopAddress)
-            .region(region)
-            .build();
+                .userId(userId)
+                .name("Test Shop")
+                .description("This is a test shop")
+                .shopType(ShopType.KOREAN) // 가정: ShopType 열거형에 TYPE1이 있음
+                .shopDetails(shopDetails)
+                .shopAddress(shopAddress)
+                .region(region)
+                .build();
 
         // then
         assertThat(shop)
-            .extracting(Shop::getBookmarkCount,
-                Shop::getName,
-                Shop::getDescription,
-                Shop::getShopType,
-                Shop::getShopDetails,
-                Shop::getShopAddress,
-                Shop::getRegion)
-            .containsExactly(0,
-                "Test Shop",
-                "This is a test shop",
-                ShopType.KOREAN,
-                shopDetails,
-                shopAddress,
-                region);
+                .extracting(Shop::getBookmarkCount,
+                        Shop::getName,
+                        Shop::getDescription,
+                        Shop::getShopType,
+                        Shop::getShopDetails,
+                        Shop::getShopAddress,
+                        Shop::getRegion)
+                .containsExactly(0,
+                        "Test Shop",
+                        "This is a test shop",
+                        ShopType.KOREAN,
+                        shopDetails,
+                        shopAddress,
+                        region);
     }
 
     @Disabled
@@ -75,85 +78,88 @@ class ShopTest {
     @DisplayName("Shop의 정보를 수정한다.")
     void updateShopInfo() {
         // given
+        var userId = 1L;
+
         var shopDetails = ShopDetails.builder()
-            .url("www.example.com")
-            .holiday("일요일")
-            .openingHours("11시")
-            .phoneNumber("01012345678")
-            .info("정보")
-            .introduce("introduce")
-            .build();
+                .url("www.example.com")
+                .holiday("일요일")
+                .openingHours("11시")
+                .phoneNumber("01012345678")
+                .info("정보")
+                .introduce("introduce")
+                .build();
 
         var shopAddress = ShopAddress.builder()
-            .address("잠실로 62, 302동 202호")
-            .zipcode("11111")
-            .latitude("123.123")
-            .longitude("123.123")
-            .build();
+                .address("잠실로 62, 302동 202호")
+                .zipcode("11111")
+                .latitude("123.123")
+                .longitude("123.123")
+                .build();
 
         var region = Region.builder()
-            .city("서울시")
-            .district("강남구")
-            .build();
+                .city("서울시")
+                .district("강남구")
+                .build();
 
         Shop shop = Shop.builder()
-            .name("Test Shop")
-            .description("This is a test shop")
-            .shopType(ShopType.KOREAN) // 가정: ShopType 열거형에 TYPE1이 있음
-            .shopDetails(shopDetails)
-            .shopAddress(shopAddress)
-            .region(region)
-            .build();
+                .userId(1L)
+                .name("Test Shop")
+                .description("This is a test shop")
+                .shopType(ShopType.KOREAN) // 가정: ShopType 열거형에 TYPE1이 있음
+                .shopDetails(shopDetails)
+                .shopAddress(shopAddress)
+                .region(region)
+                .build();
 
         String changeName = "changedName";
         String changeDescription = "changedDescription";
         ShopType changeShopType = ShopType.ASIAN;
 
         var changeShopDetails = ShopDetails.builder()
-            .url("www.change.com")
-            .holiday("일요일")
-            .openingHours("12시")
-            .phoneNumber("01012345678")
-            .info("정보")
-            .introduce("introduce")
-            .build();
+                .url("www.change.com")
+                .holiday("일요일")
+                .openingHours("12시")
+                .phoneNumber("01012345678")
+                .info("정보")
+                .introduce("introduce")
+                .build();
 
         var changeShopAddress = ShopAddress.builder()
-            .address("서울시 송파구")
-            .zipcode("12345")
-            .latitude("123.345")
-            .longitude("123.127")
-            .build();
+                .address("서울시 송파구")
+                .zipcode("12345")
+                .latitude("123.345")
+                .longitude("123.127")
+                .build();
 
         var changeRegion = Region.builder()
-            .city("서울")
-            .district("송파구")
-            .build();
+                .city("서울")
+                .district("송파구")
+                .build();
 
         // when
         shop.update(changeName,
-            changeDescription,
-            changeShopType,
-            changeShopDetails,
-            changeShopAddress,
-            changeRegion);
-
-        // then
-        assertThat(shop)
-            .extracting(Shop::getBookmarkCount,
-                Shop::getName,
-                Shop::getDescription,
-                Shop::getShopType,
-                Shop::getShopDetails,
-                Shop::getShopAddress,
-                Shop::getRegion)
-            .containsExactly(0,
-                changeName,
                 changeDescription,
                 changeShopType,
                 changeShopDetails,
                 changeShopAddress,
                 changeRegion);
+
+        // then
+        assertThat(shop)
+                .extracting(Shop::getBookmarkCount,
+                        Shop::getName,
+                        Shop::getDescription,
+                        Shop::getShopType,
+                        Shop::getShopDetails,
+                        Shop::getShopAddress,
+                        Shop::getRegion)
+                .containsExactly(0,
+                        changeName,
+                        changeDescription,
+                        changeShopType,
+                        changeShopDetails,
+                        changeShopAddress,
+                        changeRegion);
     }
 
     @Disabled
@@ -169,35 +175,38 @@ class ShopTest {
     @DisplayName("북마크 개수를 증가시킨다.")
     void increaseBookMarks() {
         // given
+        var userId = 1L;
+
         var shopDetails = ShopDetails.builder()
-            .url("www.example.com")
-            .holiday("일요일")
-            .openingHours("11시")
-            .phoneNumber("01012345678")
-            .info("정보")
-            .introduce("introduce")
-            .build();
+                .url("www.example.com")
+                .holiday("일요일")
+                .openingHours("11시")
+                .phoneNumber("01012345678")
+                .info("정보")
+                .introduce("introduce")
+                .build();
 
         var shopAddress = ShopAddress.builder()
-            .address("서울시 강남구")
-            .zipcode("11111")
-            .latitude("123.123")
-            .longitude("123.123")
-            .build();
+                .address("서울시 강남구")
+                .zipcode("11111")
+                .latitude("123.123")
+                .longitude("123.123")
+                .build();
 
         var region = Region.builder()
-            .city("서울시")
-            .district("강남구")
-            .build();
+                .city("서울시")
+                .district("강남구")
+                .build();
 
         Shop shop = Shop.builder()
-            .name("Test Shop")
-            .description("This is a test shop")
-            .shopType(ShopType.KOREAN)
-            .shopDetails(shopDetails)
-            .shopAddress(shopAddress)
-            .region(region)
-            .build();
+                .userId(1L)
+                .name("Test Shop")
+                .description("This is a test shop")
+                .shopType(ShopType.KOREAN)
+                .shopDetails(shopDetails)
+                .shopAddress(shopAddress)
+                .region(region)
+                .build();
 
         // when
         shop.increaseBookmarkCount();
@@ -210,35 +219,38 @@ class ShopTest {
     @DisplayName("북마크 개수를 감소시킨다.")
     void decreaseBookMarks() {
         // given
+        var userId = 1L;
+
         var shopDetails = ShopDetails.builder()
-            .url("www.example.com")
-            .holiday("일요일")
-            .openingHours("11시")
-            .phoneNumber("01012345678")
-            .info("정보")
-            .introduce("introduce")
-            .build();
+                .url("www.example.com")
+                .holiday("일요일")
+                .openingHours("11시")
+                .phoneNumber("01012345678")
+                .info("정보")
+                .introduce("introduce")
+                .build();
 
         var shopAddress = ShopAddress.builder()
-            .address("서울시 강남구")
-            .zipcode("11111")
-            .latitude("123.123")
-            .longitude("123.123")
-            .build();
+                .address("서울시 강남구")
+                .zipcode("11111")
+                .latitude("123.123")
+                .longitude("123.123")
+                .build();
 
         var region = Region.builder()
-            .city("서울시")
-            .district("강남구")
-            .build();
+                .city("서울시")
+                .district("강남구")
+                .build();
 
         Shop shop = Shop.builder()
-            .name("Test Shop")
-            .description("This is a test shop")
-            .shopType(ShopType.KOREAN) // 가정: ShopType 열거형에 TYPE1이 있음
-            .shopDetails(shopDetails)
-            .shopAddress(shopAddress)
-            .region(region)
-            .build();
+                .userId(1L)
+                .name("Test Shop")
+                .description("This is a test shop")
+                .shopType(ShopType.KOREAN) // 가정: ShopType 열거형에 TYPE1이 있음
+                .shopDetails(shopDetails)
+                .shopAddress(shopAddress)
+                .region(region)
+                .build();
 
         // when
         shop.increaseBookmarkCount();
@@ -252,39 +264,42 @@ class ShopTest {
     @DisplayName("북마크 개수가 0일때 감소시키면 예외가 발생한다")
     void bookMarkThrowsExceptionWhenBookMarkCountisZero() {
         // given
+        var userId = 1L;
+
         var shopDetails = ShopDetails.builder()
-            .url("www.example.com")
-            .holiday("일요일")
-            .openingHours("11시")
-            .phoneNumber("01012345678")
-            .info("정보")
-            .introduce("introduce")
-            .build();
+                .url("www.example.com")
+                .holiday("일요일")
+                .openingHours("11시")
+                .phoneNumber("01012345678")
+                .info("정보")
+                .introduce("introduce")
+                .build();
 
         var shopAddress = ShopAddress.builder()
-            .address("서울시 강남구")
-            .zipcode("11111")
-            .latitude("123.123")
-            .longitude("123.123")
-            .build();
+                .address("서울시 강남구")
+                .zipcode("11111")
+                .latitude("123.123")
+                .longitude("123.123")
+                .build();
 
         var region = Region.builder()
-            .city("서울시")
-            .district("강남구")
-            .build();
+                .city("서울시")
+                .district("강남구")
+                .build();
 
         Shop shop = Shop.builder()
-            .name("Test Shop")
-            .description("This is a test shop")
-            .shopType(ShopType.KOREAN)
-            .shopDetails(shopDetails)
-            .shopAddress(shopAddress)
-            .region(region)
-            .build();
+                .userId(1L)
+                .name("Test Shop")
+                .description("This is a test shop")
+                .shopType(ShopType.KOREAN)
+                .shopDetails(shopDetails)
+                .shopAddress(shopAddress)
+                .region(region)
+                .build();
 
         // when&then
         assertThatThrownBy(shop::decreaseBookmarkCount)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("북마크 개수가 0 일 때 북마크 개수를 줄이는 것은 불가능합니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("북마크 개수가 0 일 때 북마크 개수를 줄이는 것은 불가능합니다.");
     }
 }
