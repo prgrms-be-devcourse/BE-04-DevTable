@@ -1,6 +1,6 @@
 package com.mdh.devtable.ownerwaitng.application;
 
-import com.mdh.devtable.ownerwaitng.presentaion.OwnerWaitingChangeRequest;
+import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.waiting.domain.ShopWaiting;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
@@ -10,9 +10,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 
+@ActiveProfiles("test")
 @SpringBootTest
 @Transactional
 class OwnerWaitingServiceTest {
@@ -38,7 +40,7 @@ class OwnerWaitingServiceTest {
         shopWaitingRepository.save(shopWaiting);
 
         //when
-        var request = new OwnerWaitingChangeRequest(status);
+        var request = new OwnerShopWaitingStatusChangeRequest(ShopWaitingStatus.valueOf(status));
         ownerWaitingService.changeShopWaitingStatus(shopWaiting.getShopId(), request);
 
         //then
