@@ -2,6 +2,7 @@ package com.mdh.devtable.waiting.application;
 
 import com.mdh.devtable.waiting.domain.ShopWaiting;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import com.mdh.devtable.waiting.infra.persistence.WaitingRepository;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
@@ -36,11 +37,11 @@ class WaitingServiceTest {
         var userId = 1L;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(1L)
-            .maximumWaiting(20)
-            .maximumWaitingPeople(7)
-            .minimumWaitingPeople(2)
-            .build();
+                .shopId(1L)
+                .maximumWaiting(20)
+                .maximumWaitingPeople(7)
+                .minimumWaitingPeople(2)
+                .build();
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         shopWaitingRepository.save(shopWaiting);
 
@@ -52,5 +53,33 @@ class WaitingServiceTest {
         //then
         var findWaiting = waitingRepository.findById(waitingId).orElse(null);
         assertThat(findWaiting).isNotNull();
+    }
+
+    @Test
+    @DisplayName("웨이팅을 취소한다.")
+    void cancelWaitingTest() {
+        //given
+        var shopId = 1L;
+        var userId = 1L;
+
+        var shopWaiting = ShopWaiting.builder()
+                .shopId(1L)
+                .maximumWaiting(20)
+                .maximumWaitingPeople(7)
+                .minimumWaitingPeople(2)
+                .build();
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        shopWaitingRepository.save(shopWaiting);
+
+        var waitingCreateRequest = new WaitingCreateRequest(userId, shopId, 2, 0);
+        var waitingId = waitingService.createWaiting(waitingCreateRequest);
+
+        //when
+        waitingService.cancelWaiting(waitingId);
+
+        //then
+        var findWaiting = waitingRepository.findById(waitingId)
+                .orElse(null);
+        assertThat(findWaiting.getWaitingStatus()).isEqualTo(WaitingStatus.CANCEL);
     }
 }
