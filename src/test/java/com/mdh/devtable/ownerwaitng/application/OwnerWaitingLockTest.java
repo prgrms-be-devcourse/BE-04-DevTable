@@ -57,10 +57,8 @@ class OwnerWaitingLockTest {
                     successCount.incrementAndGet();
                 } catch (ObjectOptimisticLockingFailureException e) {
                     lockConflictCount.incrementAndGet();
-                    System.out.println(e.getMessage());
                 } catch (IllegalStateException e) {
                     failedCount.incrementAndGet();
-                    System.out.println(e.getMessage());
                 } finally {
                     countDownLatch.countDown();
                 }
