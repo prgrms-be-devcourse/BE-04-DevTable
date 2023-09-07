@@ -19,7 +19,7 @@ public class PlainWaitingLine implements WaitingLine {
     public void save(Long shopId, Long waitingId, LocalDateTime createdDate) {
         // 해당 매장에 대한 라인이 없다면
         waitingLine.putIfAbsent(shopId,
-            new TreeSet<>(Comparator.comparing(WaitingInfo::waitingStartTime)));
+                new TreeSet<>(Comparator.comparing(WaitingInfo::waitingStartTime)));
 
         var waitingInfo = new WaitingInfo(waitingId, createdDate);
         var waitingInfos = waitingLine.get(shopId);
@@ -31,5 +31,16 @@ public class PlainWaitingLine implements WaitingLine {
         var waitingInfos = waitingLine.get(shopId);
 
         return waitingInfos.headSet(waitingInfo).size() + 1;
+    }
+
+    @Override
+    public void cancel(Long shopId, Long waitingId, LocalDateTime createdDate) {
+        if (!waitingLine.containsKey(shopId)) {
+            throw new IllegalStateException("현재 매장에 등록 된 웨이팅이 아닙니다. shopId : " + shopId + "waitingId : " + waitingId);
+        }
+
+        var waitingInfo = new WaitingInfo(waitingId, createdDate);
+        var waitingInfos = waitingLine.get(shopId);
+        waitingInfos.remove(waitingInfo);
     }
 }
