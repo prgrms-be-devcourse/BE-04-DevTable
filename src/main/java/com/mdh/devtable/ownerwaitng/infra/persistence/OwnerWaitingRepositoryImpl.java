@@ -1,7 +1,7 @@
 package com.mdh.devtable.ownerwaitng.infra.persistence;
 
-import com.mdh.devtable.waiting.ShopWaiting;
-import com.mdh.devtable.waiting.ShopWaitingRepository;
+import com.mdh.devtable.waiting.domain.ShopWaiting;
+import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,7 @@
 package com.mdh.devtable.ownerwaitng.infra.persistence;
 
-import com.mdh.devtable.waiting.ShopWaiting;
+
+import com.mdh.devtable.waiting.domain.ShopWaiting;
 
 import java.util.Optional;
 
