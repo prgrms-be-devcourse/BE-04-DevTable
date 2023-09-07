@@ -15,8 +15,10 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.stream.Stream;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,26 +46,26 @@ class UserWaitingControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(post("/api/customer/v1/waitings")
-                .content(objectMapper.writeValueAsString(waitingCreateRequest))
-                .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.statusCode").value("201"))
-            .andExpect(jsonPath("$.data").value("/api/customer/v1/waitings" + waitingId))
-            .andExpect(jsonPath("$.serverDateTime").exists())
-            .andDo(document("waiting-create",
-                requestFields(
-                    fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
-                    fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("매장 아이디"),
-                    fieldWithPath("adultCount").type(JsonFieldType.NUMBER).description("어른 인원 수"),
-                    fieldWithPath("childCount").type(JsonFieldType.NUMBER).description("유아 인원 수")
-                ),
-                responseFields(
-                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                    fieldWithPath("data").type(JsonFieldType.STRING).description("생성된 URI + id"),
-                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
-                )
-            ));
+                        .content(objectMapper.writeValueAsString(waitingCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.statusCode").value("201"))
+                .andExpect(jsonPath("$.data").value("/api/customer/v1/waitings" + waitingId))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("waiting-create",
+                        requestFields(
+                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                                fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("매장 아이디"),
+                                fieldWithPath("adultCount").type(JsonFieldType.NUMBER).description("어른 인원 수"),
+                                fieldWithPath("childCount").type(JsonFieldType.NUMBER).description("유아 인원 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("생성된 URI + id"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        )
+                ));
     }
 
     @ParameterizedTest
@@ -74,39 +76,39 @@ class UserWaitingControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(post("/api/customer/v1/waitings")
-                .content(objectMapper.writeValueAsString(waitingCreateRequest))
-                .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.statusCode").value("400"))
-            .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
-            .andDo(document("waiting-create-valid-count",
-                requestFields(
-                    fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
-                    fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("매장 아이디"),
-                    fieldWithPath("adultCount").type(JsonFieldType.NUMBER).description("어른 인원 수"),
-                    fieldWithPath("childCount").type(JsonFieldType.NUMBER).description("유아 인원 수")
-                ),
-                responseFields(
-                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                    fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                    fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                    fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                    fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                    fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
-                    fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
-                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                )
-            ));
+                        .content(objectMapper.writeValueAsString(waitingCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andDo(document("waiting-create-valid-count",
+                        requestFields(
+                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                                fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("매장 아이디"),
+                                fieldWithPath("adultCount").type(JsonFieldType.NUMBER).description("어른 인원 수"),
+                                fieldWithPath("childCount").type(JsonFieldType.NUMBER).description("유아 인원 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
+                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
     }
 
     static Stream<Arguments> provideWaitingCreateOutOfRangeCount() {
         return Stream.of(
-            Arguments.arguments(new WaitingCreateRequest(1L, 1L, -1, 0)),
-            Arguments.arguments(new WaitingCreateRequest(1L, 1L, 31, 0)),
-            Arguments.arguments(new WaitingCreateRequest(1L, 1L, 0, -1)),
-            Arguments.arguments(new WaitingCreateRequest(1L, 1L, 0, 31))
+                Arguments.arguments(new WaitingCreateRequest(1L, 1L, -1, 0)),
+                Arguments.arguments(new WaitingCreateRequest(1L, 1L, 31, 0)),
+                Arguments.arguments(new WaitingCreateRequest(1L, 1L, 0, -1)),
+                Arguments.arguments(new WaitingCreateRequest(1L, 1L, 0, 31))
         );
     }
 
@@ -118,37 +120,61 @@ class UserWaitingControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(post("/api/customer/v1/waitings")
-                .content(objectMapper.writeValueAsString(waitingCreateRequest))
-                .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.statusCode").value("400"))
-            .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
-            .andDo(document("waiting-create-valid-null",
-                requestFields(
-                    fieldWithPath("userId").type(JsonFieldType.VARIES).description("유저 아이디"),
-                    fieldWithPath("shopId").type(JsonFieldType.VARIES).description("매장 아이디"),
-                    fieldWithPath("adultCount").type(JsonFieldType.NUMBER).description("어른 인원 수"),
-                    fieldWithPath("childCount").type(JsonFieldType.NUMBER).description("유아 인원 수")
-                ),
-                responseFields(
-                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                    fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                    fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                    fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                    fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                    fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
-                    fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
-                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                )
-            ));
+                        .content(objectMapper.writeValueAsString(waitingCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andDo(document("waiting-create-valid-null",
+                        requestFields(
+                                fieldWithPath("userId").type(JsonFieldType.VARIES).description("유저 아이디"),
+                                fieldWithPath("shopId").type(JsonFieldType.VARIES).description("매장 아이디"),
+                                fieldWithPath("adultCount").type(JsonFieldType.NUMBER).description("어른 인원 수"),
+                                fieldWithPath("childCount").type(JsonFieldType.NUMBER).description("유아 인원 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
+                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
     }
 
     static Stream<Arguments> provideWaitingCreateNullValue() {
         return Stream.of(
-            Arguments.arguments(new WaitingCreateRequest(null, 1L, 2, 0)),
-            Arguments.arguments(new WaitingCreateRequest(1L, null, 2, 0))
+                Arguments.arguments(new WaitingCreateRequest(null, 1L, 2, 0)),
+                Arguments.arguments(new WaitingCreateRequest(1L, null, 2, 0))
         );
+    }
+
+    @Test
+    @DisplayName("웨이팅을 취소한다.")
+    void cancelWaitingTest() throws Exception {
+        //given
+        var waitingId = 1L;
+        doNothing().when(waitingService).cancelWaiting(waitingId);
+
+        //when & then
+        mockMvc.perform(patch("/api/customer/v1/waitings/{waitingId}", waitingId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.statusCode").value("204"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("waiting-cancel",
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        )
+                ));
     }
 }
