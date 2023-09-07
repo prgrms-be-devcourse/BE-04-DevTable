@@ -17,6 +17,9 @@ public class ShopWaiting extends BaseTimeEntity {
     @Column(name = "shop_id", nullable = false)
     private Long shopId;
 
+    @Column(name = "waiting_count", nullable = false)
+    private int waitingCount;
+
     @Column(name = "status", length = 31, nullable = false)
     @Enumerated(EnumType.STRING)
     private ShopWaitingStatus shopWaitingStatus;
@@ -43,6 +46,7 @@ public class ShopWaiting extends BaseTimeEntity {
                        int maximumWaitingPeople) {
         validMaximumWaiting(maximumWaiting);
         this.shopId = shopId;
+        this.waitingCount = 0;
         this.maximumWaiting = maximumWaiting;
         this.shopWaitingStatus = ShopWaitingStatus.CLOSE;
         this.childEnabled = false;
@@ -66,11 +70,23 @@ public class ShopWaiting extends BaseTimeEntity {
             throw new IllegalStateException("매장의 웨이팅 상태를 동일한 상태로 변경 할 수 없습니다.");
         }
 
+        if (shopWaitingStatus.isCloseWaitingStatus()) {
+            this.waitingCount = 0;
+        }
+
         this.shopWaitingStatus = shopWaitingStatus;
     }
 
     public boolean isOpenWaitingStatus() {
         return this.shopWaitingStatus == ShopWaitingStatus.OPEN;
+    }
+
+    public void addWaitingCount() {
+        if (this.shopWaitingStatus.isCloseWaitingStatus()) {
+            throw new IllegalStateException("닫혀있는 상태에서는 발급번호 개수가 증가할 수 없습니다.");
+        }
+
+        this.waitingCount++;
     }
 
     public void updateChildEnabled(boolean childEnabled) {

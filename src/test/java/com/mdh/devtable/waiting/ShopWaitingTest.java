@@ -23,12 +23,12 @@ class ShopWaitingTest {
 
         //when
         var shopWaiting = ShopWaiting
-            .builder()
-            .shopId(shopId)
-            .maximumWaitingPeople(2)
-            .minimumWaitingPeople(1)
-            .maximumWaiting(maximumWaiting)
-            .build();
+                .builder()
+                .shopId(shopId)
+                .maximumWaitingPeople(2)
+                .minimumWaitingPeople(1)
+                .maximumWaiting(maximumWaiting)
+                .build();
 
         //then
         assertThat(shopWaiting.getShopId()).isEqualTo(shopId);
@@ -45,11 +45,11 @@ class ShopWaitingTest {
 
         //when & then
         assertThatThrownBy(() -> ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .build())
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -61,10 +61,10 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-            .builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .build();
+                .builder()
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build();
 
         //when
         shopWaiting.changeShopWaitingStatus(shopWaitingStatus);
@@ -81,15 +81,15 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-            .builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .build();
+                .builder()
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build();
 
         //when & then
         assertThatThrownBy(() -> shopWaiting.changeShopWaitingStatus(shopWaiting.getShopWaitingStatus()))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("매장의 웨이팅 상태를 동일한 상태로 변경 할 수 없습니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("매장의 웨이팅 상태를 동일한 상태로 변경 할 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -101,10 +101,10 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-            .builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .build();
+                .builder()
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build();
 
         //when
         shopWaiting.updateShopWaiting(changeMaximumWaiting);
@@ -121,15 +121,15 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         var shopWaiting = ShopWaiting
-            .builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .build();
+                .builder()
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build();
 
         //when & then
         assertThatThrownBy(() -> shopWaiting.updateShopWaiting(0))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("웨이팅의 최대 인원수는 1 미만 일 수 없습니다.");
     }
 
     @Test
@@ -139,9 +139,9 @@ class ShopWaitingTest {
         var shopId = 1L;
         var maximumWaiting = 5;
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build();
 
         // when
         var newChildEnabled = true;
@@ -149,5 +149,44 @@ class ShopWaitingTest {
 
         // then
         assertTrue(shopWaiting.isChildEnabled());
+    }
+
+    @Test
+    @DisplayName("매장의 상태가 CLOSE가 되면 매장의 발급번호가 0이 된다.")
+    void initShopWaitingCountTest() {
+        //given
+        var shopId = 1L;
+        var maximumWaiting = 5;
+        var shopWaiting = ShopWaiting.builder()
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build();
+
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+
+        //when
+        shopWaiting.addWaitingCount();
+
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.CLOSE);
+
+        //then
+        assertThat(shopWaiting.getWaitingCount()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("매장의 상태가 CLOSE라면 매장의 발급번호 증가 시 예외가 발생한다.")
+    void addShopWaitingCountExTest() {
+        //given
+        var shopId = 1L;
+        var maximumWaiting = 5;
+        var shopWaiting = ShopWaiting.builder()
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .build();
+
+        //when & then
+        assertThatThrownBy(shopWaiting::addWaitingCount)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("닫혀있는 상태에서는 발급번호 개수가 증가할 수 없습니다.");
     }
 }
