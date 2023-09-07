@@ -7,4 +7,6 @@ public interface WaitingLine {
     void save(Long shopId, Long waitingId, LocalDateTime createdDate);
 
     int findRank(Long shopId, Long waitingId, LocalDateTime createdDate);
+
+    int findTotalWaiting(Long shopId);
 }

@@ -16,6 +16,7 @@ public class PlainWaitingLine implements WaitingLine {
     // 매장의 아이디, 매장의 웨이팅 라인
     private final Map<Long, SortedSet<WaitingInfo>> waitingLine = new ConcurrentHashMap<>();
 
+    @Override
     public void save(Long shopId, Long waitingId, LocalDateTime createdDate) {
         // 해당 매장에 대한 라인이 없다면
         waitingLine.putIfAbsent(shopId,
@@ -26,10 +27,17 @@ public class PlainWaitingLine implements WaitingLine {
         waitingInfos.add(waitingInfo);
     }
 
+    @Override
     public int findRank(Long shopId, Long waitingId, LocalDateTime createdDate) {
         var waitingInfo = new WaitingInfo(waitingId, createdDate);
         var waitingInfos = waitingLine.get(shopId);
 
         return waitingInfos.headSet(waitingInfo).size() + 1;
+    }
+
+    @Override
+    public int findTotalWaiting(Long shopId) {
+        var waitingInfos = waitingLine.get(shopId);
+        return waitingInfos.size();
     }
 }
