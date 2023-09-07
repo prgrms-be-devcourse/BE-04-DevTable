@@ -14,4 +14,10 @@ endif::[]
 
 [[Hello]]
 == Hello Get 요청
+
 operation::hello[snippets = 'http-request,http-response,request-body,response-fields']
+
+[[Waiting]]
+== Waiting 취소
+
+operation::waiting-cancel[snippets = 'http-request,http-response,request-body,response-fields']
