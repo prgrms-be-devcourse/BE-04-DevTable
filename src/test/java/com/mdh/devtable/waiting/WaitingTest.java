@@ -1,10 +1,6 @@
 package com.mdh.devtable.waiting;
 
-import com.mdh.devtable.waiting.domain.ShopWaiting;
-import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
-import com.mdh.devtable.waiting.domain.Waiting;
-import com.mdh.devtable.waiting.domain.WaitingPeople;
-import com.mdh.devtable.waiting.domain.WaitingStatus;
+import com.mdh.devtable.waiting.domain.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,39 +28,39 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         //when
         var waiting = Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .userId(userId)
-            .waitingPeople(waitingPeople)
-            .build();
+                .shopWaiting(shopWaiting)
+                .userId(userId)
+                .waitingPeople(waitingPeople)
+                .build();
 
         //then
         assertThat(waiting)
-            .extracting(Waiting::getWaitingPeople,
-                Waiting::getShopWaiting,
-                Waiting::getUserId,
-                Waiting::getWaitingStatus,
-                Waiting::getPostponedCount)
-            .containsExactly(waitingPeople,
-                shopWaiting,
-                userId,
-                WaitingStatus.PROGRESS,
-                0);
+                .extracting(Waiting::getWaitingPeople,
+                        Waiting::getShopWaiting,
+                        Waiting::getUserId,
+                        Waiting::getWaitingStatus,
+                        Waiting::getPostponedCount)
+                .containsExactly(waitingPeople,
+                        shopWaiting,
+                        userId,
+                        WaitingStatus.PROGRESS,
+                        0);
     }
 
     static Stream<Arguments> waitingPeople() {
         return Stream.of(
-            Arguments.arguments(new WaitingPeople(2, 0)),
-            Arguments.arguments(new WaitingPeople(5, 0))
+                Arguments.arguments(new WaitingPeople(2, 0)),
+                Arguments.arguments(new WaitingPeople(5, 0))
         );
     }
 
@@ -80,11 +76,11 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         shopWaiting.changeShopWaitingStatus(waitingStatus);
@@ -93,12 +89,12 @@ class WaitingTest {
 
         //when & then
         assertThatThrownBy(() -> Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .userId(userId)
-            .waitingPeople(waitingPeople)
-            .build())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("매장이 오픈 상태가 아니면 웨이팅을 등록 할 수 없습니다.");
+                .shopWaiting(shopWaiting)
+                .userId(userId)
+                .waitingPeople(waitingPeople)
+                .build())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("매장이 오픈 상태가 아니면 웨이팅을 등록 할 수 없습니다.");
     }
 
     @Test
@@ -112,21 +108,21 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         var waitingPeople = new WaitingPeople(2, 0);
 
         var waiting = Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .userId(userId)
-            .waitingPeople(waitingPeople)
-            .build();
+                .shopWaiting(shopWaiting)
+                .userId(userId)
+                .waitingPeople(waitingPeople)
+                .build();
         //when
         waiting.addPostponedCount();
 
@@ -147,29 +143,29 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         var waitingPeople = new WaitingPeople(2, 0);
 
         var waiting = Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .userId(userId)
-            .waitingPeople(waitingPeople)
-            .build();
+                .shopWaiting(shopWaiting)
+                .userId(userId)
+                .waitingPeople(waitingPeople)
+                .build();
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
 
         //then
         Assertions.assertThatThrownBy(waiting::addPostponedCount)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("진행 상태가 아닌 웨이팅 미루기는 불가능 합니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("진행 상태가 아닌 웨이팅 미루기는 불가능 합니다.");
     }
 
     @Test
@@ -183,21 +179,21 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         var waitingPeople = new WaitingPeople(2, 0);
 
         var waiting = Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .userId(userId)
-            .waitingPeople(waitingPeople)
-            .build();
+                .shopWaiting(shopWaiting)
+                .userId(userId)
+                .waitingPeople(waitingPeople)
+                .build();
 
         //when
         waiting.addPostponedCount();
@@ -205,8 +201,8 @@ class WaitingTest {
 
         //then
         Assertions.assertThatThrownBy(waiting::addPostponedCount)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("웨이팅 미루기는 2회 초과하여 불가능 합니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("웨이팅 미루기는 2회 초과하여 불가능 합니다.");
     }
 
     @ParameterizedTest
@@ -221,21 +217,21 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         var waitingPeople = new WaitingPeople(2, 0);
 
         var waiting = Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .userId(userId)
-            .waitingPeople(waitingPeople)
-            .build();
+                .shopWaiting(shopWaiting)
+                .userId(userId)
+                .waitingPeople(waitingPeople)
+                .build();
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
@@ -256,29 +252,29 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         var waitingPeople = new WaitingPeople(2, 0);
 
         var waiting = Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .userId(userId)
-            .waitingPeople(waitingPeople)
-            .build();
+                .shopWaiting(shopWaiting)
+                .userId(userId)
+                .waitingPeople(waitingPeople)
+                .build();
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
 
         //then
         assertThatThrownBy(() -> waiting.changeWaitingStatus(WaitingStatus.PROGRESS))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("진행 상태가 아니면 상태 변경이 불가능 합니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("진행 상태가 아니면 상태 변경이 불가능 합니다.");
     }
 
     @ParameterizedTest
@@ -292,28 +288,28 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         //when&then
         assertThatThrownBy(() -> Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .waitingPeople(waitingPeople)
-            .userId(1L)
-            .build())
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(exceptionMessage);
+                .shopWaiting(shopWaiting)
+                .waitingPeople(waitingPeople)
+                .userId(1L)
+                .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(exceptionMessage);
     }
 
     static Stream<Arguments> waitingPeopleAndExceptionMessage() {
         return Stream.of(
-            Arguments.arguments(new WaitingPeople(1, 0), "웨이팅 인원은 2명 이상이어야 합니다."),
-            Arguments.arguments(new WaitingPeople(6, 0), "웨이팅 인원은 5명 이하여야 합니다.")
+                Arguments.arguments(new WaitingPeople(1, 0), "웨이팅 인원은 2명 이상이어야 합니다."),
+                Arguments.arguments(new WaitingPeople(6, 0), "웨이팅 인원은 5명 이하여야 합니다.")
         );
     }
 
@@ -327,21 +323,22 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        shopWaiting.updateChildEnabled(false);
 
         //when & then
         assertThatThrownBy(() -> Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .waitingPeople(new WaitingPeople(2, 2))
-            .build())
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("유아 손님 입장이 불가능한 매장입니다.");
+                .shopWaiting(shopWaiting)
+                .waitingPeople(new WaitingPeople(2, 2))
+                .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("유아 손님 입장이 불가능한 매장입니다.");
     }
 
     @Test
@@ -354,20 +351,20 @@ class WaitingTest {
         var maximumWaitingPeople = 5;
 
         var shopWaiting = ShopWaiting.builder()
-            .shopId(shopId)
-            .maximumWaiting(maximumWaiting)
-            .minimumWaitingPeople(minimumWaitingPeople)
-            .maximumWaitingPeople(maximumWaitingPeople)
-            .build();
+                .shopId(shopId)
+                .maximumWaiting(maximumWaiting)
+                .minimumWaitingPeople(minimumWaitingPeople)
+                .maximumWaitingPeople(maximumWaitingPeople)
+                .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         shopWaiting.updateChildEnabled(true);
 
         //when
         var waiting = Waiting.builder()
-            .shopWaiting(shopWaiting)
-            .waitingPeople(new WaitingPeople(2, 2))
-            .build();
+                .shopWaiting(shopWaiting)
+                .waitingPeople(new WaitingPeople(2, 2))
+                .build();
 
         //then
         assertThat(waiting).isNotNull();
