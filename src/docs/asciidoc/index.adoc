@@ -46,3 +46,7 @@ operation::waiting-cancel[snippets = 'http-request,http-response,request-body,re
 == 유저 개인의 웨이팅 조회
 
 operation::find-my-waitings[snippets = 'http-request,http-response,request-body,response-fields']
+
+== Waiting 상세 조회
+
+operation::waiting-de[snippets = 'http-request,http-response,request-body,response-fields']
