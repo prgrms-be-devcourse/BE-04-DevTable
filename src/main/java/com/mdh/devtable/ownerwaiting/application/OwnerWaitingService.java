@@ -3,10 +3,13 @@ package com.mdh.devtable.ownerwaiting.application;
 import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoResponseForOwner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -27,5 +30,10 @@ public class OwnerWaitingService {
         var waiting = ownerWaitingRepository.findWaitingByWaitingId(waitingId)
                 .orElseThrow(() -> new NoSuchElementException("웨이팅 조회 결과가 없습니다."));
         waiting.changeWaitingStatus(request.waitingStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public List<WaitingInfoResponseForOwner> findWaitingByShopIdAndWaitingStatus(Long ownerId, WaitingInfoRequestForOwner request) {
+        return ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, request.waitingStatus());
     }
 }
