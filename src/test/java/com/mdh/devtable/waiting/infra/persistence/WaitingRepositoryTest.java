@@ -97,25 +97,26 @@ class WaitingRepositoryTest {
         var shop = DataInitializerFactory.shop(guest.getId(), shopDetails, region, shopAddress);
         var savedShop = shopRepository.save(shop);
 
-        var shopWaiting = DataInitializerFactory.shopWaiting(savedUser.getId(), 20, 7, 2);
+        var shopWaiting = DataInitializerFactory.shopWaiting(savedShop.getId(), 20, 7, 2);
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         var savedShopWaiting = shopWaitingRepository.save(shopWaiting);
 
         var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
-        var waiting = DataInitializerFactory.waiting(savedUser.getId(), shopWaiting, waitingPeople);
+        var waiting = DataInitializerFactory.waiting(savedUser.getId(), savedShopWaiting, waitingPeople);
         var savedWaiting = waitingRepository.save(waiting);
 
         //when
         var waitingDetails = waitingRepository.findByWaitingDetails(savedWaiting.getId()).orElse(null);
 
         //then
+        assertThat(waitingDetails.shopId()).isEqualTo(shop.getId());
         assertThat(waitingDetails.shopName()).isEqualTo(shop.getName());
         assertThat(waitingDetails.region()).isEqualTo(region.getDistrict());
         assertThat(waitingDetails.shopType()).isEqualTo(shop.getShopType());
-        assertThat(waitingDetails.shopDetails()).isEqualTo(shopDetails);
+        assertThat(waitingDetails.shopDetails()).usingRecursiveComparison().isEqualTo(shopDetails);
         assertThat(waitingDetails.waitingNumber()).isEqualTo(waiting.getWaitingNumber());
         assertThat(waitingDetails.waitingStatus()).isEqualTo(waiting.getWaitingStatus());
-        assertThat(waitingDetails.waitingPeople()).isEqualTo(waitingPeople);
+        assertThat(waitingDetails.waitingPeople()).usingRecursiveComparison().isEqualTo(waitingPeople);
         assertThat(waitingDetails.createdDate()).isEqualTo(waiting.getCreatedDate());
         assertThat(waitingDetails.modifiedDate()).isEqualTo(waiting.getModifiedDate());
     }
