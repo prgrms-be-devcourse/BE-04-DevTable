@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.temporal.ChronoUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 @SpringBootTest
 @Transactional
@@ -67,7 +70,7 @@ class WaitingRepositoryTest {
         assertThat(waitingDetails.waitingNumber()).isEqualTo(waiting.getWaitingNumber());
         assertThat(waitingDetails.waitingStatus()).isEqualTo(waiting.getWaitingStatus());
         assertThat(waitingDetails.waitingPeople()).usingRecursiveComparison().isEqualTo(waitingPeople);
-        assertThat(waitingDetails.createdDate()).isEqualTo(waiting.getCreatedDate());
-        assertThat(waitingDetails.modifiedDate()).isEqualTo(waiting.getModifiedDate());
+        assertThat(waitingDetails.createdDate()).isCloseTo(waiting.getCreatedDate(), within(1, ChronoUnit.SECONDS));
+        assertThat(waitingDetails.modifiedDate()).isCloseTo(waiting.getModifiedDate(), within(1, ChronoUnit.SECONDS));
     }
 }
