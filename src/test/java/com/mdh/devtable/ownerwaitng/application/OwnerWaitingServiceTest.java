@@ -4,7 +4,7 @@ import com.mdh.devtable.ownerwaitng.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.waiting.domain.*;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,7 +50,7 @@ class OwnerWaitingServiceTest {
 
         // then
         verify(ownerWaitingRepository, times(1)).findShopWaitingByShopId(shopId);
-        Assertions.assertEquals(ShopWaitingStatus.valueOf(status), shopWaiting.getShopWaitingStatus());
+        Assertions.assertThat(ShopWaitingStatus.valueOf(status)).isEqualTo(shopWaiting.getShopWaitingStatus());
     }
 
     @DisplayName("손님의 웨이팅 상태를 변경할 수 있다.")
@@ -81,6 +81,6 @@ class OwnerWaitingServiceTest {
 
         // then
         verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
-        Assertions.assertEquals(WaitingStatus.valueOf(status), waiting.getWaitingStatus());
+        Assertions.assertThat(WaitingStatus.valueOf(status)).isEqualTo(waiting.getWaitingStatus());
     }
 }
