@@ -42,3 +42,32 @@ operation::waiting-create-valid-null[snippets = 'http-request,http-response,requ
 == Waiting 취소
 
 operation::waiting-cancel[snippets = 'http-request,http-response,request-body,response-fields']
+
+[[Owner-Waiting]]
+== Owner Waiting API
+
+=== 매장의 웨이팅 상태 변경
+
+operation::change-shop-waiting-status[snippets='http-request,http-response,request-fields,response-fields']
+
+[[change-shop-waiting-status-invalid]]
+=== 매장의 웨이팅 상태 변경 오류
+
+operation::change-shop-waiting-status-invalid[snippets='http-request,http-response,request-fields,response-fields']
+
+[[change-waiting-status]]
+=== 웨이팅 상태 변경
+
+operation::change-waiting-status[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 웨이팅 상태 변경 오류
+
+operation::change-waiting-status-invalid[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회
+
+operation::owners-shop-waitingInfo[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회 오류
+
+operation::owners-shop-waitingInfo-invalid[snippets='http-request,http-response,request-fields,response-fields']
