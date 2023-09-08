@@ -2,6 +2,7 @@ package com.mdh.devtable.waiting.presentation;
 
 import com.mdh.devtable.global.ApiResponse;
 import com.mdh.devtable.waiting.application.WaitingService;
+import com.mdh.devtable.waiting.application.dto.WaitingDetailsResponse;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,11 @@ public class UserWaitingController {
     public ResponseEntity<ApiResponse<Void>> cancelWaiting(@PathVariable Long waitingId) {
         waitingService.cancelWaiting(waitingId);
         return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{waitingId}")
+    public ResponseEntity<ApiResponse<WaitingDetailsResponse>> findWaitingDetails(@PathVariable Long waitingId) {
+        var waitingDetailsResponse = waitingService.findWaitingDetails(waitingId);
+        return new ResponseEntity<>(ApiResponse.ok(waitingDetailsResponse), HttpStatus.OK);
     }
 }
