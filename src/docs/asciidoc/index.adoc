@@ -67,6 +67,10 @@ operation::waiting-postpone[snippets = 'http-request,http-response,request-body,
 
 operation::waiting-postpone-notAcceptable[snippets = 'http-request,http-response,request-body,response-fields']
 
+=== 웨이팅 상세 조회
+
+operation::waiting-detail-find[snippets = 'http-request,http-response,request-body,response-fields']
+
 [[Owner-Waiting]]
 == Owner Waiting API
 
@@ -74,12 +78,10 @@ operation::waiting-postpone-notAcceptable[snippets = 'http-request,http-response
 
 operation::change-shop-waiting-status[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
 
-[[change-shop-waiting-status-invalid]]
 === 매장의 웨이팅 상태 변경 오류
 
 operation::change-shop-waiting-status-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
 
-[[change-waiting-status]]
 === 웨이팅 상태 변경
 
 operation::change-waiting-status[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
@@ -95,16 +97,6 @@ operation::owners-shop-waitingInfo[snippets='path-parameters,http-request,http-r
 === 점주가 갖고 있는 매장의 웨이팅 정보 조회 오류
 
 operation::owners-shop-waitingInfo-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
-
-=== 웨이팅 상세 조회
-
-operation::waiting-detail-find[snippets = 'http-request,http-response,request-body,response-fields']
-
-operation::change-waiting-status[snippets='http-request,http-response,request-fields,response-fields']
-
-=== 웨이팅 상태 변경 오류
-
-operation::change-waiting-status-invalid[snippets='http-request,http-response,request-fields,response-fields']
 
 === 점주가 갖고 있는 매장의 웨이팅 정보 조회
 
