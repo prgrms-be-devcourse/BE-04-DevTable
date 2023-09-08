@@ -42,3 +42,7 @@ operation::waiting-create-valid-null[snippets = 'http-request,http-response,requ
 == Waiting 취소
 
 operation::waiting-cancel[snippets = 'http-request,http-response,request-body,response-fields']
+
+== Waiting 상세 조회
+
+operation::waiting-de[snippets = 'http-request,http-response,request-body,response-fields']
