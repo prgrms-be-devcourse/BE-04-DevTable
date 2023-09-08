@@ -1,4 +1,4 @@
-package com.mdh.devtable.ownerwaitng.presentaion.dto;
+package com.mdh.devtable.ownerwaiting.presentaion.dto;
 
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 

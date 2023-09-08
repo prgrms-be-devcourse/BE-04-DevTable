@@ -1,4 +1,4 @@
-package com.mdh.devtable.ownerwaitng.infra.persistence;
+package com.mdh.devtable.ownerwaiting.infra.persistence;
 
 
 import com.mdh.devtable.waiting.domain.ShopWaiting;
