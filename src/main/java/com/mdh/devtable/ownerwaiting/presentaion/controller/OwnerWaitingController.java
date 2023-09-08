@@ -1,9 +1,9 @@
-package com.mdh.devtable.ownerwaitng.presentaion.controller;
+package com.mdh.devtable.ownerwaiting.presentaion.controller;
 
 import com.mdh.devtable.global.ApiResponse;
-import com.mdh.devtable.ownerwaitng.application.OwnerWaitingService;
-import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.application.OwnerWaitingService;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

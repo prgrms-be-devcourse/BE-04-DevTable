@@ -1,9 +1,11 @@
-package com.mdh.devtable.ownerwaitng.application;
+package com.mdh.devtable.ownerwaiting.application;
 
-import com.mdh.devtable.ownerwaitng.infra.persistence.OwnerWaitingRepository;
-import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerWaitingStatusChangeRequest;
-import com.mdh.devtable.waiting.domain.*;
+import com.mdh.devtable.DataInitializerFactory;
+import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
+import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,13 +37,7 @@ class OwnerWaitingServiceTest {
     void changeShopWaitingStatus(String status) {
         //given
         var shopId = 1L;
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaitingPeople(2)
-                .minimumWaitingPeople(1)
-                .maximumWaiting(10)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 2, 1, 1);
         var request = new OwnerShopWaitingStatusChangeRequest(ShopWaitingStatus.valueOf(status));
         given(ownerWaitingRepository.findShopWaitingByShopId(shopId)).willReturn(Optional.of(shopWaiting));
 
@@ -58,20 +54,11 @@ class OwnerWaitingServiceTest {
     @ValueSource(strings = {"PROGRESS", "CANCEL", "NO_SHOW", "VISITED"})
     void changeWaitingStatus(String status) {
         //given
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(1L)
-                .maximumWaitingPeople(2)
-                .minimumWaitingPeople(1)
-                .maximumWaiting(10)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(1L, 2, 1, 1);
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         var waitingId = 1L;
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .userId(1L)
-                .waitingPeople(new WaitingPeople(1, 0))
-                .build();
+        var waitingPeople = DataInitializerFactory.waitingPeople(1, 0);
+        var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
 
         var request = new OwnerWaitingStatusChangeRequest(WaitingStatus.valueOf(status));
         given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));

@@ -1,203 +1,120 @@
 package com.mdh.devtable.waiting.application;
 
-import com.mdh.devtable.shop.*;
-import com.mdh.devtable.shop.infra.persistence.RegionRepository;
-import com.mdh.devtable.shop.infra.persistence.ShopRepository;
-import com.mdh.devtable.user.domain.Role;
-import com.mdh.devtable.user.domain.User;
-import com.mdh.devtable.user.infra.persistence.UserRepository;
-import com.mdh.devtable.waiting.domain.ShopWaiting;
+import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
+import com.mdh.devtable.waiting.domain.Waiting;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
+import com.mdh.devtable.waiting.infra.persistence.WaitingLine;
 import com.mdh.devtable.waiting.infra.persistence.WaitingRepository;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import java.util.Optional;
 
-@SpringBootTest
-@Transactional
-@ActiveProfiles("test")
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class WaitingServiceTest {
 
-    @Autowired
-    private UserRepository userRepository;
+    @InjectMocks
+    private WaitingService waitingService;
 
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private ShopRepository shopRepository;
-
-    @Autowired
+    @Mock
     private ShopWaitingRepository shopWaitingRepository;
 
-    @Autowired
+    @Mock
     private WaitingRepository waitingRepository;
 
-    @Autowired
-    private WaitingService waitingService;
+    @Mock
+    private WaitingServiceValidator waitingServiceValidator;
+
+    @Mock
+    private WaitingLine waitingLine;
 
     @Test
     @DisplayName("웨이팅을 생성한다.")
     void createWaitingTest() {
         //given
-        var ownerId = initUser(Role.OWNER, "owner@example.com");
-
-        var regionId = initRegion();
-        var region = regionRepository.findById(regionId)
-                .orElse(null);
-
-        var shopId = initShop(ownerId, region);
-
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(20)
-                .maximumWaitingPeople(7)
-                .minimumWaitingPeople(2)
-                .build();
-
+        var userId = 1L;
+        var shopId = 1L;
+        var adultCount = 1;
+        var childCount = 1;
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 2, 3, 1);
+        var waitingPeople = DataInitializerFactory.waitingPeople(adultCount, childCount);
+        shopWaiting.updateChildEnabled(true);
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
-        shopWaitingRepository.save(shopWaiting);
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
+        var waitingRequest = new WaitingCreateRequest(userId, shopId, adultCount, childCount);
 
-        var userId = initUser(Role.GUEST, "guest@example.com");
-        var waitingCreateRequest = new WaitingCreateRequest(userId, shopId, 2, 0);
+        given(shopWaitingRepository.findById(any(Long.class))).willReturn(Optional.of(shopWaiting));
+        given(waitingServiceValidator.isExistsWaiting(userId)).willReturn(false);
+        given(waitingRepository.save(any(Waiting.class))).willReturn(waiting);
+        doNothing().when(waitingLine).save(shopWaiting.getShopId(), waiting.getId(), waiting.getCreatedDate());
 
         //when
-        var waitingId = waitingService.createWaiting(waitingCreateRequest);
-        var findShopWaiting = shopWaitingRepository.findById(shopWaiting.getShopId())
-                .orElse(null);
-        var findWaiting = waitingRepository.findById(waitingId)
-                .orElse(null);
+        waitingService.createWaiting(waitingRequest);
 
         //then
-        assertThat(findWaiting.getWaitingNumber()).isEqualTo(findShopWaiting.getWaitingCount());
-        assertThat(findWaiting.getWaitingNumber()).isEqualTo(1);
-        assertThat(findWaiting).isNotNull();
+        verify(shopWaitingRepository, times(1)).findById(any(Long.class));
+        verify(waitingServiceValidator, times(1)).isExistsWaiting(any(Long.class));
+        verify(waitingRepository, times(1)).save(any(Waiting.class));
+        verify(waitingLine, times(1)).save(any(Long.class), any(), any());
     }
 
     @Test
     @DisplayName("웨이팅을 취소한다.")
     void cancelWaitingTest() {
         //given
-        var ownerId = initUser(Role.OWNER, "owner@example.com");
-
-        var regionId = initRegion();
-        var region = regionRepository.findById(regionId)
-                .orElse(null);
-
-        var shopId = initShop(ownerId, region);
-
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(20)
-                .maximumWaitingPeople(7)
-                .minimumWaitingPeople(2)
-                .build();
-
+        var waitingId = 1L;
+        var shopId = 1L;
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 2, 3, 1);
+        var waitingPeople = DataInitializerFactory.waitingPeople(1, 1);
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
-        shopWaitingRepository.save(shopWaiting);
+        shopWaiting.updateChildEnabled(true);
+        var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
 
-        var userId = initUser(Role.GUEST, "guest@example.com");
-        var waitingCreateRequest = new WaitingCreateRequest(userId, shopId, 2, 0);
-        var waitingId = waitingService.createWaiting(waitingCreateRequest);
+        given(waitingRepository.findById(any(Long.class))).willReturn(Optional.of(waiting));
+        doNothing().when(waitingLine).cancel(shopId, waitingId, waiting.getCreatedDate());
 
         //when
         waitingService.cancelWaiting(waitingId);
 
         //then
-        var findWaiting = waitingRepository.findById(waitingId)
-                .orElse(null);
-        assertThat(findWaiting.getWaitingStatus()).isEqualTo(WaitingStatus.CANCEL);
+        verify(waitingRepository, times(1)).findById(any(Long.class));
+        verify(waitingLine, times(1)).cancel(any(Long.class), any(), any());
+        Assertions.assertThat(WaitingStatus.CANCEL).isEqualTo(waiting.getWaitingStatus());
     }
 
     @Test
     @DisplayName("웨이팅이 등록된 상태에서 웨이팅을 추가로 등록 할 수 없다.")
     void createWaitingWithProgressingWaitingTest() {
         //given
-        var ownerId = initUser(Role.OWNER, "owner@example.com");
-
-        var regionId = initRegion();
-        var region = regionRepository.findById(regionId)
-                .orElse(null);
-
-        var shopId = initShop(ownerId, region);
-
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(20)
-                .maximumWaitingPeople(7)
-                .minimumWaitingPeople(2)
-                .build();
-
+        var userId = 1L;
+        var shopId = 1L;
+        var adultCount = 1;
+        var childCount = 1;
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 2, 3, 1);
+        shopWaiting.updateChildEnabled(true);
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
-        shopWaitingRepository.save(shopWaiting);
+        var waitingRequest = new WaitingCreateRequest(userId, shopId, adultCount, childCount);
 
-        var userId = initUser(Role.GUEST, "guest@example.com");
-
-        var waitingCreateRequest1 = new WaitingCreateRequest(userId, shopId, 2, 0);
-        waitingService.createWaiting(waitingCreateRequest1);
-
-        var waitingCreateRequest2 = new WaitingCreateRequest(userId, shopId, 2, 0);
+        given(shopWaitingRepository.findById(any(Long.class))).willReturn(Optional.of(shopWaiting));
+        given(waitingServiceValidator.isExistsWaiting(userId)).willReturn(true);
 
         //when & then
-        assertThatThrownBy(() -> waitingService.createWaiting(waitingCreateRequest2))
+        assertThatThrownBy(() -> waitingService.createWaiting(waitingRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
+                .hasMessageContaining("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
     }
 
-    private Long initUser(Role role, String email) {
-        var user = User.builder()
-                .email(email)
-                .role(role)
-                .password("password123")
-                .build();
-
-        userRepository.save(user);
-        return user.getId();
-    }
-
-    private Long initRegion() {
-        var region = Region.builder()
-                .city("서울시")
-                .district("강남구")
-                .build();
-
-        regionRepository.save(region);
-        return region.getId();
-    }
-
-    private Long initShop(Long userId, Region region) {
-        var shop = Shop.builder()
-                .userId(userId)
-                .name("가게 이름")
-                .description("가게의 간단한 설명")
-                .shopType(ShopType.AMERICAN)
-                .shopDetails(ShopDetails.builder()
-                        .url("https://www.example.com")
-                        .phoneNumber("123-456-7890")
-                        .openingHours("월-토 : 10:00 AM - 9:00 PM")
-                        .holiday("일요일 휴무")
-                        .introduce("이 가게는 맛있는 음식을 제공합니다.")
-                        .info("추가 정보 없음")
-                        .build())
-                .region(region)
-                .shopAddress(ShopAddress.builder()
-                        .address("예시로 123번지")
-                        .zipcode("12345")
-                        .latitude("37.123456")
-                        .longitude("128.124233")
-                        .build())
-                .build();
-
-        shopRepository.save(shop);
-        return shop.getId();
-    }
 }

@@ -1,5 +1,6 @@
 package com.mdh.devtable.waiting;
 
+import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.waiting.domain.ShopWaiting;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -22,13 +23,7 @@ class ShopWaitingTest {
         var maximumWaiting = 10;
 
         //when
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaitingPeople(2)
-                .minimumWaitingPeople(1)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         //then
         assertThat(shopWaiting.getShopId()).isEqualTo(shopId);
@@ -60,11 +55,7 @@ class ShopWaitingTest {
         var shopId = 1L;
         var maximumWaiting = 10;
 
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         //when
         shopWaiting.changeShopWaitingStatus(shopWaitingStatus);
@@ -80,11 +71,7 @@ class ShopWaitingTest {
         var shopId = 1L;
         var maximumWaiting = 10;
 
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         //when & then
         assertThatThrownBy(() -> shopWaiting.changeShopWaitingStatus(shopWaiting.getShopWaitingStatus()))
@@ -100,11 +87,7 @@ class ShopWaitingTest {
         var shopId = 1L;
         var maximumWaiting = 10;
 
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         //when
         shopWaiting.updateShopWaiting(changeMaximumWaiting);
@@ -120,11 +103,7 @@ class ShopWaitingTest {
         var shopId = 1L;
         var maximumWaiting = 10;
 
-        var shopWaiting = ShopWaiting
-                .builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         //when & then
         assertThatThrownBy(() -> shopWaiting.updateShopWaiting(0))
@@ -137,11 +116,9 @@ class ShopWaitingTest {
     void updateChildEnabled() {
         // given
         var shopId = 1L;
-        var maximumWaiting = 5;
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var maximumWaiting = 10;
+
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         // when
         var newChildEnabled = true;
@@ -156,11 +133,9 @@ class ShopWaitingTest {
     void initShopWaitingCountTest() {
         //given
         var shopId = 1L;
-        var maximumWaiting = 5;
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var maximumWaiting = 10;
+
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
@@ -178,11 +153,9 @@ class ShopWaitingTest {
     void addShopWaitingCountExTest() {
         //given
         var shopId = 1L;
-        var maximumWaiting = 5;
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .build();
+        var maximumWaiting = 10;
+
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
 
         //when & then
         assertThatThrownBy(shopWaiting::addWaitingCount)

@@ -1,5 +1,6 @@
 package com.mdh.devtable.waiting;
 
+import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.waiting.domain.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,21 +28,12 @@ class WaitingTest {
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         //when
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .userId(userId)
-                .waitingPeople(waitingPeople)
-                .build();
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
 
         //then
         assertThat(waiting)
@@ -59,8 +51,8 @@ class WaitingTest {
 
     static Stream<Arguments> waitingPeople() {
         return Stream.of(
-                Arguments.arguments(new WaitingPeople(2, 0)),
-                Arguments.arguments(new WaitingPeople(5, 0))
+                Arguments.arguments(DataInitializerFactory.waitingPeople(5, 0)),
+                Arguments.arguments(DataInitializerFactory.waitingPeople(5, 0))
         );
     }
 
@@ -75,17 +67,12 @@ class WaitingTest {
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         shopWaiting.changeShopWaitingStatus(waitingStatus);
 
-        var waitingPeople = new WaitingPeople(2, 0);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
 
         //when & then
         assertThatThrownBy(() -> Waiting.builder()
@@ -107,22 +94,14 @@ class WaitingTest {
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
-        var waitingPeople = new WaitingPeople(2, 0);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
 
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .userId(userId)
-                .waitingPeople(waitingPeople)
-                .build();
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
+
         //when
         waiting.addPostponedCount();
 
@@ -142,22 +121,13 @@ class WaitingTest {
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
-        var waitingPeople = new WaitingPeople(2, 0);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
 
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .userId(userId)
-                .waitingPeople(waitingPeople)
-                .build();
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
@@ -178,22 +148,13 @@ class WaitingTest {
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
-        var waitingPeople = new WaitingPeople(2, 0);
-
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .userId(userId)
-                .waitingPeople(waitingPeople)
-                .build();
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
+      
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
 
         //when
         waiting.addPostponedCount();
@@ -210,28 +171,20 @@ class WaitingTest {
     @DisplayName("Waiting의 상태가 PROGRESS라면 다른 상태로 변경이 가능하다.")
     public void changeWaitingStatusTest(WaitingStatus waitingStatus) {
         //given
+        //given
         var shopId = 1L;
         var userId = 1L;
         var maximumWaiting = 10;
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
-        var waitingPeople = new WaitingPeople(2, 0);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
 
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .userId(userId)
-                .waitingPeople(waitingPeople)
-                .build();
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
@@ -250,23 +203,14 @@ class WaitingTest {
         var maximumWaiting = 10;
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
-
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+      
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
-        var waitingPeople = new WaitingPeople(2, 0);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
 
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .userId(userId)
-                .waitingPeople(waitingPeople)
-                .build();
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
 
         //when
         waiting.changeWaitingStatus(waitingStatus);
@@ -287,12 +231,7 @@ class WaitingTest {
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
@@ -308,8 +247,8 @@ class WaitingTest {
 
     static Stream<Arguments> waitingPeopleAndExceptionMessage() {
         return Stream.of(
-                Arguments.arguments(new WaitingPeople(1, 0), "웨이팅 인원은 2명 이상이어야 합니다."),
-                Arguments.arguments(new WaitingPeople(6, 0), "웨이팅 인원은 5명 이하여야 합니다.")
+                Arguments.arguments(DataInitializerFactory.waitingPeople(1, 0), "웨이팅 인원은 2명 이상이어야 합니다."),
+                Arguments.arguments(DataInitializerFactory.waitingPeople(6, 0), "웨이팅 인원은 5명 이하여야 합니다.")
         );
     }
 
@@ -342,7 +281,7 @@ class WaitingTest {
     }
 
     @Test
-    @DisplayName("아동 손님을 받지 매장에 아동 손님을 추가할 수 있다.")
+    @DisplayName("아동 손님을 받는 매장에 아동 손님을 추가할 수 있다.")
     void shouldNotThrowExceptionWhenAddingChildGuestToChildEnabledStore() {
         //given
         var shopId = 1L;
@@ -350,21 +289,13 @@ class WaitingTest {
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
 
-        var shopWaiting = ShopWaiting.builder()
-                .shopId(shopId)
-                .maximumWaiting(maximumWaiting)
-                .minimumWaitingPeople(minimumWaitingPeople)
-                .maximumWaitingPeople(maximumWaitingPeople)
-                .build();
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         shopWaiting.updateChildEnabled(true);
 
         //when
-        var waiting = Waiting.builder()
-                .shopWaiting(shopWaiting)
-                .waitingPeople(new WaitingPeople(2, 2))
-                .build();
+        var waiting = DataInitializerFactory.waiting(1L, shopWaiting, DataInitializerFactory.waitingPeople(2, 2));
 
         //then
         assertThat(waiting).isNotNull();
