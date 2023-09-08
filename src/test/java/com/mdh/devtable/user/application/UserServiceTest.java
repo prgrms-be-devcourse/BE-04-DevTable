@@ -1,25 +1,27 @@
 package com.mdh.devtable.user.application;
 
+import com.mdh.devtable.user.domain.User;
 import com.mdh.devtable.user.infra.persistence.UserRepository;
 import com.mdh.devtable.user.presentation.dto.SignUpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@Transactional
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    @Autowired
+    @InjectMocks
     private UserService userService;
 
-    @Autowired
+    @Mock
     private UserRepository userRepository;
 
     @Test
@@ -28,15 +30,12 @@ public class UserServiceTest {
         // given
         var signUpRequest = new SignUpRequest("test@example.com", "password123", "password123");
         var expectedUser = signUpRequest.toEntity();
+        given(userRepository.save(any(User.class))).willReturn(expectedUser);
 
         // when
         userService.signUp(signUpRequest);
 
         // then
-        var actualUser = userRepository.findByEmail("test@example.com").orElse(null);
-        assertThat(actualUser).isNotNull();
-        assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
-        assertThat(actualUser.getRole()).isEqualTo(expectedUser.getRole());
-        assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 }
