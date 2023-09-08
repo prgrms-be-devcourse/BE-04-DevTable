@@ -55,10 +55,7 @@ operation::waiting-create-valid-null[snippets = 'http-request,http-response,requ
 
 operation::waiting-cancel[snippets = 'http-request,http-response,request-body,response-fields']
 
-
 operation::find-my-waitings[snippets = 'http-request,http-response,request-body,response-fields']
-
-<<<<<<< HEAD
 
 [[Owner-Waiting]]
 == Owner Waiting API
