@@ -45,4 +45,4 @@ operation::waiting-cancel[snippets = 'http-request,http-response,request-body,re
 
 == Waiting 상세 조회
 
-operation::waiting-de[snippets = 'http-request,http-response,request-body,response-fields']
+operation::waiting-detail-find[snippets = 'http-request,http-response,request-body,response-fields']
