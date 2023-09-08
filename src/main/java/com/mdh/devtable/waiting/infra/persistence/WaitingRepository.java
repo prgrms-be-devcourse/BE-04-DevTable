@@ -29,13 +29,13 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
             select
                 new com.mdh.devtable.waiting.infra.persistence.dto.WaitingDetails
                 (
-                    s.name, s.shopType, s.region.district, s.shopDetails.phoneNumber, 
-                    w.waitingNumber, w.waitingStatus, w.waitingPeople.adultCount, w.waitingPeople.childCount, 
+                    s.name, s.shopType, s.region.district, s.shopDetails, 
+                    w.waitingNumber, w.waitingStatus, w.waitingPeople,
                     w.createdDate, w.modifiedDate
                 )
             from Waiting w
             join Shop s on w.shopWaiting.shopId = s.id
             where w.id = :waitingId
             """)
-    WaitingDetails findByWaitingDetails(@Param("waitingId") Long waitingId);
+    Optional<WaitingDetails> findByWaitingDetails(@Param("waitingId") Long waitingId);
 }
