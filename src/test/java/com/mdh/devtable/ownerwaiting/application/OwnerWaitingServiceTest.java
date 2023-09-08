@@ -1,8 +1,8 @@
-package com.mdh.devtable.ownerwaitng.application;
+package com.mdh.devtable.ownerwaiting.application;
 
-import com.mdh.devtable.ownerwaitng.infra.persistence.OwnerWaitingRepository;
-import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.waiting.domain.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

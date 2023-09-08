@@ -1,6 +1,6 @@
-package com.mdh.devtable.ownerwaitng.application;
+package com.mdh.devtable.ownerwaiting.application;
 
-import com.mdh.devtable.ownerwaitng.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
