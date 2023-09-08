@@ -1,6 +1,5 @@
 package com.mdh.devtable.ownerwaiting.infra.persistence;
 
-
 import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaiting;
 import com.mdh.devtable.waiting.domain.Waiting;
