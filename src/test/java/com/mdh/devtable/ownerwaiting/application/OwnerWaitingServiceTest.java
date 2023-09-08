@@ -4,6 +4,8 @@ import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.assertj.core.api.Assertions;
@@ -15,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
@@ -69,5 +72,21 @@ class OwnerWaitingServiceTest {
         // then
         verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
         Assertions.assertThat(WaitingStatus.valueOf(status)).isEqualTo(waiting.getWaitingStatus());
+    }
+
+    @DisplayName("점주 id, 웨이팅 상태로 웨이팅을 조회할 수 있다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"PROGRESS", "CANCEL", "NO_SHOW", "VISITED"})
+    void findWaitingByShopIdAndWaitingStatus(String status) {
+        var ownerId = 1L;
+        var response = Collections.singletonList(new WaitingInfoResponseForOwner(1, "test"));
+        var request = new WaitingInfoRequestForOwner(WaitingStatus.valueOf(status));
+        given(ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, WaitingStatus.valueOf(status))).willReturn(response);
+
+        //when
+        var result = ownerWaitingService.findWaitingByShopIdAndWaitingStatus(ownerId, request);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(response);
     }
 }
