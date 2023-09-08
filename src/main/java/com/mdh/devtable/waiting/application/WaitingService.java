@@ -1,16 +1,20 @@
 package com.mdh.devtable.waiting.application;
 
+import com.mdh.devtable.waiting.application.dto.UserWaitingResponse;
 import com.mdh.devtable.waiting.domain.Waiting;
 import com.mdh.devtable.waiting.domain.WaitingPeople;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import com.mdh.devtable.waiting.infra.persistence.WaitingLine;
 import com.mdh.devtable.waiting.infra.persistence.WaitingRepository;
+import com.mdh.devtable.waiting.infra.persistence.dto.UserWaitingQueryDto;
+import com.mdh.devtable.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -59,6 +63,15 @@ public class WaitingService {
         var shopId = waiting.getShopWaiting().getShopId();
         waitingLine.cancel(shopId, waitingId, waiting.getCreatedDate());
         waiting.changeWaitingStatus(WaitingStatus.CANCEL);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserWaitingResponse> findAllByUserIdAndStatus(MyWaitingsRequest request) {
+
+        return waitingRepository.findAllByUserIdAndWaitingStatus(request.userId(), request.waitingStatus())
+                .stream()
+                .map(UserWaitingQueryDto::toUserWaitingResponse)
+                .toList();
     }
 
     private void saveWaitingLine(Long shopId, Waiting savedWaiting) {
