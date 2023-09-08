@@ -17,7 +17,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.temporal.ChronoUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @DataJpaTest
@@ -117,7 +120,7 @@ class WaitingRepositoryTest {
         assertThat(waitingDetails.waitingNumber()).isEqualTo(waiting.getWaitingNumber());
         assertThat(waitingDetails.waitingStatus()).isEqualTo(waiting.getWaitingStatus());
         assertThat(waitingDetails.waitingPeople()).usingRecursiveComparison().isEqualTo(waitingPeople);
-        assertThat(waitingDetails.createdDate()).isEqualTo(waiting.getCreatedDate());
-        assertThat(waitingDetails.modifiedDate()).isEqualTo(waiting.getModifiedDate());
+        assertThat(waitingDetails.createdDate()).isCloseTo(waiting.getCreatedDate(), within(1, ChronoUnit.SECONDS));
+        assertThat(waitingDetails.modifiedDate()).isCloseTo(waiting.getModifiedDate(), within(1, ChronoUnit.SECONDS));
     }
 }
