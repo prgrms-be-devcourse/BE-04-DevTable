@@ -29,7 +29,7 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
             select
                 new com.mdh.devtable.waiting.infra.persistence.dto.WaitingDetails
                 (
-                    s.name, s.shopType, s.region.district, s.shopDetails, 
+                    s.id, s.name, s.shopType, s.region.district, s.shopDetails, 
                     w.waitingNumber, w.waitingStatus, w.waitingPeople,
                     w.createdDate, w.modifiedDate
                 )
