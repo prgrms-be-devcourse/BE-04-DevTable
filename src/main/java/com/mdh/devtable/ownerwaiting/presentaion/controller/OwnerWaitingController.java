@@ -34,7 +34,7 @@ public class OwnerWaitingController {
 
     @GetMapping("/waitings/{ownerId}")
     public ResponseEntity<ApiResponse<List<WaitingInfoResponseForOwner>>> findWaitingByShopIdAndWaitingStatus(@RequestBody WaitingInfoRequestForOwner request, @PathVariable("ownerId") Long ownerId) {
-        var body = ownerWaitingService.findWaitingByOwnerIdAndWaitingStatus(ownerId, request);
+        var body = ownerWaitingService.findWaitingByShopIdAndWaitingStatus(ownerId, request);
         return new ResponseEntity<>(ApiResponse.ok(body), HttpStatus.OK);
     }
 }
