@@ -1,4 +1,4 @@
-package com.mdh.devtable.ownerwaiting.presentaion.dto;
+package com.mdh.devtable.ownerwaiting.application.dto;
 
 public record WaitingInfoResponseForOwner(
         int waitingNumber,
