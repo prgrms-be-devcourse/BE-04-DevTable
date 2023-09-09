@@ -16,7 +16,6 @@ export default function Main() {
             </button>
           </Link>
         </div>
-        {/* 나머지 Main 컨텐츠 */}
       </div>
     </main>
   );

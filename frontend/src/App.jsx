@@ -5,6 +5,13 @@ import UserPage from './pages/UserPage';
 import OnwerPage from './pages/OnwerPage';
 import Root from './pages/Root';
 import Main from './Main';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -19,8 +26,10 @@ const router = createBrowserRouter([
   },
 ]);
 
-function App() {
-  return <RouterProvider router={router} />;
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
-
-export default App;
