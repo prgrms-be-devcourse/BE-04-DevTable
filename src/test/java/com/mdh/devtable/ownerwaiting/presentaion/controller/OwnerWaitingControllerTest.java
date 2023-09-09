@@ -25,6 +25,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,7 +50,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         doNothing().when(ownerWaitingService).changeShopWaitingStatus(shopId, request);
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/shops/" + shopId)
+        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -56,6 +58,9 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("change-shop-waiting-status",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
                         requestFields(
                                 fieldWithPath("shopWaitingStatus").type(JsonFieldType.STRING).description("매장 상태")
                         ),
@@ -75,13 +80,16 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         request.put("shopWaitingStatus", "asf");
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/shops/" + shopId)
+        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
                 .andDo(document("change-shop-waiting-status-invalid",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
                         requestFields(
                                 fieldWithPath("shopWaitingStatus").type(JsonFieldType.STRING).description("매장 상태")
                         ),
@@ -97,7 +105,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("매장의 웨이팅 상태를 변경할 수 있다.")
+    @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 변경할 수 있다.")
     @Test
     void changWaitingStatus() throws Exception {
         //given
@@ -106,7 +114,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         doNothing().when(ownerWaitingService).changeWaitingStatus(waitingId, request);
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/waitings/" + waitingId)
+        mockMvc.perform(patch("/api/owner/v1/waitings/{waitingId}", waitingId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -114,6 +122,9 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("change-waiting-status",
+                        pathParameters(
+                                parameterWithName("waitingId").description("웨이팅 id")
+                        ),
                         requestFields(
                                 fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
@@ -124,7 +135,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("매장의 웨이팅 상태를 잘못된 형태로 변경할 수 없다.")
+    @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 잘못된 형태로 변경할 수 없다.")
     @Test
     void changWaitingStatusThrowException() throws Exception {
         //given
@@ -133,13 +144,16 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         request.put("waitingStatus", "asf");
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/waitings/" + waitingId)
+        mockMvc.perform(patch("/api/owner/v1/waitings/{waitingId}", waitingId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
                 .andDo(document("change-waiting-status-invalid",
+                        pathParameters(
+                                parameterWithName("waitingId").description("웨이팅 id")
+                        ),
                         requestFields(
                                 fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
@@ -155,7 +169,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력받아 조회할 수 있다.")
+    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력 받아 조회할 수 있다.")
     @Test
     void findWaitingByShopIdAndWaitingStatus() throws Exception {
         //given
@@ -167,7 +181,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         when(ownerWaitingService.findWaitingByShopIdAndWaitingStatus(any(), any())).thenReturn(response);
 
         //when & then
-        mockMvc.perform(get("/api/owner/v1/waitings/" + ownerId)
+        mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -176,6 +190,9 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data[0].phoneNumber").value(phoneNumber))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owners-shop-waitingInfo",
+                        pathParameters(
+                                parameterWithName("ownerId").description("매장 주인의 id")
+                        ),
                         requestFields(
                                 fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
@@ -198,7 +215,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         request.put("waitingStatus", "asf");
 
         //when & then
-        mockMvc.perform(get("/api/owner/v1/waitings/" + ownerId)
+        mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -206,6 +223,9 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owners-shop-waitingInfo-invalid",
+                        pathParameters(
+                                parameterWithName("ownerId").description("매장 주인의 id")
+                        ),
                         requestFields(
                                 fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
