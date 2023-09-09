@@ -84,7 +84,7 @@ class OwnerWaitingServiceTest {
         given(ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, WaitingStatus.valueOf(status))).willReturn(response);
 
         //when
-        var result = ownerWaitingService.findWaitingByShopIdAndWaitingStatus(ownerId, request);
+        var result = ownerWaitingService.findWaitingByOwnerIdAndWaitingStatus(ownerId, request);
 
         //then
         Assertions.assertThat(result).isEqualTo(response);
