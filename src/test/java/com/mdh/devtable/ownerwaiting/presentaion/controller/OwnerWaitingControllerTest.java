@@ -2,10 +2,10 @@ package com.mdh.devtable.ownerwaiting.presentaion.controller;
 
 import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.ownerwaiting.application.OwnerWaitingService;
+import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
-import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.junit.jupiter.api.DisplayName;
