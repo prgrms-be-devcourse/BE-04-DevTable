@@ -25,7 +25,7 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
     List<UserWaitingQueryDto> findAllByUserIdAndWaitingStatus(@Param("userId") Long userId, @Param("waitingStatus") WaitingStatus waitingStatus);
 
     @Query("""
-            SELECT new com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoResponseForOwner(w.waitingNumber, u.email)
+            SELECT new com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner(w.waitingNumber, u.email)
             FROM Waiting w
             JOIN User u ON w.userId = u.id
             JOIN Shop s ON w.shopWaiting.shopId = s.id
