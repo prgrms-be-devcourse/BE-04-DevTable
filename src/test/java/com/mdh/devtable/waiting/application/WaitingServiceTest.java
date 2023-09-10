@@ -1,23 +1,29 @@
 package com.mdh.devtable.waiting.application;
 
 import com.mdh.devtable.DataInitializerFactory;
+import com.mdh.devtable.shop.ShopType;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.domain.Waiting;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import com.mdh.devtable.waiting.infra.persistence.WaitingLine;
 import com.mdh.devtable.waiting.infra.persistence.WaitingRepository;
+import com.mdh.devtable.waiting.infra.persistence.dto.UserWaitingQueryDto;
+import com.mdh.devtable.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -92,7 +98,7 @@ class WaitingServiceTest {
         //then
         verify(waitingRepository, times(1)).findById(any(Long.class));
         verify(waitingLine, times(1)).cancel(any(Long.class), any(), any());
-        Assertions.assertThat(WaitingStatus.CANCEL).isEqualTo(waiting.getWaitingStatus());
+        assertThat(WaitingStatus.CANCEL).isEqualTo(waiting.getWaitingStatus());
     }
 
     @Test
@@ -115,6 +121,36 @@ class WaitingServiceTest {
         assertThatThrownBy(() -> waitingService.createWaiting(waitingRequest))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = WaitingStatus.class)
+    @DisplayName("유저는 상태별로 자신의 웨이팅을 조회 할 수 있다.")
+    void findAllByUserIdAndStatusTest(WaitingStatus requestWaitingStatus) {
+        //given
+        var userId = 1L;
+        var waitingStatus = requestWaitingStatus;
+        var myWaitingsRequest = new MyWaitingsRequest(userId, waitingStatus);
+
+        given(waitingRepository.findAllByUserIdAndWaitingStatus(myWaitingsRequest.userId(), myWaitingsRequest.waitingStatus()))
+                .willReturn(List.of(new UserWaitingQueryDto(
+                        1L,
+                        2L,
+                        "ShopName",
+                        ShopType.ASIAN,
+                        "City",
+                        "District",
+                        1,
+                        2,
+                        3
+                )));
+
+        //when
+        var result = waitingService.findAllByUserIdAndStatus(myWaitingsRequest);
+
+        //then
+        verify(waitingRepository, times(1)).findAllByUserIdAndWaitingStatus(any(Long.class), any(WaitingStatus.class));
+        assertThat(result).hasSize(1);
     }
 
 }
