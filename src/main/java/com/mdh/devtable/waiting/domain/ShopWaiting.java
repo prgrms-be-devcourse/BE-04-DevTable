@@ -104,4 +104,14 @@ public class ShopWaiting extends BaseTimeEntity {
             throw new IllegalArgumentException("웨이팅 인원은 " + maximumWaitingPeople + "명 이하여야 합니다.");
         }
     }
+
+    public void updateShopWaitingInfo(boolean childEnabled,
+                                      int maximumWaitingPeople,
+                                      int minimumWaitingPeople,
+                                      int maximumWaiting) {
+        this.childEnabled = childEnabled;
+        this.maximumWaitingPeople = maximumWaitingPeople;
+        this.minimumWaitingPeople = minimumWaitingPeople;
+        this.maximumWaiting = maximumWaiting;
+    }
 }
