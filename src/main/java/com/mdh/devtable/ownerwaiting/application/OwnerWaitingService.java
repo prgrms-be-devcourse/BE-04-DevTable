@@ -34,7 +34,7 @@ public class OwnerWaitingService {
     }
 
     @Transactional(readOnly = true)
-    public List<WaitingInfoResponseForOwner> findWaitingByShopIdAndWaitingStatus(Long ownerId, WaitingInfoRequestForOwner request) {
+    public List<WaitingInfoResponseForOwner> findWaitingOwnerIdAndWaitingStatus(Long ownerId, WaitingInfoRequestForOwner request) {
         return ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, request.waitingStatus());
     }
 
