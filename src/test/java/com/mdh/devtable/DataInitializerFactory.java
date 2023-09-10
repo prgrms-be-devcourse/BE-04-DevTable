@@ -1,5 +1,6 @@
 package com.mdh.devtable;
 
+import com.mdh.devtable.menu.domain.MenuCategory;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ShopReservation;
 import com.mdh.devtable.shop.*;
@@ -131,5 +132,15 @@ public final class DataInitializerFactory {
                 .build();
     }
 
-
+    public static MenuCategory menuCategory(Long shopId) {
+        return MenuCategory.builder()
+                .shopId(shopId)
+                .name("Main Course")
+                .description("Delicious main courses")
+                .minPrice(10)
+                .maxPrice(50)
+                .menuType("Main")
+                .mealType("Dinner")
+                .build();
+    }
 }
