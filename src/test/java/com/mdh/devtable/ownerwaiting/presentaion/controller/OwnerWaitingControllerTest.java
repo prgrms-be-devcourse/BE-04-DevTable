@@ -252,7 +252,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 2,
                 3);
 
-        mockMvc.perform(patch("/api/owner/v1/shop/{shopId}/waiting", shopId)
+        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}/waiting", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(ownerUpdateShopWaitingInfoRequest)))
                 .andExpect(status().isOk())
