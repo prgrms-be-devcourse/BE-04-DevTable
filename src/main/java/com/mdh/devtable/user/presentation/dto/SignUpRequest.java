@@ -19,12 +19,17 @@ public record SignUpRequest(
         String password,
 
         @NotEmpty(message = "비밀번호 확인을 입력해 주세요.")
-        String passwordCheck
+        String passwordCheck,
+
+        @Pattern(regexp = RegularExpression.PHONE_NUMBER, message = "핸드폰 번호는 10~11자리의 숫자만 입력해 주세요.")
+        String phoneNumber
 ) {
     public User toEntity() {
         return User.builder()
                 .email(email)
                 .password(password)
-                .role(Role.GUEST).build();
+                .role(Role.GUEST)
+                .phoneNumber(phoneNumber)
+                .build();
     }
 }
