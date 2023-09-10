@@ -4,6 +4,7 @@ import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.ownerwaiting.application.OwnerWaitingService;
 import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
@@ -27,6 +28,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -236,6 +238,82 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
                                 fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
                                 fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 매장의 웨이팅 정보를 변경할 수 있다.")
+    @Test
+    void updateShopWaitingInfo() throws Exception {
+        var shopId = 1L;
+        var ownerUpdateShopWaitingInfoRequest = new OwnerUpdateShopWaitingInfoRequest(true,
+                1,
+                2,
+                3);
+
+        mockMvc.perform(patch("/api/owner/v1/shop/{shopId}/waiting", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ownerUpdateShopWaitingInfoRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-change-shop-waiting-info",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("childEnabled").description("유아 가능 여부"),
+                                fieldWithPath("maximumPeople").description("최대 인원 수"),
+                                fieldWithPath("minimumPeople").description("최소 인원 수"),
+                                fieldWithPath("maximumWaitingTeam").description("최대 웨이팅 팀 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 매장의 웨이팅 정보를 잘못된 형태로 변경할 수 없다.")
+    @Test
+    void updateShopWaitingInfoThrowException() throws Exception {
+        var shopId = 1L;
+        var ownerUpdateShopWaitingInfoRequest = new OwnerUpdateShopWaitingInfoRequest(true,
+                -1,
+                -2,
+                -3);
+
+        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}/waiting", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ownerUpdateShopWaitingInfoRequest)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-change-shop-waiting-info-error",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("childEnabled").description("유아 가능 여부"),
+                                fieldWithPath("maximumPeople").description("최대 인원 수"),
+                                fieldWithPath("minimumPeople").description("최소 인원 수"),
+                                fieldWithPath("maximumWaitingTeam").description("최대 웨이팅 팀 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("data.validationError[]").type(JsonFieldType.ARRAY).description("유효성 검사 오류 목록"),
+                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사에 실패한 필드"),
+                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
                 ));

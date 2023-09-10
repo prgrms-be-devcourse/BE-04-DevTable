@@ -4,8 +4,10 @@ import com.mdh.devtable.global.ApiResponse;
 import com.mdh.devtable.ownerwaiting.application.OwnerWaitingService;
 import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,5 +38,11 @@ public class OwnerWaitingController {
     public ResponseEntity<ApiResponse<List<WaitingInfoResponseForOwner>>> findWaitingByShopIdAndWaitingStatus(@RequestBody WaitingInfoRequestForOwner request, @PathVariable("ownerId") Long ownerId) {
         var body = ownerWaitingService.findWaitingByOwnerIdAndWaitingStatus(ownerId, request);
         return new ResponseEntity<>(ApiResponse.ok(body), HttpStatus.OK);
+    }
+
+    @PatchMapping("/shops/{shopId}/waiting")
+    public ResponseEntity<ApiResponse<Void>> updateShopWaitingInfo(@PathVariable("shopId") Long shopId, @RequestBody @Valid OwnerUpdateShopWaitingInfoRequest request) {
+        ownerWaitingService.updateShopWaitingInfo(shopId, request);
+        return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
     }
 }
