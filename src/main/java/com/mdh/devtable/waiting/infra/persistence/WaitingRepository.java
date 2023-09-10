@@ -19,11 +19,12 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
 
     @Query("""
             <<<<<<< HEAD
-                         select new com.mdh.devtable.waiting.infra.persistence.dto.UserWaitingQueryDto(s.id, w.id, s.name, s.shopType, s.region.city, s.region.district, w.waitingNumber, w.waitingPeople.adultCount, w.waitingPeople.childCount)
-                         from Waiting w
-                         join Shop s on w.shopWaiting.shopId = s.id
-                         where w.userId = :userId and w.waitingStatus = :waitingStatus
-                        """)
+                        <<<<<<< HEAD
+                                     select new com.mdh.devtable.waiting.infra.persistence.dto.UserWaitingQueryDto(s.id, w.id, s.name, s.shopType, s.region.city, s.region.district, w.waitingNumber, w.waitingPeople.adultCount, w.waitingPeople.childCount)
+                                     from Waiting w
+                                     join Shop s on w.shopWaiting.shopId = s.id
+                                     where w.userId = :userId and w.waitingStatus = :waitingStatus
+                                    """)
     List<UserWaitingQueryDto> findAllByUserIdAndWaitingStatus(@Param("userId") Long userId, @Param("waitingStatus") WaitingStatus waitingStatus);
 
     @Query("""
