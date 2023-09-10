@@ -166,7 +166,7 @@ class UserControllerTest extends RestDocsSupport {
     }
 
     @Test
-    @DisplayName("회원가입시 핸드폰 번호를 잘못 입력한다.")
+    @DisplayName("회원가입시 핸드폰 번호를 잘못 입력할 수 없다.")
     void signUpException4() throws Exception {
         //given
         var signUpRequest = new SignUpRequest("test@example.com", "password123", "password123", "010123456789101112");
