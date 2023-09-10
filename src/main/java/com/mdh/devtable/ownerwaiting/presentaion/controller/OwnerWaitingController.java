@@ -33,8 +33,8 @@ public class OwnerWaitingController {
     }
 
     @GetMapping("/waitings/{ownerId}")
-    public ResponseEntity<ApiResponse<List<WaitingInfoResponseForOwner>>> findWaitingByShopIdAndWaitingStatus(@RequestBody WaitingInfoRequestForOwner request, @PathVariable("ownerId") Long ownerId) {
-        var body = ownerWaitingService.findWaitingByShopIdAndWaitingStatus(ownerId, request);
+    public ResponseEntity<ApiResponse<List<WaitingInfoResponseForOwner>>> findWaitingByOwnerIdAndWaitingStatus(@RequestBody WaitingInfoRequestForOwner request, @PathVariable("ownerId") Long ownerId) {
+        var body = ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(ownerId, request);
         return new ResponseEntity<>(ApiResponse.ok(body), HttpStatus.OK);
     }
 }
