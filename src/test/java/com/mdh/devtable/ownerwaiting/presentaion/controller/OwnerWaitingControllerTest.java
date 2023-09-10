@@ -58,18 +58,17 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("change-shop-waiting-status",
-                                pathParameters(
-                                        parameterWithName("shopId").description("매장 id")
-                                ),
-                                requestFields(
-                                        fieldWithPath("shopWaitingStatus").type(JsonFieldType.STRING).description("매장 상태")
-                                ),
-                                responseFields(fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
-                                        fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
-                                )
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("shopWaitingStatus").type(JsonFieldType.STRING).description("매장 상태")
+                        ),
+                        responseFields(fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
                         )
-                );
+                ));
     }
 
     @DisplayName("매장의 웨이팅 상태를 잘못된 형태로 변경할 수 없다.")
@@ -88,23 +87,22 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
                 .andDo(document("change-shop-waiting-status-invalid",
-                                pathParameters(
-                                        parameterWithName("shopId").description("매장 id")
-                                ),
-                                requestFields(
-                                        fieldWithPath("shopWaitingStatus").type(JsonFieldType.STRING).description("매장 상태")
-                                ),
-                                responseFields(
-                                        fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                                        fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                                        fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                                        fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                                        fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                                )
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("shopWaitingStatus").type(JsonFieldType.STRING).description("매장 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
-                );
+                ));
     }
 
     @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 변경할 수 있다.")
@@ -124,18 +122,17 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("change-waiting-status",
-                                pathParameters(
-                                        parameterWithName("waitingId").description("웨이팅 id")
-                                ),
-                                requestFields(
-                                        fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
-                                ),
-                                responseFields(fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
-                                        fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                                )
+                        pathParameters(
+                                parameterWithName("waitingId").description("웨이팅 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
+                        ),
+                        responseFields(fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
-                );
+                ));
     }
 
     @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 잘못된 형태로 변경할 수 없다.")
@@ -154,38 +151,37 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
                 .andDo(document("change-waiting-status-invalid",
-                                pathParameters(
-                                        parameterWithName("waitingId").description("웨이팅 id")
-                                ),
-                                requestFields(
-                                        fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
-                                ),
-                                responseFields(
-                                        fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                                        fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                                        fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                                        fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                                        fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                                )
+                        pathParameters(
+                                parameterWithName("waitingId").description("웨이팅 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
-                );
+                ));
     }
 
-    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력받아 조회할 수 있다.")
+    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력 받아 조회할 수 있다.")
     @Test
-    void findWaitingByShopIdAndWaitingStatus() throws Exception {
+    void findWaitingByOwnerIdAndWaitingStatus() throws Exception {
         //given
         var ownerId = 1L;
         var waitingNumber = 1;
         var phoneNumber = "0101234578";
         var request = new WaitingInfoRequestForOwner(WaitingStatus.PROGRESS);
         var response = Collections.singletonList(new WaitingInfoResponseForOwner(waitingNumber, phoneNumber));
-        when(ownerWaitingService.findWaitingByShopIdAndWaitingStatus(any(), any())).thenReturn(response);
+        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(), any())).thenReturn(response);
 
         //when & then
-        mockMvc.perform(get("/api/owner/v1/waitings/" + ownerId)
+        mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -194,24 +190,23 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data[0].phoneNumber").value(phoneNumber))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owners-shop-waitingInfo",
-                                pathParameters(
-                                        parameterWithName("ownerId").description("매장 주인의 id")
-                                ),
-                                requestFields(
-                                        fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
-                                ),
-                                responseFields(
-                                        fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 바디"),
-                                        fieldWithPath("data[].waitingNumber").type(JsonFieldType.NUMBER).description("웨이팅 번호"),
-                                        fieldWithPath("data[].phoneNumber").type(JsonFieldType.STRING).description("전화번호"),
-                                        fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                                )
+                        pathParameters(
+                                parameterWithName("ownerId").description("매장 주인의 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 바디"),
+                                fieldWithPath("data[].waitingNumber").type(JsonFieldType.NUMBER).description("웨이팅 번호"),
+                                fieldWithPath("data[].phoneNumber").type(JsonFieldType.STRING).description("전화번호"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
-                );
+                ));
     }
 
-    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력 받아 조회할 수 없다.(웨이팅 상태를 잘못 입력 했을 때")
+    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력 받아 조회할 수 없다.(웨이팅 상태를 잘못 입력 했을 때)")
     @Test
     void findWaitingByShopIdAndWaitingStatusThrowsException() throws Exception {
         //given
@@ -220,7 +215,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         request.put("waitingStatus", "asf");
 
         //when & then
-        mockMvc.perform(get("/api/owner/v1/waitings/" + ownerId)
+        mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -228,22 +223,21 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owners-shop-waitingInfo-invalid",
-                                pathParameters(
-                                        parameterWithName("ownerId").description("매장 주인의 id")
-                                ),
-                                requestFields(
-                                        fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
-                                ),
-                                responseFields(
-                                        fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                                        fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                                        fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                        fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                                        fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                                        fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                                )
+                        pathParameters(
+                                parameterWithName("ownerId").description("매장 주인의 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
-                );
+                ));
     }
 }
