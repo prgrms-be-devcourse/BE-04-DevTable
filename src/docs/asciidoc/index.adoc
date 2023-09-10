@@ -107,5 +107,3 @@ operation::owner-change-shop-waiting-info[snippets='path-parameters,http-request
 === 점주가 갖고 있는 매장의 웨이팅 정보 변경 오류
 
 operation::owner-change-shop-waiting-info-error[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
-
-operation::owners-shop-waitingInfo[snippets='http-request,http-response,request-fields,response-fields']
