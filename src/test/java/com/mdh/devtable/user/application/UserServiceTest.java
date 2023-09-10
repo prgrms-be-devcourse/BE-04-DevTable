@@ -28,7 +28,7 @@ public class UserServiceTest {
     @DisplayName("회원가입을 한다.")
     public void testSignUp() {
         // given
-        var signUpRequest = new SignUpRequest("test@example.com", "password123", "password123");
+        var signUpRequest = new SignUpRequest("test@example.com", "password123", "password123", "01012345678");
         var expectedUser = signUpRequest.toEntity();
         given(userRepository.save(any(User.class))).willReturn(expectedUser);
 
