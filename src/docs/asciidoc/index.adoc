@@ -24,7 +24,19 @@ operation::user-sign-up[snippets = 'http-request,http-response,request-body,resp
 
 == User 패스워드 불일치
 
-operation::user-sign-up[snippets = 'http-request,http-response,request-body,response-fields']
+operation::user-sign-up-invalid-password-check[snippets = 'http-request,http-response,request-body,response-fields']
+
+== User email 에러
+
+operation::user-sign-up-invalid-email[snippets = 'http-request,http-response,request-body,response-fields']
+
+== User password 에러
+
+operation::user-sign-up-invalid-password[snippets = 'http-request,http-response,request-body,response-fields']
+
+== User phone-number 에러
+
+operation::user-sign-up-invalid-phone-number[snippets = 'http-request,http-response,request-body,response-fields']
 
 [[Waiting]]
 == Waiting 생성
