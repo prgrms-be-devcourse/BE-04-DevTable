@@ -153,7 +153,7 @@ class WaitingTest {
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
 
         var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
-
+      
         var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
 
         //when
@@ -203,7 +203,7 @@ class WaitingTest {
         var maximumWaiting = 10;
         var minimumWaitingPeople = 2;
         var maximumWaitingPeople = 5;
-
+      
         var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, maximumWaitingPeople, minimumWaitingPeople);
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
@@ -269,6 +269,7 @@ class WaitingTest {
                 .build();
 
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        shopWaiting.updateChildEnabled(false);
 
         //when & then
         assertThatThrownBy(() -> Waiting.builder()

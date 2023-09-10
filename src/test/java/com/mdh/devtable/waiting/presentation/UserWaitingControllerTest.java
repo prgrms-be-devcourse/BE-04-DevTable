@@ -1,7 +1,11 @@
 package com.mdh.devtable.waiting.presentation;
 
 import com.mdh.devtable.RestDocsSupport;
+import com.mdh.devtable.shop.ShopType;
 import com.mdh.devtable.waiting.application.WaitingService;
+import com.mdh.devtable.waiting.application.dto.UserWaitingResponse;
+import com.mdh.devtable.waiting.domain.WaitingStatus;
+import com.mdh.devtable.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.doNothing;
@@ -21,6 +26,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -173,6 +179,58 @@ class UserWaitingControllerTest extends RestDocsSupport {
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
                                 fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("유저가 등록했던 웨이팅을 상태별로 조회한다.")
+    void findUserWaitingWithStatus() throws Exception {
+        //given
+        var myWaitingsRequest = new MyWaitingsRequest(1L, WaitingStatus.PROGRESS);
+        var userWaitingResponse = new UserWaitingResponse(
+                1L,
+                1L,
+                "상점이름",
+                ShopType.AMERICAN.getName(),
+                "서울시 강남구",
+                1,
+                3
+        );
+
+        when(waitingService.findAllByUserIdAndStatus(myWaitingsRequest)).thenReturn(List.of(userWaitingResponse));
+
+        //when & then
+        mockMvc.perform(get("/api/customer/v1/waitings/{userId}", 1)
+                        .content(objectMapper.writeValueAsString(myWaitingsRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data[0].shopId").value("1"))
+                .andExpect(jsonPath("$.data[0].waitingId").value("1"))
+                .andExpect(jsonPath("$.data[0].shopName").value("상점이름"))
+                .andExpect(jsonPath("$.data[0].shopType").value("아메리칸음식"))
+                .andExpect(jsonPath("$.data[0].region").value("서울시 강남구"))
+                .andExpect(jsonPath("$.data[0].waitingNumber").value("1"))
+                .andExpect(jsonPath("$.data[0].waitingCount").value("3"))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("find-my-waitings",
+                        requestFields(
+                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                subsectionWithPath("data").description("데이터 항목의 배열").type(JsonFieldType.ARRAY),
+                                fieldWithPath("data[].shopId").type(JsonFieldType.NUMBER).description("매장의 ID"),
+                                fieldWithPath("data[].waitingId").type(JsonFieldType.NUMBER).description("웨이팅의 ID"),
+                                fieldWithPath("data[].shopName").type(JsonFieldType.STRING).description("매장의 이름"),
+                                fieldWithPath("data[].shopType").type(JsonFieldType.STRING).description("매장의 타입"),
+                                fieldWithPath("data[].region").type(JsonFieldType.STRING).description("매장의 위치"),
+                                fieldWithPath("data[].waitingNumber").type(JsonFieldType.NUMBER).description("발급된 웨이팅 번호"),
+                                fieldWithPath("data[].waitingCount").type(JsonFieldType.NUMBER).description("웨이팅 등록 인원 수"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
                         )
                 ));

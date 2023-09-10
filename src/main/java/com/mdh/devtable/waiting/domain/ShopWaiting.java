@@ -49,7 +49,7 @@ public class ShopWaiting extends BaseTimeEntity {
         this.waitingCount = 0;
         this.maximumWaiting = maximumWaiting;
         this.shopWaitingStatus = ShopWaitingStatus.CLOSE;
-        this.childEnabled = false;
+        this.childEnabled = true;
         this.minimumWaitingPeople = minimumWaitingPeople;
         this.maximumWaitingPeople = maximumWaitingPeople;
     }
