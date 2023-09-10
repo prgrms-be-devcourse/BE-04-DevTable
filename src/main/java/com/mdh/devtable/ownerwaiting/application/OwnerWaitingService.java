@@ -3,6 +3,7 @@ package com.mdh.devtable.ownerwaiting.application;
 import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,16 @@ public class OwnerWaitingService {
     @Transactional(readOnly = true)
     public List<WaitingInfoResponseForOwner> findWaitingByOwnerIdAndWaitingStatus(Long ownerId, WaitingInfoRequestForOwner request) {
         return ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, request.waitingStatus());
+    }
+
+    @Transactional
+    public void updateShopWaitingInfo(Long shopId, OwnerUpdateShopWaitingInfoRequest request) {
+        var shopWaiting = ownerWaitingRepository.findShopWaitingByShopId(shopId)
+                .orElseThrow(() -> new NoSuchElementException("매장 웨이팅 조회 결과가 없습니다."));
+
+        shopWaiting.updateShopWaitingInfo(request.childEnabled(),
+                request.maximumPeople(),
+                request.minimumPeople(),
+                request.maximumWaitingTeam());
     }
 }
