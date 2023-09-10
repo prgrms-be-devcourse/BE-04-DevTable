@@ -1,6 +1,7 @@
 package com.mdh.devtable.waiting.infra.persistence;
 
 import com.mdh.devtable.DataInitializerFactory;
+import com.mdh.devtable.global.config.JpaConfig;
 import com.mdh.devtable.shop.infra.persistence.RegionRepository;
 import com.mdh.devtable.shop.infra.persistence.ShopRepository;
 import com.mdh.devtable.user.infra.persistence.UserRepository;
@@ -8,16 +9,20 @@ import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@Import({JpaConfig.class})
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class WaitingRepositoryTest {
 
     @Autowired

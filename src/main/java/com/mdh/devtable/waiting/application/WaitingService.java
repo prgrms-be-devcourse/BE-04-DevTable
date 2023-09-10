@@ -30,7 +30,7 @@ public class WaitingService {
         var shopId = waitingDetails.shopId();
         var createdDate = waitingDetails.createdDate();
 
-        if (waitingDetails.waitingStatus() == WaitingStatus.PROGRESS) {
+        if (waitingDetails.waitingStatus().isProgress()) {
             var rank = waitingLine.findRank(shopId, waitingId, createdDate);
             return waitingDetails.toWaitingDetailsResponse(rank);
         }
