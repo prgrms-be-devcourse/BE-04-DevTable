@@ -18,6 +18,7 @@ public final class DataInitializerFactory {
                 .email("owner@example.com")
                 .role(Role.OWNER)
                 .password("password123")
+                .phoneNumber("01056781234")
                 .build();
     }
 
@@ -26,6 +27,7 @@ public final class DataInitializerFactory {
                 .email("guest@example.com")
                 .role(Role.GUEST)
                 .password("password123")
+                .phoneNumber("01012345678")
                 .build();
     }
 
