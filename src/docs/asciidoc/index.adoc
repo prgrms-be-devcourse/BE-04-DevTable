@@ -59,6 +59,8 @@ operation::waiting-cancel[snippets = 'http-request,http-response,request-body,re
 
 operation::find-my-waitings[snippets = 'http-request,http-response,request-body,response-fields']
 
+<<<<<<< HEAD
+
 [[Owner-Waiting]]
 == Owner Waiting API
 
@@ -87,3 +89,7 @@ operation::owners-shop-waitingInfo[snippets='path-parameters,http-request,http-r
 === 점주가 갖고 있는 매장의 웨이팅 정보 조회 오류
 
 operation::owners-shop-waitingInfo-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+== Waiting 상세 조회
+
+operation::waiting-detail-find[snippets = 'http-request,http-response,request-body,response-fields']

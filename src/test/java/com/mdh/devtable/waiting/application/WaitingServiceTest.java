@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,4 +154,72 @@ class WaitingServiceTest {
         assertThat(result).hasSize(1);
     }
 
+    @Test
+    @DisplayName("웨이팅이 진행 상태의 경우 상세 정보를 조회할 때 웨이팅 순위도 함께 조회된다.")
+    void findWaitingDetailsProgressStatusTest() {
+        //given
+        var waitingId = 1L;
+
+        var shopDetails = DataInitializerFactory.shopDetails();
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
+        var waitingStatus = WaitingStatus.PROGRESS;
+        var waitingDetails = DataInitializerFactory.waitingDetails(shopDetails, waitingStatus, waitingPeople);
+
+        var waitingRank = 5;
+
+        given(waitingRepository.findByWaitingDetails(any(Long.class))).willReturn(Optional.ofNullable(waitingDetails));
+        given(waitingLine.findRank(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(waitingRank);
+
+        //when
+        var waitingDetailsResponse = waitingService.findWaitingDetails(waitingId);
+
+        //then
+        verify(waitingRepository, times(1)).findByWaitingDetails(any(Long.class));
+        verify(waitingLine, times(1)).findRank(any(Long.class),
+                any(Long.class),
+                any(LocalDateTime.class));
+        assertThat(waitingDetailsResponse.shop().shopName()).isEqualTo(waitingDetails.shopName());
+        assertThat(waitingDetailsResponse.shop().shopType()).isEqualTo(waitingDetails.shopType());
+        assertThat(waitingDetailsResponse.shop().region()).isEqualTo(waitingDetails.region());
+        assertThat(waitingDetailsResponse.shop().shopDetails()).usingRecursiveComparison().isEqualTo(shopDetails);
+        assertThat(waitingDetailsResponse.waitingNumber()).isEqualTo(waitingDetails.waitingNumber());
+        assertThat(waitingDetailsResponse.waitingStatus()).isEqualTo(waitingStatus);
+        assertThat(waitingDetailsResponse.waitingPeople()).usingRecursiveComparison().isEqualTo(waitingPeople);
+        assertThat(waitingDetailsResponse.waitingRank()).isEqualTo(waitingRank);
+        assertThat(waitingDetailsResponse.createdDate()).isEqualTo(waitingDetails.createdDate());
+        assertThat(waitingDetailsResponse.modifiedDate()).isEqualTo(waitingDetails.modifiedDate());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = WaitingStatus.class, mode = EnumSource.Mode.EXCLUDE, names = {"PROGRESS"})
+    @DisplayName("웨이팅이 진행 상태가 아닌 경우 상세 정보를 조회할 때 웨이팅 순위는 조회되지 않는다.")
+    void findWaitingDetailsTest(WaitingStatus waitingStatus) {
+        //given
+        var waitingId = 1L;
+
+        var shopDetails = DataInitializerFactory.shopDetails();
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
+        var waitingDetails = DataInitializerFactory.waitingDetails(shopDetails, waitingStatus, waitingPeople);
+
+        given(waitingRepository.findByWaitingDetails(any(Long.class))).willReturn(Optional.ofNullable(waitingDetails));
+
+        //when
+        var waitingDetailsResponse = waitingService.findWaitingDetails(waitingId);
+
+        //then
+        verify(waitingRepository, times(1)).findByWaitingDetails(any(Long.class));
+        verify(waitingLine, never()).findRank(any(Long.class),
+                any(Long.class),
+                any(LocalDateTime.class));
+        assertThat(waitingDetailsResponse.shop().shopName()).isEqualTo(waitingDetails.shopName());
+        assertThat(waitingDetailsResponse.shop().shopType()).isEqualTo(waitingDetails.shopType());
+        assertThat(waitingDetailsResponse.shop().region()).isEqualTo(waitingDetails.region());
+        assertThat(waitingDetailsResponse.shop().shopDetails()).usingRecursiveComparison().isEqualTo(shopDetails);
+        assertThat(waitingDetailsResponse.waitingNumber()).isEqualTo(waitingDetails.waitingNumber());
+        assertThat(waitingDetailsResponse.waitingStatus()).isEqualTo(waitingStatus);
+        assertThat(waitingDetailsResponse.waitingPeople()).usingRecursiveComparison().isEqualTo(waitingPeople);
+        assertThat(waitingDetailsResponse.waitingRank()).isNull();
+        assertThat(waitingDetailsResponse.createdDate()).isEqualTo(waitingDetails.createdDate());
+        assertThat(waitingDetailsResponse.modifiedDate()).isEqualTo(waitingDetails.modifiedDate());
+    }
 }

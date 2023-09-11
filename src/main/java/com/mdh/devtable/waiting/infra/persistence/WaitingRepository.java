@@ -4,6 +4,7 @@ import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner
 import com.mdh.devtable.waiting.domain.Waiting;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.dto.UserWaitingQueryDto;
+import com.mdh.devtable.waiting.infra.persistence.dto.WaitingDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +24,20 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
              where w.userId = :userId and w.waitingStatus = :waitingStatus
             """)
     List<UserWaitingQueryDto> findAllByUserIdAndWaitingStatus(@Param("userId") Long userId, @Param("waitingStatus") WaitingStatus waitingStatus);
+
+    @Query("""
+            select
+                new com.mdh.devtable.waiting.infra.persistence.dto.WaitingDetails
+                (
+                    s.id, s.name, s.shopType, s.region.district, s.shopDetails, 
+                    w.waitingNumber, w.waitingStatus, w.waitingPeople,
+                    w.createdDate, w.modifiedDate
+                )
+            from Waiting w
+            join Shop s on w.shopWaiting.shopId = s.id
+            where w.id = :waitingId
+            """)
+    Optional<WaitingDetails> findByWaitingDetails(@Param("waitingId") Long waitingId);
 
     @Query("""
             SELECT new com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner(w.waitingNumber, u.email)

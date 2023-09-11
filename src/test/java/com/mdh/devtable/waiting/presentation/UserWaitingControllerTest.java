@@ -1,9 +1,12 @@
 package com.mdh.devtable.waiting.presentation;
 
+import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.shop.ShopType;
 import com.mdh.devtable.waiting.application.WaitingService;
+import com.mdh.devtable.waiting.application.dto.ShopWaitingResponse;
 import com.mdh.devtable.waiting.application.dto.UserWaitingResponse;
+import com.mdh.devtable.waiting.application.dto.WaitingDetailsResponse;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
@@ -17,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -202,7 +206,7 @@ class UserWaitingControllerTest extends RestDocsSupport {
         when(waitingService.findAllByUserIdAndStatus(myWaitingsRequest)).thenReturn(List.of(userWaitingResponse));
 
         //when & then
-        mockMvc.perform(get("/api/customer/v1/waitings/{userId}", 1)
+        mockMvc.perform(get("/api/customer/v1/waitings/me/{userId}", 1)
                         .content(objectMapper.writeValueAsString(myWaitingsRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -232,6 +236,69 @@ class UserWaitingControllerTest extends RestDocsSupport {
                                 fieldWithPath("data[].waitingNumber").type(JsonFieldType.NUMBER).description("발급된 웨이팅 번호"),
                                 fieldWithPath("data[].waitingCount").type(JsonFieldType.NUMBER).description("웨이팅 등록 인원 수"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("웨이팅을 상세 조회한다.")
+    void findWaitingDetailsTest() throws Exception {
+        //given
+        var shopDetails = DataInitializerFactory.shopDetails();
+        var shopWaitingResponse = new ShopWaitingResponse("김밥천국", ShopType.KOREAN, "강남구", shopDetails);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
+        var waitingDetailsResponse = new WaitingDetailsResponse(shopWaitingResponse,
+                85,
+                5,
+                WaitingStatus.PROGRESS,
+                waitingPeople,
+                LocalDateTime.of(2023, 9, 8, 16, 0, 0),
+                LocalDateTime.of(2023, 9, 8, 16, 0, 0));
+        var waitingId = 1L;
+        when(waitingService.findWaitingDetails(waitingId)).thenReturn(waitingDetailsResponse);
+
+        //when & then
+        mockMvc.perform(get("/api/customer/v1/waitings/{waitingId}", waitingId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data.shop.shopName").value(shopWaitingResponse.shopName()))
+                .andExpect(jsonPath("$.data.shop.shopType").value("KOREAN"))
+                .andExpect(jsonPath("$.data.shop.region").value(shopWaitingResponse.region()))
+                .andExpect(jsonPath("$.data.shop.shopDetails.url").value(shopWaitingResponse.shopDetails().getUrl()))
+                .andExpect(jsonPath("$.data.shop.shopDetails.phoneNumber").value(shopDetails.getPhoneNumber()))
+                .andExpect(jsonPath("$.data.shop.shopDetails.introduce").value(shopDetails.getIntroduce()))
+                .andExpect(jsonPath("$.data.shop.shopDetails.openingHours").value(shopDetails.getOpeningHours()))
+                .andExpect(jsonPath("$.data.shop.shopDetails.holiday").value(shopDetails.getHoliday()))
+                .andExpect(jsonPath("$.data.shop.shopDetails.info").value(shopDetails.getInfo()))
+                .andExpect(jsonPath("$.data.waitingNumber").value(85))
+                .andExpect(jsonPath("$.data.waitingRank").value(5))
+                .andExpect(jsonPath("$.data.waitingStatus").value("PROGRESS"))
+                .andExpect(jsonPath("$.data.waitingPeople.adultCount").value(waitingPeople.getAdultCount()))
+                .andExpect(jsonPath("$.data.waitingPeople.childCount").value(waitingPeople.getChildCount()))
+                .andExpect(jsonPath("$.data.createdDate").value("2023-09-08T16:00:00"))
+                .andExpect(jsonPath("$.data.modifiedDate").value("2023-09-08T16:00:00"))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("waiting-detail-find",
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.shop.shopName").type(JsonFieldType.STRING).description("상점 이름"),
+                                fieldWithPath("data.shop.shopType").type(JsonFieldType.STRING).description("상점 타입"),
+                                fieldWithPath("data.shop.region").type(JsonFieldType.STRING).description("상점 지역"),
+                                fieldWithPath("data.shop.shopDetails.url").type(JsonFieldType.STRING).description("상점 URL"),
+                                fieldWithPath("data.shop.shopDetails.phoneNumber").type(JsonFieldType.STRING).description("상점 전화번호"),
+                                fieldWithPath("data.shop.shopDetails.introduce").type(JsonFieldType.STRING).description("상점 소개"),
+                                fieldWithPath("data.shop.shopDetails.openingHours").type(JsonFieldType.STRING).description("상점 영업 시간"),
+                                fieldWithPath("data.shop.shopDetails.holiday").type(JsonFieldType.STRING).description("상점 휴무일"),
+                                fieldWithPath("data.shop.shopDetails.info").type(JsonFieldType.STRING).description("상점 간단 소개"),
+                                fieldWithPath("data.waitingNumber").type(JsonFieldType.NUMBER).description("대기 번호"),
+                                fieldWithPath("data.waitingRank").type(JsonFieldType.NUMBER).description("대기 순위"),
+                                fieldWithPath("data.waitingStatus").type(JsonFieldType.STRING).description("대기 상태"),
+                                fieldWithPath("data.waitingPeople.adultCount").type(JsonFieldType.NUMBER).description("어른 인원 수"),
+                                fieldWithPath("data.waitingPeople.childCount").type(JsonFieldType.NUMBER).description("유아 인원 수"),
+                                fieldWithPath("data.createdDate").type(JsonFieldType.STRING).description("생성일"),
+                                fieldWithPath("data.modifiedDate").type(JsonFieldType.STRING).description("수정일"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
                 ));
     }
