@@ -17,11 +17,11 @@ public class ShopReservationDateTimeSeat extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "shop_reservation_datetime_id")
+    @JoinColumn(name = "shop_reservation_datetime_id", nullable = false)
     private ShopReservationDateTime shopReservationDateTime;
 
     @ManyToOne
-    @JoinColumn(name = "seat_id")
+    @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
 
     @Enumerated(EnumType.STRING)
