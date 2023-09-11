@@ -178,7 +178,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         var phoneNumber = "0101234578";
         var request = new WaitingInfoRequestForOwner(WaitingStatus.PROGRESS);
         var response = Collections.singletonList(new WaitingInfoResponseForOwner(waitingNumber, phoneNumber));
-        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(), any())).thenReturn(response);
+        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(Long.class), any(WaitingInfoRequestForOwner.class))).thenReturn(response);
 
         //when & then
         mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
