@@ -1,7 +1,9 @@
 package com.mdh.devtable.shop;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum ShopType {
     KOREAN("한식"),

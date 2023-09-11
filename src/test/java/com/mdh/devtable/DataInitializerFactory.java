@@ -6,6 +6,10 @@ import com.mdh.devtable.user.domain.User;
 import com.mdh.devtable.waiting.domain.ShopWaiting;
 import com.mdh.devtable.waiting.domain.Waiting;
 import com.mdh.devtable.waiting.domain.WaitingPeople;
+import com.mdh.devtable.waiting.domain.WaitingStatus;
+import com.mdh.devtable.waiting.infra.persistence.dto.WaitingDetails;
+
+import java.time.LocalDateTime;
 
 public final class DataInitializerFactory {
 
@@ -14,6 +18,7 @@ public final class DataInitializerFactory {
                 .email("owner@example.com")
                 .role(Role.OWNER)
                 .password("password123")
+                .phoneNumber("01056781234")
                 .build();
     }
 
@@ -22,6 +27,7 @@ public final class DataInitializerFactory {
                 .email("guest@example.com")
                 .role(Role.GUEST)
                 .password("password123")
+                .phoneNumber("01012345678")
                 .build();
     }
 
@@ -92,5 +98,20 @@ public final class DataInitializerFactory {
                 .shopWaiting(shopWaiting)
                 .waitingPeople(waitingPeople)
                 .build();
+    }
+
+    public static WaitingDetails waitingDetails(ShopDetails shopDetails,
+                                                WaitingStatus waitingStatus,
+                                                WaitingPeople waitingPeople) {
+        return new WaitingDetails(1L,
+                "가게 이름",
+                ShopType.KOREAN,
+                "강남구",
+                shopDetails,
+                85,
+                waitingStatus,
+                waitingPeople,
+                LocalDateTime.now(),
+                LocalDateTime.now());
     }
 }

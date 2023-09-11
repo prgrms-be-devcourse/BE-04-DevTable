@@ -1,16 +1,21 @@
 package com.mdh.devtable.waiting.application;
 
+import com.mdh.devtable.waiting.application.dto.UserWaitingResponse;
+import com.mdh.devtable.waiting.application.dto.WaitingDetailsResponse;
 import com.mdh.devtable.waiting.domain.Waiting;
 import com.mdh.devtable.waiting.domain.WaitingPeople;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.ShopWaitingRepository;
 import com.mdh.devtable.waiting.infra.persistence.WaitingLine;
 import com.mdh.devtable.waiting.infra.persistence.WaitingRepository;
+import com.mdh.devtable.waiting.infra.persistence.dto.UserWaitingQueryDto;
+import com.mdh.devtable.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -22,18 +27,31 @@ public class WaitingService {
     private final WaitingServiceValidator waitingServiceValidator;
     private final WaitingLine waitingLine;
 
+    @Transactional(readOnly = true)
+    public WaitingDetailsResponse findWaitingDetails(Long waitingId) {
+        var waitingDetails = waitingRepository.findByWaitingDetails(waitingId)
+                .orElseThrow(() -> new NoSuchElementException("해당되는 웨이팅이 없습니다. waitingId = " + waitingId));
+        var shopId = waitingDetails.shopId();
+        var createdDate = waitingDetails.createdDate();
+
+        if (waitingDetails.waitingStatus().isProgress()) {
+            var rank = waitingLine.findRank(shopId, waitingId, createdDate);
+            return waitingDetails.toWaitingDetailsResponse(rank);
+        }
+
+        return waitingDetails.toWaitingDetailsResponse();
+    }
+
     @Transactional
     public Long createWaiting(WaitingCreateRequest waitingCreateRequest) {
         var shopId = waitingCreateRequest.shopId();
         var shopWaiting = shopWaitingRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalStateException("해당 매장에 웨이팅 정보가 존재하지 않습니다. shopId : " + shopId));
 
-
         var userId = waitingCreateRequest.userId();
 
         if (waitingServiceValidator.isExistsWaiting(userId)) {
             throw new IllegalStateException("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
-
         }
         shopWaiting.addWaitingCount();
 
@@ -59,6 +77,15 @@ public class WaitingService {
         var shopId = waiting.getShopWaiting().getShopId();
         waitingLine.cancel(shopId, waitingId, waiting.getCreatedDate());
         waiting.changeWaitingStatus(WaitingStatus.CANCEL);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserWaitingResponse> findAllByUserIdAndStatus(MyWaitingsRequest request) {
+
+        return waitingRepository.findAllByUserIdAndWaitingStatus(request.userId(), request.waitingStatus())
+                .stream()
+                .map(UserWaitingQueryDto::toUserWaitingResponse)
+                .toList();
     }
 
     private void saveWaitingLine(Long shopId, Waiting savedWaiting) {

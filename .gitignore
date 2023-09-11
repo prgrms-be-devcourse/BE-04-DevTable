@@ -281,5 +281,7 @@ sketch
 # and uncomment the following lines
 # .pnp.*
 
+### ascii-doc ###
+src/main/resources/static/docs/index.html
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,java,gradle
