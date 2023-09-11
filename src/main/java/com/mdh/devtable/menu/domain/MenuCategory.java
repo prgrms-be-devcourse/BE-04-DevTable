@@ -20,7 +20,7 @@ public class MenuCategory extends BaseTimeEntity {
     @Column(name = "name", nullable = false, length = 31)
     private String name;
 
-    @Column(name = "description", length = 63)
+    @Column(name = "description", nullable = true, length = 63)
     private String description;
 
     @Column(name = "min_price", nullable = false)
@@ -29,11 +29,13 @@ public class MenuCategory extends BaseTimeEntity {
     @Column(name = "max_price", nullable = false)
     private int maxPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "menu_type", nullable = false, length = 15)
-    private String menuType;
+    private MenuType menuType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "meal_type", nullable = false, length = 7)
-    private String mealType;
+    private MealType mealType;
 
     @Builder
     public MenuCategory(@NonNull Long shopId,
@@ -41,8 +43,8 @@ public class MenuCategory extends BaseTimeEntity {
                         @NonNull String description,
                         @NonNull Integer minPrice,
                         @NonNull Integer maxPrice,
-                        @NonNull String menuType,
-                        @NonNull String mealType) {
+                        @NonNull MenuType menuType,
+                        @NonNull MealType mealType) {
         this.shopId = shopId;
         this.name = name;
         this.description = description;
@@ -56,12 +58,14 @@ public class MenuCategory extends BaseTimeEntity {
                                    String description,
                                    Integer minPrice,
                                    Integer maxPrice,
-                                   String mealType) {
+                                   MealType mealType,
+                                   MenuType menuType) {
         this.name = name;
         this.description = description;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.mealType = mealType;
+        this.menuType = menuType;
     }
 
 }

@@ -12,11 +12,12 @@ class MenuCategoryTest {
     public void updateMenuCategoryTest() {
         // given
         var shopId = 1L;
-        String updatedName = "Updated Main Course";
-        String updatedDescription = "Updated description";
-        Integer updatedMinPrice = 15;
-        Integer updatedMaxPrice = 55;
-        String updatedMealType = "Lunch";
+        var updatedName = "Updated Main Course";
+        var updatedDescription = "Updated description";
+        var updatedMinPrice = 15;
+        var updatedMaxPrice = 55;
+        var updatedMealType = MealType.LUNCH;
+        var updatedMenuType = MenuType.APPETIZER;
 
         var menuCategory = DataInitializerFactory.menuCategory(shopId);
 
@@ -25,11 +26,12 @@ class MenuCategoryTest {
                 updatedDescription,
                 updatedMinPrice,
                 updatedMaxPrice,
-                updatedMealType);
+                updatedMealType,
+                updatedMenuType);
 
         // Then
         Assertions.assertThat(menuCategory)
-                .extracting("name", "description", "minPrice", "maxPrice", "mealType")
-                .containsExactly(updatedName, updatedDescription, updatedMinPrice, updatedMaxPrice, updatedMealType);
+                .extracting("name", "description", "minPrice", "maxPrice", "mealType", "menuType")
+                .containsExactly(updatedName, updatedDescription, updatedMinPrice, updatedMaxPrice, updatedMealType, updatedMenuType);
     }
 }
