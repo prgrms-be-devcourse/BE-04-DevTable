@@ -24,6 +24,10 @@ public class ShopReservationDateTimeSeat extends BaseTimeEntity {
     @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
 
+    @ManyToOne
+    @JoinColumn(name = "reservation_id", nullable = true)
+    private Reservation reservation;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_status", length = 15, nullable = false)
     private SeatStatus seatStatus;
@@ -32,13 +36,23 @@ public class ShopReservationDateTimeSeat extends BaseTimeEntity {
                                        Seat seat) {
         this.shopReservationDateTime = shopReservationDateTime;
         this.seat = seat;
+        this.reservation = null;
         this.seatStatus = SeatStatus.AVAILABLE;
     }
 
-    public void changeSeatStaus(SeatStatus seatStatus) {
-        if (this.seatStatus.isSameStatus(seatStatus)) {
-            throw new IllegalArgumentException("같은 좌석 상태로 변경할 수 없습니다.");
+    public void registerReservation(Reservation reservation) {
+        if (seatStatus.isUnavaliable()) {
+            throw new IllegalStateException("예약된 좌석은 다시 예약할 수 없습니다.");
         }
-        this.seatStatus = seatStatus;
+        this.reservation = reservation;
+        this.seatStatus = SeatStatus.UNAVAILABLE;
+    }
+
+    public void cancleReservation() {
+        if (seatStatus.isAvailable()) {
+            throw new IllegalStateException("예약 가능한 좌석이므로 취소할 수 없습니다.");
+        }
+        this.reservation = null;
+        this.seatStatus = SeatStatus.AVAILABLE;
     }
 }

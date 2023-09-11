@@ -19,13 +19,20 @@ public class ShopReservationDateTime extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "shop_id", nullable = false)
+    private ShopReservation shopReservation;
+
     @Column(name = "reservation_date", nullable = false)
     private LocalDate reservationDate;
 
     @Column(name = "reservation_time", nullable = false)
     private LocalTime reservationTime;
 
-    public ShopReservationDateTime(LocalDate reservationDate, LocalTime reservationTime) {
+    public ShopReservationDateTime(ShopReservation shopReservation,
+                                   LocalDate reservationDate,
+                                   LocalTime reservationTime) {
+        this.shopReservation = shopReservation;
         this.reservationDate = reservationDate;
         this.reservationTime = reservationTime;
     }

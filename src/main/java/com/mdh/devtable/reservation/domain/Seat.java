@@ -16,11 +16,16 @@ public class Seat extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "shop_id", nullable = false)
+    private ShopReservation shopReservation;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_type", length = 15, nullable = false)
     private SeatType seatType;
 
-    public Seat(SeatType seatType) {
+    public Seat(ShopReservation shopReservation, SeatType seatType) {
+        this.shopReservation = shopReservation;
         this.seatType = seatType;
     }
 }
