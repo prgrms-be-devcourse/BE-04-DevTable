@@ -41,14 +41,14 @@ public class ShopReservationDateTimeSeat extends BaseTimeEntity {
     }
 
     public void registerReservation(Reservation reservation) {
-        if (seatStatus.isUnavaliable()) {
+        if (seatStatus.isUnavailable()) {
             throw new IllegalStateException("예약된 좌석은 다시 예약할 수 없습니다.");
         }
         this.reservation = reservation;
         this.seatStatus = SeatStatus.UNAVAILABLE;
     }
 
-    public void cancleReservation() {
+    public void cancelReservation() {
         if (seatStatus.isAvailable()) {
             throw new IllegalStateException("예약 가능한 좌석이므로 취소할 수 없습니다.");
         }

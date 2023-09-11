@@ -56,7 +56,7 @@ class ShopReservationDateTimeSeatTest {
 
     @Test
     @DisplayName("예약된 좌석을 취소할 수 있다.")
-    void cancleReservationTest() {
+    void cancelReservationTest() {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
@@ -70,7 +70,7 @@ class ShopReservationDateTimeSeatTest {
         shopReservationDateTimeSeat.registerReservation(reservation);
 
         //when
-        shopReservationDateTimeSeat.cancleReservation();
+        shopReservationDateTimeSeat.cancelReservation();
 
         //then
         assertThat(shopReservationDateTimeSeat.getReservation()).isNull();
@@ -78,8 +78,8 @@ class ShopReservationDateTimeSeatTest {
     }
 
     @Test
-    @DisplayName("예약 가능한 좌석은 취소할 수 없다.")
-    void cancleReservationExTest() {
+    @DisplayName("예약이 비어있는 좌석은 취소할 수 없다.")
+    void cancelReservationExTest() {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
@@ -87,9 +87,9 @@ class ShopReservationDateTimeSeatTest {
 
         var shopReservationDateTime = new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
         var shopReservationDateTimeSeat = new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
-        
+
         //when & then
-        assertThatThrownBy(() -> shopReservationDateTimeSeat.cancleReservation())
+        assertThatThrownBy(() -> shopReservationDateTimeSeat.cancelReservation())
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("예약 가능한 좌석이므로 취소할 수 없습니다.");
     }
