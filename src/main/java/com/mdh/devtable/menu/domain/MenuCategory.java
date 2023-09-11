@@ -40,7 +40,7 @@ public class MenuCategory extends BaseTimeEntity {
     @Builder
     public MenuCategory(@NonNull Long shopId,
                         @NonNull String name,
-                        @NonNull String description,
+                        String description,
                         @NonNull Integer minPrice,
                         @NonNull Integer maxPrice,
                         @NonNull MenuType menuType,
