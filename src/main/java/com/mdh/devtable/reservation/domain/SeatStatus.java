@@ -8,7 +8,7 @@ public enum SeatStatus {
         return this == AVAILABLE;
     }
 
-    public boolean isUnavaliable() {
+    public boolean isUnavailable() {
         return this == UNAVAILABLE;
     }
 }
