@@ -25,8 +25,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -191,7 +190,10 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data[0].waitingNumber").value(waitingNumber))
                 .andExpect(jsonPath("$.data[0].phoneNumber").value(phoneNumber))
                 .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("owners-shop-waitingInfo",
+                .andDo(document("owners-shop-waiting-info",
+                        queryParameters(
+                                parameterWithName("status").description("예약 상태")
+                        ),
                         pathParameters(
                                 parameterWithName("ownerId").description("매장 주인의 id")
                         ),
@@ -221,7 +223,10 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.data.title").value("MethodArgumentTypeMismatchException"))
                 .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("owners-shop-waitingInfo-invalid",
+                .andDo(document("owners-shop-waiting-info-invalid",
+                        queryParameters(
+                                parameterWithName("status").description("예약 상태")
+                        ),
                         pathParameters(
                                 parameterWithName("ownerId").description("매장 주인의 id")
                         ),
@@ -258,10 +263,10 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                                 parameterWithName("shopId").description("매장 id")
                         ),
                         requestFields(
-                                fieldWithPath("childEnabled").description("유아 가능 여부"),
-                                fieldWithPath("maximumPeople").description("최대 인원 수"),
-                                fieldWithPath("minimumPeople").description("최소 인원 수"),
-                                fieldWithPath("maximumWaitingTeam").description("최대 웨이팅 팀 수")
+                                fieldWithPath("childEnabled").type(JsonFieldType.BOOLEAN).description("유아 가능 여부"),
+                                fieldWithPath("maximumPeople").type(JsonFieldType.NUMBER).description("최대 인원 수"),
+                                fieldWithPath("minimumPeople").type(JsonFieldType.NUMBER).description("최소 인원 수"),
+                                fieldWithPath("maximumWaitingTeam").type(JsonFieldType.NUMBER).description("최대 웨이팅 팀 수")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
@@ -293,10 +298,10 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                                 parameterWithName("shopId").description("매장 id")
                         ),
                         requestFields(
-                                fieldWithPath("childEnabled").description("유아 가능 여부"),
-                                fieldWithPath("maximumPeople").description("최대 인원 수"),
-                                fieldWithPath("minimumPeople").description("최소 인원 수"),
-                                fieldWithPath("maximumWaitingTeam").description("최대 웨이팅 팀 수")
+                                fieldWithPath("childEnabled").type(JsonFieldType.BOOLEAN).description("유아 가능 여부"),
+                                fieldWithPath("maximumPeople").type(JsonFieldType.NUMBER).description("최대 인원 수"),
+                                fieldWithPath("minimumPeople").type(JsonFieldType.NUMBER).description("최소 인원 수"),
+                                fieldWithPath("maximumWaitingTeam").type(JsonFieldType.NUMBER).description("최대 웨이팅 팀 수")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
