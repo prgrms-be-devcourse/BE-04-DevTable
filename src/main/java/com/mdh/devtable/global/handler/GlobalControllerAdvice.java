@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.net.URI;
+import java.util.NoSuchElementException;
 
 
 @Slf4j
@@ -74,6 +75,16 @@ public class GlobalControllerAdvice {
         var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
         problemDetail.setInstance(URI.create(uri));
         problemDetail.setTitle("MethodArgumentTypeMismatchException");
+
+        return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ApiResponse<ProblemDetail>> handleNoSuchElementException(NoSuchElementException e, HttpServletRequest request) {
+        var uri = request.getRequestURI();
+        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problemDetail.setInstance(URI.create(uri));
+        problemDetail.setTitle("NoSuchElementException");
 
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
