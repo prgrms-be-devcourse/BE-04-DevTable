@@ -206,7 +206,7 @@ class UserWaitingControllerTest extends RestDocsSupport {
         when(waitingService.findAllByUserIdAndStatus(myWaitingsRequest)).thenReturn(List.of(userWaitingResponse));
 
         //when & then
-        mockMvc.perform(get("/api/customer/v1/waitings/{userId}", 1)
+        mockMvc.perform(get("/api/customer/v1/waitings/me/{userId}", 1)
                         .content(objectMapper.writeValueAsString(myWaitingsRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
