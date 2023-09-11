@@ -48,15 +48,4 @@ public class OwnerWaitingService {
                 request.minimumPeople(),
                 request.maximumWaitingTeam());
     }
-
-    @Transactional
-    public void updateShopWaitingInfo(Long shopId, OwnerUpdateShopWaitingInfoRequest request) {
-        var shopWaiting = ownerWaitingRepository.findShopWaitingByShopId(shopId)
-                .orElseThrow(() -> new NoSuchElementException("매장 웨이팅 조회 결과가 없습니다."));
-
-        shopWaiting.updateShopWaitingInfo(request.childEnabled(),
-                request.maximumPeople(),
-                request.minimumPeople(),
-                request.maximumWaitingTeam());
-    }
 }
