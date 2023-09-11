@@ -5,7 +5,7 @@ import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
+import com.mdh.devtable.waiting.domain.WaitingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +34,8 @@ public class OwnerWaitingService {
     }
 
     @Transactional(readOnly = true)
-    public List<WaitingInfoResponseForOwner> findWaitingOwnerIdAndWaitingStatus(Long ownerId, WaitingInfoRequestForOwner request) {
-        return ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, request.waitingStatus());
+    public List<WaitingInfoResponseForOwner> findWaitingOwnerIdAndWaitingStatus(Long ownerId, WaitingStatus status) {
+        return ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, status);
     }
 
     @Transactional
