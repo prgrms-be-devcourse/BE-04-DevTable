@@ -66,7 +66,7 @@ class WaitingServiceTest {
         given(shopWaitingRepository.findById(any(Long.class))).willReturn(Optional.of(shopWaiting));
         given(waitingServiceValidator.isExistsWaiting(userId)).willReturn(false);
         given(waitingRepository.save(any(Waiting.class))).willReturn(waiting);
-        doNothing().when(waitingLine).save(shopWaiting.getShopId(), waiting.getId(), waiting.getCreatedDate());
+        doNothing().when(waitingLine).save(shopWaiting.getShopId(), waiting.getId(), waiting.getIssuedTime());
 
         //when
         waitingService.createWaiting(waitingRequest);
@@ -221,5 +221,60 @@ class WaitingServiceTest {
         assertThat(waitingDetailsResponse.waitingRank()).isNull();
         assertThat(waitingDetailsResponse.createdDate()).isEqualTo(waitingDetails.createdDate());
         assertThat(waitingDetailsResponse.modifiedDate()).isEqualTo(waitingDetails.modifiedDate());
+    }
+
+    @Test
+    @DisplayName("웨이팅을 미룰 수 있다.")
+    void postponeWaitingTest() {
+        //given
+        var waitingId = 1L;
+        var shopId = 1L;
+        var userId = 1L;
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 30, 8, 2);
+
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
+        given(waitingRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(waiting));
+        given(waitingLine.isPostpone(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(true);
+
+        //when
+        waitingService.postPoneWaiting(waitingId);
+
+        //then
+        verify(waitingRepository, times(1)).findById(any(Long.class));
+        verify(waitingLine, times(1)).postpone(
+                any(Long.class),
+                any(Long.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)
+        );
+    }
+
+    @Test
+    @DisplayName("미루고자 하는 웨이팅이 마지막 웨이팅이라면 미룰 수 없다.")
+    void postponeWaitingFailTest() {
+        //given
+        var waitingId = 1L;
+        var shopId = 1L;
+        var userId = 1L;
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 30, 8, 2);
+
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
+        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
+        given(waitingRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(waiting));
+
+        //when
+        waitingService.postPoneWaiting(waitingId);
+
+        //then
+        verify(waitingRepository, times(1)).findById(any(Long.class));
+        verify(waitingLine, never()).postpone(
+                any(Long.class),
+                any(Long.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)
+        );
     }
 }
