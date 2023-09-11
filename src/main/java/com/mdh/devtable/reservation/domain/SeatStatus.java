@@ -1,4 +1,4 @@
-package com.mdh.devtable.reservation;
+package com.mdh.devtable.reservation.domain;
 
 public enum SeatStatus {
     AVAILABLE,
