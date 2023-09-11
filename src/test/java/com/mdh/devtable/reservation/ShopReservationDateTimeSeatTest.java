@@ -1,5 +1,6 @@
 package com.mdh.devtable.reservation;
 
+import com.mdh.devtable.reservation.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
