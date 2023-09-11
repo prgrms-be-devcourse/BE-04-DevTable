@@ -10,26 +10,26 @@ import jakarta.validation.constraints.Size;
 
 public record MenuCreateRequest(
 
-        @NotNull(message = "Category ID must not be null")
+        @NotNull(message = "카테고리 id를 입력해 주세요.")
         Long categoryId,
 
-        @NotBlank(message = "Menu name must not be blank")
-        @Size(max = 31, message = "Menu name must be less than or equal to 31 characters")
+        @NotBlank(message = "메뉴 이름을 입력해 주세요.")
+        @Size(max = 31, message = "메뉴 이름은 31글자 이하로 작성해 주세요.")
         String menuName,
 
-        @Min(value = 0, message = "Price must be zero or greater")
+        @Min(value = 0, message = "가격은 0 이상으로 작성해 주세요.")
         int price,
 
-        @Size(max = 63, message = "Description must be less than or equal to 63 characters")
+        @Size(max = 63, message = "메뉴 설명은 63글자 이하로 작성해 주세요.")
         String description,
 
-        @Size(max = 15, message = "Label must be less than or equal to 15 characters")
+        @Size(max = 15, message = "라벨은 15글자 이하로 작성해 주세요.")
         String label,
 
-        @NotNull(message = "Menu type must not be null")
+        @NotNull(message = "메뉴 타입을 입력해 주세요.")
         MenuType menuType,
 
-        @NotNull(message = "Meal type must not be null")
+        @NotNull(message = "식사 타입을 입력해 주세요.")
         MealType mealType
 ) {
     public Menu toEntity() {
