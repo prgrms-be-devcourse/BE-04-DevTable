@@ -169,7 +169,7 @@ class UserControllerTest extends RestDocsSupport {
     @DisplayName("회원가입시 핸드폰 번호를 잘못 입력할 수 없다.")
     void signUpException4() throws Exception {
         //given
-        var signUpRequest = new SignUpRequest("test@example.com", "password123", "password123", "010123456789101112");
+        var signUpRequest = new SignUpRequest("test@example.com", "password123", "password123", "0101236578910");
 
         //when & then
         mockMvc.perform(post("/api/v1/users")

@@ -207,3 +207,6 @@ gradle-app.setting
 ### SCHEMA ###
 *.sql
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,java,gradle
+
+### ascii-doc ###
+src/main/resources/static/docs/index.html

@@ -1,10 +1,10 @@
 package com.mdh.devtable.ownerwaiting.application;
 
+import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
-import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoResponseForOwner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,7 @@ public class OwnerWaitingService {
     }
 
     @Transactional(readOnly = true)
-    public List<WaitingInfoResponseForOwner> findWaitingByShopIdAndWaitingStatus(Long ownerId, WaitingInfoRequestForOwner request) {
+    public List<WaitingInfoResponseForOwner> findWaitingByOwnerIdAndWaitingStatus(Long ownerId, WaitingInfoRequestForOwner request) {
         return ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, request.waitingStatus());
     }
 }

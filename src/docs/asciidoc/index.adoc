@@ -59,6 +59,37 @@ operation::waiting-cancel[snippets = 'http-request,http-response,request-body,re
 
 operation::find-my-waitings[snippets = 'http-request,http-response,request-body,response-fields']
 
+<<<<<<< HEAD
+
+[[Owner-Waiting]]
+== Owner Waiting API
+
+=== 매장의 웨이팅 상태 변경
+
+operation::change-shop-waiting-status[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+[[change-shop-waiting-status-invalid]]
+=== 매장의 웨이팅 상태 변경 오류
+
+operation::change-shop-waiting-status-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+[[change-waiting-status]]
+=== 웨이팅 상태 변경
+
+operation::change-waiting-status[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 웨이팅 상태 변경 오류
+
+operation::change-waiting-status-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회
+
+operation::owners-shop-waitingInfo[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회 오류
+
+operation::owners-shop-waitingInfo-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
 == Waiting 상세 조회
 
 operation::waiting-detail-find[snippets = 'http-request,http-response,request-body,response-fields']
