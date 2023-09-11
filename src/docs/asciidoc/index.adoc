@@ -107,3 +107,12 @@ operation::owner-change-shop-waiting-info[snippets='path-parameters,http-request
 === 점주가 갖고 있는 매장의 웨이팅 정보 변경 오류
 
 operation::owner-change-shop-waiting-info-error[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+[[Owner-Menu]]
+=== 점주의 메뉴 카테고리 등록
+
+operation::owner-menu-category-create[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주의 메뉴 카테고리 등록 오류
+
+operation::owner-menu-category-create-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']

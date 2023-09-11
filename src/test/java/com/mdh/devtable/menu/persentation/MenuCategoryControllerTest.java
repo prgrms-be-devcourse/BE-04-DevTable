@@ -57,4 +57,38 @@ class MenuCategoryControllerTest extends RestDocsSupport {
                         )
                 ));
     }
+
+    @DisplayName("점주는 메뉴 카테고리를 잘못 생성할 수 없다.")
+    @Test
+    void createMenuCategoryThrowException() throws Exception {
+        var shopId = 1L;
+        var request = new MenuCategoryCreateRequest("", "testDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescription");
+
+        mockMvc.perform(post("/api/owner/v1/shops/{shopId}/categories", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andDo(document("owner-menu-category-create-invalid",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("메뉴 카테고리 이름"),
+                                fieldWithPath("description").type(JsonFieldType.STRING).description("메뉴 카테고리 설명")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
+                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
 }
