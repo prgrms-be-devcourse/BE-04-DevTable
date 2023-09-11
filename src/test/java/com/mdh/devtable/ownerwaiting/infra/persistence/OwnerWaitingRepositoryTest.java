@@ -70,7 +70,7 @@ class OwnerWaitingRepositoryTest {
 
         //then
         assertThat(result).isNotEmpty();
-        assertThat(result.get(0).phoneNumber()).isEqualTo(owner.getEmail()); // email을 나중에 phoneNumber로 리팩토링 해야함
+        assertThat(result.get(0).phoneNumber()).isEqualTo(owner.getPhoneNumber());
         assertThat(result.get(0).waitingNumber()).isEqualTo(waiting.getWaitingNumber());
     }
 }
