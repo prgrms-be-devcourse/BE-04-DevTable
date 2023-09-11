@@ -1,5 +1,7 @@
 package com.mdh.devtable;
 
+import com.mdh.devtable.reservation.domain.Reservation;
+import com.mdh.devtable.reservation.domain.ShopReservation;
 import com.mdh.devtable.shop.*;
 import com.mdh.devtable.user.domain.Role;
 import com.mdh.devtable.user.domain.User;
@@ -114,4 +116,20 @@ public final class DataInitializerFactory {
                 LocalDateTime.now(),
                 LocalDateTime.now());
     }
+
+    //== 예약 도메인 ==//
+    public static ShopReservation shopReservation(Long shopId, int minimumCount, int maximumCount) {
+        return new ShopReservation(shopId, minimumCount, maximumCount);
+    }
+
+    public static Reservation reservation(Long userId, ShopReservation shopReservation, int personCount) {
+        return Reservation.builder()
+                .userId(userId)
+                .shopReservation(shopReservation)
+                .requirement("요구사항 입니다. 요구 사항은 null 일 수 있습니다.")
+                .personCount(personCount)
+                .build();
+    }
+
+
 }
