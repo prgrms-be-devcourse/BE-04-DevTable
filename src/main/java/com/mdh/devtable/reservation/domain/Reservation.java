@@ -27,7 +27,7 @@ public class Reservation extends BaseTimeEntity {
     @Column(name = "requirement", length = 255, nullable = true)
     private String requirement;
 
-    @Column(name = "person", nullable = false)
+    @Column(name = "person_count", nullable = false)
     private int personCount;
 
     @Enumerated(EnumType.STRING)
