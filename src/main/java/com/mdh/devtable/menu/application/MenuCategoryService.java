@@ -14,6 +14,7 @@ public class MenuCategoryService {
 
     @Transactional
     public void createMenuCategory(Long shopId, MenuCategoryCreateRequest menuCategoryCreateRequest) {
-        menuCategoryRepository.save(menuCategoryCreateRequest.toEntity(shopId));
+        var menuCategory = menuCategoryCreateRequest.toEntity(shopId);
+        menuCategoryRepository.save(menuCategory);
     }
 }

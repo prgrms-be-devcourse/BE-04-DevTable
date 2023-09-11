@@ -2,7 +2,10 @@ package com.mdh.devtable.menu.domain;
 
 import com.mdh.devtable.global.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -29,43 +32,26 @@ public class MenuCategory extends BaseTimeEntity {
     @Column(name = "max_price", nullable = false)
     private int maxPrice;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "menu_type", nullable = false, length = 15)
-    private MenuType menuType;
+    @Version
+    private Long version;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "meal_type", nullable = false, length = 7)
-    private MealType mealType;
-
-    @Builder
-    public MenuCategory(@NonNull Long shopId,
-                        @NonNull String name,
-                        String description,
-                        @NonNull Integer minPrice,
-                        @NonNull Integer maxPrice,
-                        @NonNull MenuType menuType,
-                        @NonNull MealType mealType) {
+    public MenuCategory(@NonNull Long shopId, @NonNull String name, String description) {
         this.shopId = shopId;
         this.name = name;
         this.description = description;
-        this.minPrice = minPrice;
-        this.maxPrice = maxPrice;
-        this.menuType = menuType;
-        this.mealType = mealType;
     }
 
-    public void updateMenuCategory(String name,
-                                   String description,
-                                   Integer minPrice,
-                                   Integer maxPrice,
-                                   MealType mealType,
-                                   MenuType menuType) {
+    public void updateMenuCategory(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public void updateMinPrice(int minPrice) {
         this.minPrice = minPrice;
+    }
+
+    public void updateMaxPrice(int maxPrice) {
         this.maxPrice = maxPrice;
-        this.mealType = mealType;
-        this.menuType = menuType;
     }
 
 }
