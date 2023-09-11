@@ -1,4 +1,4 @@
-package com.mdh.devtable.reservation.infra;
+package com.mdh.devtable.reservation.infra.persistence;
 
 import com.mdh.devtable.reservation.ShopReservationDateTimeSeat;
 import org.springframework.data.jpa.repository.JpaRepository;
