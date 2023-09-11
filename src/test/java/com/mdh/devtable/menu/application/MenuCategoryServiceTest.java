@@ -1,9 +1,7 @@
 package com.mdh.devtable.menu.application;
 
 import com.mdh.devtable.DataInitializerFactory;
-import com.mdh.devtable.menu.domain.MealType;
 import com.mdh.devtable.menu.domain.MenuCategory;
-import com.mdh.devtable.menu.domain.MenuType;
 import com.mdh.devtable.menu.infra.persistence.MenuCategoryRepository;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +30,8 @@ class MenuCategoryServiceTest {
     void createMenuCategory() {
         //given
         var shopId = 1L;
-        MenuCategory menuCategory = DataInitializerFactory.menuCategory(shopId);
-        var request = new MenuCategoryCreateRequest("Main Course", "Delicious main courses", 10, 50, MenuType.APPETIZER, MealType.LUNCH);
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        var request = new MenuCategoryCreateRequest("Main Course", "Delicious main courses");
         given(menuCategoryRepository.save(any(MenuCategory.class))).willReturn(menuCategory);
 
         //when

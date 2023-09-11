@@ -14,24 +14,51 @@ class MenuCategoryTest {
         var shopId = 1L;
         var updatedName = "Updated Main Course";
         var updatedDescription = "Updated description";
-        var updatedMinPrice = 15;
-        var updatedMaxPrice = 55;
-        var updatedMealType = MealType.LUNCH;
-        var updatedMenuType = MenuType.APPETIZER;
 
         var menuCategory = DataInitializerFactory.menuCategory(shopId);
 
         // when
-        menuCategory.updateMenuCategory(updatedName,
-                updatedDescription,
-                updatedMinPrice,
-                updatedMaxPrice,
-                updatedMealType,
-                updatedMenuType);
+        menuCategory.updateMenuCategory(updatedName, updatedDescription);
 
         // Then
         Assertions.assertThat(menuCategory)
-                .extracting("name", "description", "minPrice", "maxPrice", "mealType", "menuType")
-                .containsExactly(updatedName, updatedDescription, updatedMinPrice, updatedMaxPrice, updatedMealType, updatedMenuType);
+                .extracting("name", "description")
+                .containsExactly(updatedName, updatedDescription);
+    }
+
+    @DisplayName("메뉴 카테고리의 최소 가격을 업데이트한다.")
+    @Test
+    public void updateMinPriceTest() {
+        // given
+        var shopId = 1L;
+        var updatedMinPrice = 20;
+
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+
+        // when
+        menuCategory.updateMinPrice(updatedMinPrice);
+
+        // then
+        Assertions.assertThat(menuCategory)
+                .extracting("minPrice")
+                .isEqualTo(updatedMinPrice);
+    }
+
+    @DisplayName("메뉴 카테고리의 최대 가격을 업데이트한다.")
+    @Test
+    public void updateMaxPriceTest() {
+        // given
+        var shopId = 1L;
+        var updatedMaxPrice = 50;
+
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+
+        // when
+        menuCategory.updateMaxPrice(updatedMaxPrice);
+
+        // then
+        Assertions.assertThat(menuCategory)
+                .extracting("maxPrice")
+                .isEqualTo(updatedMaxPrice);
     }
 }

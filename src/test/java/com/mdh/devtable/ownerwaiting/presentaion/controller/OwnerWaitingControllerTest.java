@@ -186,7 +186,6 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statusCode").value("200"))
                 .andExpect(jsonPath("$.data[0].waitingNumber").value(waitingNumber))
                 .andExpect(jsonPath("$.data[0].phoneNumber").value(phoneNumber))
