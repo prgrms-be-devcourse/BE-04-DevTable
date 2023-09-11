@@ -6,7 +6,7 @@ import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
+import com.mdh.devtable.waiting.domain.WaitingStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,8 +35,8 @@ public class OwnerWaitingController {
     }
 
     @GetMapping("/waitings/{ownerId}")
-    public ResponseEntity<ApiResponse<List<WaitingInfoResponseForOwner>>> findWaitingByOwnerIdAndWaitingStatus(@RequestBody WaitingInfoRequestForOwner request, @PathVariable("ownerId") Long ownerId) {
-        var body = ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(ownerId, request);
+    public ResponseEntity<ApiResponse<List<WaitingInfoResponseForOwner>>> findWaitingByOwnerIdAndWaitingStatus(@RequestParam("status") WaitingStatus status, @PathVariable("ownerId") Long ownerId) {
+        var body = ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(ownerId, status);
         return new ResponseEntity<>(ApiResponse.ok(body), HttpStatus.OK);
     }
 

@@ -6,7 +6,6 @@ import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -178,15 +177,16 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         var ownerId = 1L;
         var waitingNumber = 1;
         var phoneNumber = "0101234578";
-        var request = new WaitingInfoRequestForOwner(WaitingStatus.PROGRESS);
+        var status = WaitingStatus.PROGRESS;
         var response = Collections.singletonList(new WaitingInfoResponseForOwner(waitingNumber, phoneNumber));
-        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(Long.class), any(WaitingInfoRequestForOwner.class))).thenReturn(response);
+        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(Long.class), any(WaitingStatus.class))).thenReturn(response);
 
         //when & then
         mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .param("status", status.name())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$.statusCode").value("200"))
                 .andExpect(jsonPath("$.data[0].waitingNumber").value(waitingNumber))
                 .andExpect(jsonPath("$.data[0].phoneNumber").value(phoneNumber))
@@ -194,9 +194,6 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andDo(document("owners-shop-waitingInfo",
                         pathParameters(
                                 parameterWithName("ownerId").description("매장 주인의 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
@@ -213,23 +210,20 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
     void findWaitingByShopIdAndWaitingStatusThrowsException() throws Exception {
         //given
         var ownerId = 1L;
-        var request = new HashMap<String, String>();
-        request.put("waitingStatus", "asf");
+        var invalidStatus = "INVALID_STATUS";
 
         //when & then
         mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .param("status", invalidStatus)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
+                .andDo(print())
                 .andExpect(jsonPath("$.statusCode").value("400"))
-                .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentTypeMismatchException"))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owners-shop-waitingInfo-invalid",
                         pathParameters(
                                 parameterWithName("ownerId").description("매장 주인의 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
