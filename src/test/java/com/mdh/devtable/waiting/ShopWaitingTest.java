@@ -162,4 +162,27 @@ class ShopWaitingTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("닫혀있는 상태에서는 발급번호 개수가 증가할 수 없습니다.");
     }
+
+    @DisplayName("매장의 웨이팅 정보를 변경할 수 있다.")
+    @Test
+    void updateShopWaitingInfo() {
+        //given
+        var shopId = 1L;
+        var maximumWaiting = 10;
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, maximumWaiting, 2, 1);
+        boolean childEnabled = true;
+        var maximumWaitingPeople = 2;
+        var minimumWaitingPeople = 1;
+
+        //when
+        shopWaiting.updateShopWaitingInfo(childEnabled, maximumWaitingPeople, minimumWaitingPeople, maximumWaiting);
+
+        //then
+        assertThat(shopWaiting)
+                .extracting("maximumWaitingPeople",
+                        "minimumWaitingPeople",
+                        "childEnabled",
+                        "maximumWaiting")
+                .containsExactly(maximumWaitingPeople, minimumWaitingPeople, childEnabled, maximumWaiting);
+    }
 }

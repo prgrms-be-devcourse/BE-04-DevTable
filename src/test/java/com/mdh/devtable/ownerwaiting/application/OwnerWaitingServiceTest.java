@@ -4,12 +4,14 @@ import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -34,7 +36,7 @@ class OwnerWaitingServiceTest {
     @InjectMocks
     private OwnerWaitingService ownerWaitingService;
 
-    @DisplayName("매장 웨이팅 상태를 변경할 수 있다.")
+    @DisplayName("점주는 매장 웨이팅 상태를 변경할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"OPEN", "BREAK_TIME"})
     void changeShopWaitingStatus(String status) {
@@ -52,7 +54,7 @@ class OwnerWaitingServiceTest {
         Assertions.assertThat(ShopWaitingStatus.valueOf(status)).isEqualTo(shopWaiting.getShopWaitingStatus());
     }
 
-    @DisplayName("손님의 웨이팅 상태를 변경할 수 있다.")
+    @DisplayName("점주는 손님의 웨이팅 상태를 변경할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"PROGRESS", "CANCEL", "NO_SHOW", "VISITED"})
     void changeWaitingStatus(String status) {
@@ -74,7 +76,7 @@ class OwnerWaitingServiceTest {
         Assertions.assertThat(WaitingStatus.valueOf(status)).isEqualTo(waiting.getWaitingStatus());
     }
 
-    @DisplayName("점주 id, 웨이팅 상태로 웨이팅을 조회할 수 있다.")
+    @DisplayName("점주는 점주 id, 웨이팅 상태로 웨이팅을 조회할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"PROGRESS", "CANCEL", "NO_SHOW", "VISITED"})
     void findWaitingByShopIdAndWaitingStatus(String status) {
@@ -84,9 +86,27 @@ class OwnerWaitingServiceTest {
         given(ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, WaitingStatus.valueOf(status))).willReturn(response);
 
         //when
-        var result = ownerWaitingService.findWaitingByOwnerIdAndWaitingStatus(ownerId, request);
+        var result = ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(ownerId, request);
 
         //then
         Assertions.assertThat(result).isEqualTo(response);
+    }
+
+    @DisplayName("점주는 매장의 웨이팅 정보를 변경할 수 있다.")
+    @Test
+    void updateShopWaitingInfo() {
+        //given
+        var shopId = 1L;
+        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 2, 1, 1);
+        var request = new OwnerUpdateShopWaitingInfoRequest(true, 3, 1, 4);
+        given(ownerWaitingRepository.findShopWaitingByShopId(shopId)).willReturn(Optional.of(shopWaiting));
+
+        //when
+        ownerWaitingService.updateShopWaitingInfo(shopId, request);
+
+        //then
+        Assertions.assertThat(shopWaiting)
+                .extracting("maximumWaitingPeople", "minimumWaitingPeople", "childEnabled")
+                .containsExactly(request.maximumPeople(), request.minimumPeople(), request.childEnabled());
     }
 }

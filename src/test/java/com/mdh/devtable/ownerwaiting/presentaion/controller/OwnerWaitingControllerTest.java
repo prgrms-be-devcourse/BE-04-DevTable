@@ -171,14 +171,14 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
 
     @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력 받아 조회할 수 있다.")
     @Test
-    void findWaitingByShopIdAndWaitingStatus() throws Exception {
+    void findWaitingByOwnerIdAndWaitingStatus() throws Exception {
         //given
         var ownerId = 1L;
         var waitingNumber = 1;
         var phoneNumber = "0101234578";
         var request = new WaitingInfoRequestForOwner(WaitingStatus.PROGRESS);
         var response = Collections.singletonList(new WaitingInfoResponseForOwner(waitingNumber, phoneNumber));
-        when(ownerWaitingService.findWaitingByOwnerIdAndWaitingStatus(any(), any())).thenReturn(response);
+        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(Long.class), any(WaitingInfoRequestForOwner.class))).thenReturn(response);
 
         //when & then
         mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
@@ -206,7 +206,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력 받아 조회할 수 없다.(웨이팅 상태를 잘못 입력 했을 때")
+    @DisplayName("점주가 갖고 있는 매장의 웨이팅 정보를 웨이팅 상태를 입력 받아 조회할 수 없다.(웨이팅 상태를 잘못 입력 했을 때)")
     @Test
     void findWaitingByShopIdAndWaitingStatusThrowsException() throws Exception {
         //given
