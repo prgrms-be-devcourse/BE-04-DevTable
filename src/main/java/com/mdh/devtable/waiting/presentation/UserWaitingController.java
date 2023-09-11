@@ -22,7 +22,7 @@ public class UserWaitingController {
 
     private final WaitingService waitingService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/me/{userId}")
     public ResponseEntity<ApiResponse<List<UserWaitingResponse>>> findWaitingsByUserIdAndStatus(@RequestBody @Valid MyWaitingsRequest request) {
         var findUserWaitings = waitingService.findAllByUserIdAndStatus(request);
         return ResponseEntity.ok(ApiResponse.ok(findUserWaitings));
