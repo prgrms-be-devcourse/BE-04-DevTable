@@ -45,13 +45,13 @@ class MenuControllerTest extends RestDocsSupport {
         var shopId = 1L;
         var request = new MenuCategoryCreateRequest("testName", "testDescription");
         given(menuService.createMenuCategory(any(Long.class), any(MenuCategoryCreateRequest.class))).willReturn(1L);
-        var created = menuService.createMenuCategory(shopId, request);
+        var menuCategoryId = menuService.createMenuCategory(shopId, request);
 
         mockMvc.perform(post("/api/owner/v1/shops/{shopId}/categories", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d/categories/%d", shopId, created)))
+                .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d/categories/%d", shopId, menuCategoryId)))
                 .andExpect(jsonPath("$.statusCode").value("201"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
@@ -121,14 +121,14 @@ class MenuControllerTest extends RestDocsSupport {
                 MealType.DINNER
         );
         given(menuService.createMenu(any(Long.class), any(MenuCreateRequest.class))).willReturn(1L);
-        var created = menuService.createMenu(categoryId, request);
+        var menuId = menuService.createMenu(categoryId, request);
 
         //when & then
         mockMvc.perform(post("/api/owner/v1/categories/{categoryId}/menus", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", String.format("/api/owner/v1/categories/%d/menus/%d", categoryId, created)))
+                .andExpect(header().string("Location", String.format("/api/owner/v1/categories/%d/menus/%d", categoryId, menuId)))
                 .andExpect(jsonPath("$.statusCode").value("201"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
