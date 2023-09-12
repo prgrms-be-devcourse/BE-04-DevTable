@@ -7,6 +7,7 @@ import com.mdh.devtable.menu.persentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +39,11 @@ public class MenuController {
     public ResponseEntity<ApiResponse<Void>> updateMenuCategory(@PathVariable("shopId") Long shopId, @PathVariable("categoryId") Long categoryId, @Valid @RequestBody MenuCategoryUpdateRequest request) {
         menuService.updateMenuCategory(shopId, categoryId, request);
         return ResponseEntity.ok(ApiResponse.ok(null));
+    }
+
+    @DeleteMapping("/api/owner/v1/shops/{shopId}/categories/{categoryId}")
+    public ResponseEntity<ApiResponse<Void>> deleteMenuCategory(@PathVariable("shopId") Long shopId, @PathVariable("categoryId") Long categoryId) {
+        menuService.deleteMenuCategory(shopId, categoryId);
+        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
     }
 }
