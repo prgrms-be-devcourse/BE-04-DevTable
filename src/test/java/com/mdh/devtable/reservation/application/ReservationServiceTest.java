@@ -12,13 +12,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -104,4 +105,77 @@ class ReservationServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("예약하려는 좌석의 수가 예약 인원 수를 초과했습니다. seats size : " + shopReservationDateTimeSeats.size() + ", person count : " + personCount);
     }
+
+    @Test
+    @DisplayName("예약한 좌석을 하루 전에 취소하면 정상적으로 취소된다.")
+    void cancelReservationTest() {
+        //given
+        var userId = 1L;
+        var shopId = 1L;
+        var reservationId = 1L;
+
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
+        var seat = DataInitializerFactory.seat(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
+
+        var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+
+        var reservation = mock(Reservation.class);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(reservation));
+        given(reservation.isCancelShopReservation()).willReturn(true);
+
+        //when
+        var result = reservationService.cancelReservation(reservationId);
+
+        //then
+        verify(reservationRepository, times(1)).findById(any(Long.class));
+        verify(reservation, times(1)).isCancelShopReservation();
+
+        assertThat(reservation.getShopReservationDateTimeSeats()).isEmpty();
+        assertThat(result).isEqualTo("정상적으로 예약이 취소되었습니다.");
+    }
+
+    @Test
+    @DisplayName("예약한 좌석을 당일 날 취소하면 정상적으로 취소되지만 패널티가 발생 할 수 있다.")
+    void cancelTodayReservationTest() {
+        //given
+        var userId = 1L;
+        var shopId = 1L;
+        var reservationId = 1L;
+
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
+        var seat = DataInitializerFactory.seat(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
+
+        var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+
+        var reservation = mock(Reservation.class);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(reservation));
+        given(reservation.isCancelShopReservation()).willReturn(false);
+
+        //when
+        var result = reservationService.cancelReservation(reservationId);
+
+        //then
+        verify(reservationRepository, times(1)).findById(any(Long.class));
+        verify(reservation, times(1)).isCancelShopReservation();
+
+        assertThat(reservation.getShopReservationDateTimeSeats()).isEmpty();
+        assertThat(result).isEqualTo("당일 취소의 경우 패널티가 발생 할 수 있습니다.");
+    }
+
 }

@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "reservations")
@@ -23,6 +27,9 @@ public class Reservation extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopReservation shopReservation;
+
+    @OneToMany(mappedBy = "reservation")
+    private List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats = new ArrayList<>();
 
     @Column(name = "requirement", length = 255, nullable = true)
     private String requirement;
@@ -49,6 +56,25 @@ public class Reservation extends BaseTimeEntity {
         this.reservationStatus = ReservationStatus.CREATED;
     }
 
+    public void addShopReservationDateTimeSeats(ShopReservationDateTimeSeat shopReservationDateTimeSeat) {
+        if (!this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat)) {
+            this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
+            shopReservationDateTimeSeat.registerReservation(this);
+        }
+    }
+
+    /**
+     * 예약이 가지고 있는 좌석에 상태중 Available 인 좌석이 있다면 해당 좌석은 취소가 불가능 합니다.
+     */
+    public boolean isCancelShopReservation() {
+        shopReservationDateTimeSeats.forEach(shopReservationDateTimeSeat -> shopReservationDateTimeSeat.changeSeatStatus(SeatStatus.AVAILABLE));
+        var yesterdayLocalDateTime = getYesterdayLocalDateTime();
+
+        this.shopReservationDateTimeSeats.clear();
+        var now = LocalDateTime.now();
+        return !now.isAfter(yesterdayLocalDateTime);
+    }
+
     public boolean isSeatsSizeUnderOrSamePersonCount(int size) {
         return size <= personCount;
     }
@@ -66,5 +92,13 @@ public class Reservation extends BaseTimeEntity {
         if (!this.reservationStatus.isCreated()) {
             throw new IllegalStateException("예약이 CREATED 상태에서만 상태변경이 가능합니다.");
         }
+    }
+
+    private LocalDateTime getYesterdayLocalDateTime() {
+        return this.shopReservationDateTimeSeats
+                .get(0)
+                .getShopReservationDateTime()
+                .getReservationDateTime()
+                .minusDays(1);
     }
 }
