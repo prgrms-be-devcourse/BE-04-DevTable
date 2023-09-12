@@ -5,11 +5,12 @@ import com.mdh.devtable.menu.application.MenuService;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,6 +21,8 @@ public class MenuController {
     @PostMapping("/api/owner/v1/shops/menus")
     public ResponseEntity<ApiResponse<Void>> createMenu(@Valid @RequestBody MenuCreateRequest request) {
         menuService.createMenu(request);
-        return new ResponseEntity<>(ApiResponse.created(null), HttpStatus.CREATED);
+        var uri = URI.create("/api/owner/v1/shops/menus");
+        return ResponseEntity.created(uri)
+                .body(ApiResponse.created(null));
     }
 }
