@@ -3,14 +3,20 @@ package com.mdh.devtable.reservation.application;
 import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.reservation.controller.dto.ReservationCreateRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
+import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +25,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -116,29 +123,30 @@ class ReservationServiceTest {
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
         var seat = DataInitializerFactory.seat(shopReservation);
-        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory
+                .shopReservationDateTime(shopReservation, LocalDate.now().plusDays(2), LocalTime.now());
 
         var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
 
-        var reservation = mock(Reservation.class);
+        var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
+
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
 
-        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(reservation));
-        given(reservation.isCancelShopReservation()).willReturn(true);
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
 
         //when
         var result = reservationService.cancelReservation(reservationId);
 
         //then
         verify(reservationRepository, times(1)).findById(any(Long.class));
-        verify(reservation, times(1)).isCancelShopReservation();
 
         assertThat(reservation.getShopReservationDateTimeSeats()).isEmpty();
+        assertThat(reservation.getReservationStatus()).isEqualTo(ReservationStatus.CANCEL);
         assertThat(result).isEqualTo("정상적으로 예약이 취소되었습니다.");
     }
 
@@ -152,30 +160,65 @@ class ReservationServiceTest {
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
         var seat = DataInitializerFactory.seat(shopReservation);
-        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory
+                .shopReservationDateTime(shopReservation);
 
         var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
 
-        var reservation = mock(Reservation.class);
+        var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
+
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
 
-        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(reservation));
-        given(reservation.isCancelShopReservation()).willReturn(false);
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
 
         //when
         var result = reservationService.cancelReservation(reservationId);
 
         //then
         verify(reservationRepository, times(1)).findById(any(Long.class));
-        verify(reservation, times(1)).isCancelShopReservation();
 
         assertThat(reservation.getShopReservationDateTimeSeats()).isEmpty();
+        assertThat(reservation.getReservationStatus()).isEqualTo(ReservationStatus.CANCEL);
         assertThat(result).isEqualTo("당일 취소의 경우 패널티가 발생 할 수 있습니다.");
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ReservationStatus.class, mode = EnumSource.Mode.EXCLUDE, names = {"CREATED"})
+    @DisplayName("생성 된 예약이 아니라면 예약을 취소 할 수 없습니다.")
+    void cancelTodayReservationExTest(ReservationStatus reservationStatus) {
+        //given
+        var userId = 1L;
+        var shopId = 1L;
+        var reservationId = 1L;
+
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
+        var seat = DataInitializerFactory.seat(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory
+                .shopReservationDateTime(shopReservation);
+
+        var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+
+        var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
+
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
+        reservation.updateReservationStatus(reservationStatus);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> reservationService.cancelReservation(reservationId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("생성 상태가 아니라면 예약을 취소 할 수 없습니다.");
     }
 
 }

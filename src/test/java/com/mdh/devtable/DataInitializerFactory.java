@@ -140,8 +140,16 @@ public final class DataInitializerFactory {
         return new Seat(shopReservation, SeatType.ROOM);
     }
 
-    public static ShopReservationDateTime shopReservationDateTime(ShopReservation shopReservation) {
+    public static ShopReservationDateTime shopReservationDateTime(
+            ShopReservation shopReservation) {
         return new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
+    }
+
+    public static ShopReservationDateTime shopReservationDateTime(
+            ShopReservation shopReservation,
+            LocalDate localDate,
+            LocalTime localTime) {
+        return new ShopReservationDateTime(shopReservation, localDate, localTime);
     }
 
     public static ShopReservationDateTimeSeat shopReservationDateTimeSeat(ShopReservationDateTime shopReservationDateTime,
