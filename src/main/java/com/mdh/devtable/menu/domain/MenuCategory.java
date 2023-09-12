@@ -52,17 +52,15 @@ public class MenuCategory extends BaseTimeEntity {
         this.description = description;
     }
 
-    public void updateMinPrice(int minPrice) {
-        this.minPrice = minPrice;
-    }
-
-    public void updateMaxPrice(int maxPrice) {
-        this.maxPrice = maxPrice;
-    }
-
     public void addMenu(Menu menu) {
+        updateMaxAndMinPrice(menu.getPrice());
         menus.add(menu);
         menu.setMenuCategory(this);
+    }
+
+    private void updateMaxAndMinPrice(int price) {
+        maxPrice = Math.max(maxPrice, price);
+        minPrice = Math.min(minPrice, price);
     }
 
 }
