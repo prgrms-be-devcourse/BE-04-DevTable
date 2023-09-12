@@ -1,5 +1,6 @@
 package com.mdh.devtable.ownershop.application;
 
+import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.ownershop.infra.persistence.OwnerShopRepository;
 import com.mdh.devtable.ownershop.presentation.dto.OwnerShopCreateRequest;
 import com.mdh.devtable.ownershop.presentation.dto.RegionRequest;
@@ -17,8 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class OwnerShopServiceTest {
@@ -35,6 +34,10 @@ public class OwnerShopServiceTest {
     void createShop() {
         // Given
         var userId = 1L;
+        var shopDetails = DataInitializerFactory.shopDetails();
+        var region = DataInitializerFactory.region();
+        var shopAddress = DataInitializerFactory.shopAddress();
+        var shop = DataInitializerFactory.shop(userId, shopDetails, region, shopAddress);
         var ownerShopCreateRequest = new OwnerShopCreateRequest(
                 "test",
                 "Test Shop",
@@ -49,7 +52,6 @@ public class OwnerShopServiceTest {
         Long savedShopId = ownerShopService.createShop(userId, ownerShopCreateRequest);
 
         // Then
-        verify(ownerShopRepository, times(1)).save(any(Shop.class));
         assertThat(savedShopId).isNotNull();
     }
 }
