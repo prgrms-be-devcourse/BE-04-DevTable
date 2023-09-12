@@ -59,6 +59,7 @@ public class MenuCategory extends BaseTimeEntity {
     }
 
     private void updateMaxAndMinPrice(int price) {
+        minPrice = (minPrice == 0) ? Integer.MAX_VALUE : minPrice;
         maxPrice = Math.max(maxPrice, price);
         minPrice = Math.min(minPrice, price);
     }
