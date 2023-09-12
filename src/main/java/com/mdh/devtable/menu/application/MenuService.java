@@ -43,4 +43,11 @@ public class MenuService {
 
         menuCategory.updateMenuCategory(request.name(), request.description());
     }
+
+    @Transactional
+    public void deleteMenuCategory(Long shopId, Long categoryId) {
+        var menuCategory = menuCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NoSuchElementException("등록된 카테고리 ID가 없습니다." + categoryId));
+        menuCategoryRepository.delete(menuCategory);
+    }
 }
