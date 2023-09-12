@@ -16,11 +16,12 @@ import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MenuController.class)
 class MenuControllerTest extends RestDocsSupport {
@@ -52,6 +53,7 @@ class MenuControllerTest extends RestDocsSupport {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/api/owner/v1/shops/menus"))
                 .andExpect(jsonPath("$.statusCode").value("201"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
@@ -69,6 +71,9 @@ class MenuControllerTest extends RestDocsSupport {
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
                                 fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        ),
+                        responseHeaders(
+                                headerWithName("Location").description("새로 생성된 메뉴의 URI")
                         )
                 ));
     }

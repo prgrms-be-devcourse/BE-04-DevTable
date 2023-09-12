@@ -1,7 +1,7 @@
 package com.mdh.devtable.menu.application;
 
 import com.mdh.devtable.menu.infra.persistence.MenuCategoryRepository;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +32,8 @@ class MenuServiceValidatorTest {
         given(menuCategoryRepository.findById(invalidCategoryId)).willReturn(Optional.empty());
 
         // When & Then
-        Assertions.assertThrows(NoSuchElementException.class, () -> menuServiceValidator.validateMenuCreate(invalidCategoryId));
+        Assertions.assertThatThrownBy(() -> menuServiceValidator.validateMenuCreate(invalidCategoryId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("등록된 카테고리 ID가 없습니다." + invalidCategoryId);
     }
 }
