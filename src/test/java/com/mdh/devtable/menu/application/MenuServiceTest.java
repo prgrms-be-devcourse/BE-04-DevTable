@@ -7,6 +7,7 @@ import com.mdh.devtable.menu.domain.MenuCategory;
 import com.mdh.devtable.menu.domain.MenuType;
 import com.mdh.devtable.menu.infra.persistence.MenuCategoryRepository;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
+import com.mdh.devtable.menu.persentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -95,5 +96,25 @@ class MenuServiceTest {
 
         //then
         verify(menuCategoryRepository, times(1)).save(any(MenuCategory.class));
+    }
+
+    @DisplayName("점주는 메뉴 카테고리를 업데이트할 수 있다.")
+    @Test
+    void updateMenuCategory() {
+        // given
+        var shopId = 1L;
+        var categoryId = 1L;
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        var request = new MenuCategoryUpdateRequest("Updated Main Course", "Updated description");
+        given(menuCategoryRepository.findById(categoryId)).willReturn(Optional.of(menuCategory));
+
+        // when
+        menuService.updateMenuCategory(shopId, categoryId, request);
+
+        // then
+        verify(menuCategoryRepository, times(1)).findById(categoryId);
+        Assertions.assertThat(menuCategory)
+                .extracting("name", "description")
+                .containsExactly(request.name(), request.description());
     }
 }

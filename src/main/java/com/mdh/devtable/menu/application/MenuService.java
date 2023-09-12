@@ -3,6 +3,7 @@ package com.mdh.devtable.menu.application;
 import com.mdh.devtable.menu.application.event.MenuCreatedEvent;
 import com.mdh.devtable.menu.infra.persistence.MenuCategoryRepository;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
+import com.mdh.devtable.menu.persentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,5 +34,13 @@ public class MenuService {
     public Long createMenuCategory(Long shopId, MenuCategoryCreateRequest menuCategoryCreateRequest) {
         var menuCategory = menuCategoryCreateRequest.toEntity(shopId);
         return menuCategoryRepository.save(menuCategory).getId();
+    }
+
+    @Transactional
+    public void updateMenuCategory(Long shopId, Long categoryId, MenuCategoryUpdateRequest request) {
+        var menuCategory = menuCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NoSuchElementException("등록된 카테고리 ID가 없습니다." + categoryId));
+
+        menuCategory.updateMenuCategory(request.name(), request.description());
     }
 }
