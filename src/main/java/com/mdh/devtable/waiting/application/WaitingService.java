@@ -79,6 +79,21 @@ public class WaitingService {
         waiting.changeWaitingStatus(WaitingStatus.CANCEL);
     }
 
+    @Transactional
+    public void postPoneWaiting(Long waitingId) {
+        var waiting = waitingRepository.findById(waitingId)
+                .orElseThrow(() -> new NoSuchElementException("등록된 웨이팅이 존재하지 않습니다. waitingId : " + waitingId));
+        var preIssuedTime = waiting.getIssuedTime();
+        var shopId = waiting.getShopWaiting().getShopId();
+
+        if (!waitingLine.isPostpone(shopId, waitingId, waiting.getIssuedTime())) {
+            throw new IllegalStateException("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId);
+        }
+
+        waiting.addPostponedCount();
+        waitingLine.postpone(shopId, waitingId, preIssuedTime, waiting.getIssuedTime());
+    }
+
     @Transactional(readOnly = true)
     public List<UserWaitingResponse> findAllByUserIdAndStatus(MyWaitingsRequest request) {
 
@@ -90,8 +105,8 @@ public class WaitingService {
 
     private void saveWaitingLine(Long shopId, Waiting savedWaiting) {
         var waitingId = savedWaiting.getId();
-        var createdDate = savedWaiting.getCreatedDate();
-        waitingLine.save(shopId, waitingId, createdDate); // 웨이팅 라인 저장
+        var issuedTime = savedWaiting.getIssuedTime();
+        waitingLine.save(shopId, waitingId, issuedTime); // 웨이팅 라인 저장
     }
 
     private WaitingPeople createWaitingPeople(WaitingCreateRequest waitingCreateRequest) {
