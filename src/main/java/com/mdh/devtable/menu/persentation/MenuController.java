@@ -5,6 +5,7 @@ import com.mdh.devtable.menu.application.MenuService;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
+import com.mdh.devtable.menu.persentation.dto.MenuUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,12 @@ public class MenuController {
         var uri = URI.create(String.format("/api/owner/v1/categories/%d/menus/%d", categoryId, menuId));
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
+    }
+
+    @PatchMapping("/api/owner/v1/menus/{menuId}")
+    public ResponseEntity<ApiResponse<Void>> updateMenu(@PathVariable("menuId") Long menuId, @Valid @RequestBody MenuUpdateRequest request) {
+        menuService.updateMenu(menuId, request);
+        return ResponseEntity.ok(ApiResponse.ok(null));
     }
 
     @PostMapping("/api/owner/v1/shops/{shopId}/categories")
