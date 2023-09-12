@@ -61,6 +61,12 @@ operation::waiting-cancel[snippets = 'http-request,http-response,request-body,re
 
 operation::find-my-waitings[snippets = 'http-request,http-response,request-body,response-fields']
 
+=== 웨이팅 미루기
+
+operation::waiting-postpone[snippets = 'http-request,http-response,request-body,response-fields']
+
+operation::waiting-postpone-notAcceptable[snippets = 'http-request,http-response,request-body,response-fields']
+
 [[Owner-Waiting]]
 == Owner Waiting API
 
