@@ -86,10 +86,12 @@ public class WaitingService {
         var preIssuedTime = waiting.getIssuedTime();
         var shopId = waiting.getShopWaiting().getShopId();
 
-        if (waitingLine.isPostpone(shopId, waitingId, waiting.getIssuedTime())) {
-            waiting.addPostponedCount();
-            waitingLine.postpone(shopId, waitingId, preIssuedTime, waiting.getIssuedTime());
+        if (!waitingLine.isPostpone(shopId, waitingId, waiting.getIssuedTime())) {
+            throw new IllegalStateException("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId);
         }
+
+        waiting.addPostponedCount();
+        waitingLine.postpone(shopId, waitingId, preIssuedTime, waiting.getIssuedTime());
     }
 
     @Transactional(readOnly = true)
