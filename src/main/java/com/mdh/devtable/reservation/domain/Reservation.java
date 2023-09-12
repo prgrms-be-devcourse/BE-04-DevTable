@@ -49,8 +49,10 @@ public class Reservation extends BaseTimeEntity {
         this.reservationStatus = ReservationStatus.CREATED;
     }
 
-    public boolean isSeatsSizeUnderOrSamePersonCount(int size) {
-        return size <= personCount;
+    public void validSeatSizeAndPersonCount(int size) {
+        if (size > personCount) {
+            throw new IllegalArgumentException("예약하려는 좌석의 수가 예약 인원 수를 초과했습니다. seats size : " + size + ", person count : " + personCount);
+        }
     }
 
     public void updateReservation(ReservationStatus reservationStatus) {

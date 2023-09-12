@@ -117,29 +117,7 @@ class ReservationTest {
     }
 
     @Test
-    @DisplayName("예약 좌석의 수는 예약 인원보다 같거나 작아야 한다.")
-    void isSeatSizeUnderOrSamePersonCountTest() {
-        //given
-        var shopId = 1L;
-        var minimumCount = 2;
-        var maximumCount = 30;
-        var shopReservation = DataInitializerFactory.shopReservation(shopId, minimumCount, maximumCount);
-
-        var userId = 1L;
-        var personCount = 3;
-        var reservation = DataInitializerFactory.reservation(userId, shopReservation, personCount);
-
-        var shopReservationDateTimeSeatsSize = 3;
-
-        //when
-        boolean isUnderOrSame = reservation.isSeatsSizeUnderOrSamePersonCount(shopReservationDateTimeSeatsSize);
-
-        //then
-        assertThat(isUnderOrSame).isTrue();
-    }
-
-    @Test
-    @DisplayName("예약 좌석의 수가 예약 인원보다 크다면 false를 반환한다.")
+    @DisplayName("예약 좌석의 수가 예약 인원보다 크다면 예외가 발생한다.")
     void isSeatSizeUnderOrSamePersonCountFalseTest() {
         //given
         var shopId = 1L;
@@ -153,10 +131,9 @@ class ReservationTest {
 
         var shopReservationDateTimeSeatsSize = 4;
 
-        //when
-        boolean isUnderOrSame = reservation.isSeatsSizeUnderOrSamePersonCount(shopReservationDateTimeSeatsSize);
-
-        //then
-        assertThat(isUnderOrSame).isFalse();
+        //when & then
+        assertThatThrownBy(() -> reservation.validSeatSizeAndPersonCount(shopReservationDateTimeSeatsSize))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("예약하려는 좌석의 수가 예약 인원 수를 초과했습니다. seats size : " + shopReservationDateTimeSeatsSize + ", person count : " + personCount);
     }
 }
