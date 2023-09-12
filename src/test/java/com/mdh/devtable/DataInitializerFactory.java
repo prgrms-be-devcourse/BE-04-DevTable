@@ -1,7 +1,6 @@
 package com.mdh.devtable;
 
-import com.mdh.devtable.reservation.domain.Reservation;
-import com.mdh.devtable.reservation.domain.ShopReservation;
+import com.mdh.devtable.reservation.domain.*;
 import com.mdh.devtable.shop.*;
 import com.mdh.devtable.user.domain.Role;
 import com.mdh.devtable.user.domain.User;
@@ -11,7 +10,9 @@ import com.mdh.devtable.waiting.domain.WaitingPeople;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.dto.WaitingDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public final class DataInitializerFactory {
 
@@ -131,5 +132,16 @@ public final class DataInitializerFactory {
                 .build();
     }
 
+    public static Seat seat(ShopReservation shopReservation) {
+        return new Seat(shopReservation, SeatType.ROOM);
+    }
 
+    public static ShopReservationDateTime shopReservationDateTime(ShopReservation shopReservation) {
+        return new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
+    }
+
+    public static ShopReservationDateTimeSeat shopReservationDateTimeSeat(ShopReservationDateTime shopReservationDateTime,
+                                                                          Seat seat) {
+        return new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
+    }
 }

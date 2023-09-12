@@ -49,6 +49,10 @@ public class Reservation extends BaseTimeEntity {
         this.reservationStatus = ReservationStatus.CREATED;
     }
 
+    public boolean isSeatsSizeUnderOrSamePersonCount(int size) {
+        return size <= personCount;
+    }
+
     public void updateReservation(ReservationStatus reservationStatus) {
         validUpdateReservation(reservationStatus);
         this.reservationStatus = reservationStatus;
