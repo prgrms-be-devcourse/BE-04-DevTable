@@ -2,7 +2,9 @@ package com.mdh.devtable.ownerreservation.presentation;
 
 import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.ownerreservation.application.OwnerReservationService;
+import com.mdh.devtable.ownerreservation.presentation.dto.SeatCreateRequest;
 import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationCreateRequest;
+import com.mdh.devtable.reservation.domain.SeatType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -99,5 +101,72 @@ class OwnerReservationControllerTest extends RestDocsSupport {
                         )
                 ));
     }
+
+    @DisplayName("점주는 매장의 좌석을 생성할 수 있다.")
+    @Test
+    void createSeat() throws Exception {
+        var shopId = 1L;
+        var request = new SeatCreateRequest(SeatType.BAR);
+        given(ownerReservationService.saveSeat(any(Long.class), any(SeatCreateRequest.class))).willReturn(1L);
+
+        mockMvc.perform(post("/api/owner/v1/shops/{shopId}/seats", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d/seats/%d", shopId, 1L)))
+                .andExpect(jsonPath("$.statusCode").value("201"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-seat-create",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("seatType").type(JsonFieldType.STRING).description("좌석 타입")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        ),
+                        responseHeaders(
+                                headerWithName("Location").description("새로 생성된 좌석의 URI")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 잘못된 좌석 정보로 좌석을 생성할 수 없다.")
+    @Test
+    void createSeatWithInvalidInput() throws Exception {
+        var shopId = 1L;
+        var request = new SeatCreateRequest(null);  // Invalid value (null for seatType)
+
+        mockMvc.perform(post("/api/owner/v1/shops/{shopId}/seats", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andDo(document("owner-seat-create-invalid",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("seatType").type(JsonFieldType.STRING).description("좌석 타입").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
+                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
 
 }
