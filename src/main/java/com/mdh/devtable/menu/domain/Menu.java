@@ -1,24 +1,24 @@
 package com.mdh.devtable.menu.domain;
 
+import com.mdh.devtable.global.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "menus")
 @Entity
-public class Menu {
+public class Menu extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "category_id", nullable = false)
-    private Long categoryId;
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private MenuCategory menuCategory;
 
     @Column(name = "menu_name", nullable = false, length = 31)
     private String menuName;
@@ -41,14 +41,12 @@ public class Menu {
     private MealType mealType;
 
     @Builder
-    public Menu(Long categoryId,
-                String menuName,
+    public Menu(String menuName,
                 int price,
                 String description,
                 String label,
                 MenuType menuType,
                 MealType mealType) {
-        this.categoryId = categoryId;
         this.menuName = menuName;
         this.price = price;
         this.description = description;

@@ -1,5 +1,6 @@
 package com.mdh.devtable.shop;
 
+import com.mdh.devtable.menu.domain.MealType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -26,42 +27,34 @@ public class ShopPrice {
 
     @Builder
     public ShopPrice(
-        int lunchMaxPrice,
-        int lunchMinPrice,
-        int dinnerMinPrice,
-        int dinnerMaxPrice
+            int lunchMaxPrice,
+            int lunchMinPrice,
+            int dinnerMinPrice,
+            int dinnerMaxPrice
     ) {
         this.lunchMaxPrice = lunchMaxPrice;
         this.lunchMinPrice = lunchMinPrice;
         this.dinnerMaxPrice = dinnerMaxPrice;
         this.dinnerMinPrice = dinnerMinPrice;
     }
-    // TODO 메뉴 변경 시 가게의 가격 변경
-    /*
-    public ShopPrice updateShopPrice(Menu menu) {
-        switch (menu.MenuType) {
-            LUNCH -> {
-                updateLunchMenuPrice(menu.price);
-            }
-            DINNER -> {
-                updateDinnerMenuPrice(menu.price);
-            }
+
+    public void updatePrice(MealType mealType, int price) {
+        switch (mealType) {
+            case LUNCH -> updateLunchPrice(price);
+            case DINNER -> updateDinnerPrice(price);
         }
-
-        return ShopPrice.builder()
-            .lunchMinPrice(this.lunchMinPrice)
-            .lunchMaxPrice(this.lunchMaxPrice)
-            .dinnerMinPrice(this.dinnerMinPrice)
-            .dinnerMaxPrice(this.dinnerMaxPrice)
-            .build();
     }
 
-    private void updateLunchMenuPrice(int price) {
-
+    private void updateLunchPrice(int lunchPrice) {
+        lunchMinPrice = (lunchMinPrice == 0) ? Integer.MAX_VALUE : lunchMinPrice;
+        lunchMaxPrice = Math.max(lunchMaxPrice, lunchPrice);
+        lunchMinPrice = Math.min(lunchMinPrice, lunchPrice);
     }
 
-    private void updateDinnerMenuPrice(int price) {
-
+    private void updateDinnerPrice(int dinnerPrice) {
+        dinnerMinPrice = (dinnerMinPrice == 0) ? Integer.MAX_VALUE : dinnerMinPrice;
+        dinnerMaxPrice = Math.max(dinnerMaxPrice, dinnerPrice);
+        dinnerMinPrice = Math.min(dinnerMinPrice, dinnerPrice);
     }
-    */
+
 }

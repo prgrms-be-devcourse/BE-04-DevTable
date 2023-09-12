@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "categories")
@@ -35,6 +38,9 @@ public class MenuCategory extends BaseTimeEntity {
     @Version
     private Long version;
 
+    @OneToMany(mappedBy = "menuCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menus = new ArrayList<>();
+
     public MenuCategory(@NonNull Long shopId, @NonNull String name, String description) {
         this.shopId = shopId;
         this.name = name;
@@ -52,6 +58,11 @@ public class MenuCategory extends BaseTimeEntity {
 
     public void updateMaxPrice(int maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public void addMenu(Menu menu) {
+        menus.add(menu);
+        menu.setMenuCategory(this);
     }
 
 }

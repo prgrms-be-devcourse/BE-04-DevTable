@@ -80,14 +80,6 @@ public class Shop extends BaseTimeEntity {
         this.region = region;
     }
 
-    // TODO 메뉴 변경 시 가게의 가격 변경
-
-    /*
-    public void updateShopPrice(Menu menu) {
-        this.shopPrice = this.shopPrice.updateShopPrice(menu);
-    }
-    */
-
     public void increaseBookmarkCount() {
         this.bookmarkCount++;
     }
