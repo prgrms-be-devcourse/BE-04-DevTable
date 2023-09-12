@@ -1,5 +1,9 @@
 package com.mdh.devtable;
 
+import com.mdh.devtable.menu.domain.MealType;
+import com.mdh.devtable.menu.domain.Menu;
+import com.mdh.devtable.menu.domain.MenuCategory;
+import com.mdh.devtable.menu.domain.MenuType;
 import com.mdh.devtable.reservation.domain.*;
 import com.mdh.devtable.shop.*;
 import com.mdh.devtable.user.domain.Role;
@@ -143,5 +147,21 @@ public final class DataInitializerFactory {
     public static ShopReservationDateTimeSeat shopReservationDateTimeSeat(ShopReservationDateTime shopReservationDateTime,
                                                                           Seat seat) {
         return new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
+    }
+
+    public static MenuCategory menuCategory(Long shopId) {
+        return new MenuCategory(shopId, "Main Course", "Delicious main courses");
+    }
+
+    public static Menu menu(Long categoryId) {
+        return Menu.builder()
+                .mealType(MealType.BREAKFAST)
+                .menuType(MenuType.APPETIZER)
+                .price(1)
+                .label("label")
+                .menuName("menu")
+                .description("description")
+                .categoryId(categoryId)
+                .build();
     }
 }

@@ -24,12 +24,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -302,4 +303,67 @@ class UserWaitingControllerTest extends RestDocsSupport {
                         )
                 ));
     }
+
+    @Test
+    @DisplayName("웨이팅을 미룰 수 있다.")
+    void postponeWaitingTest() throws Exception {
+        //given
+        var waitingId = 1L;
+        doNothing().when(waitingService).postPoneWaiting(waitingId);
+
+        //when & then
+        mockMvc.perform(patch("/api/customer/v1/waitings/{waitingId}/postpone", waitingId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("waiting-postpone",
+                        pathParameters(
+                                parameterWithName("waitingId").description("웨이팅 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("웨이팅을 미룰 수 없는 경우 예외를 발생 시킨다.")
+    void NotAcceptablePostponeWaitingTest() throws Exception {
+        // given
+        var waitingId = 2L;
+        doThrow(new IllegalStateException("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId)).when(waitingService).postPoneWaiting(waitingId);
+
+        // when & then
+        mockMvc.perform(patch("/api/customer/v1/waitings/{waitingId}/postpone", waitingId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.type").value("about:blank"))
+                .andExpect(jsonPath("$.data.title").value("RuntimeException"))
+                .andExpect(jsonPath("$.data.status").value(400))
+                .andExpect(jsonPath("$.data.detail").value("미루기를 수행 할 수 없는 웨이팅 입니다. 2"))
+                .andExpect(jsonPath("$.data.instance").value("/api/customer/v1/waitings/2/postpone"))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("waiting-postpone-notAcceptable",
+                        pathParameters(
+                                parameterWithName("waitingId").description("웨이팅 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
 }

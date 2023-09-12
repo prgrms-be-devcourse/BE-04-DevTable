@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Table(name = "waitings")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,6 +28,9 @@ public class Waiting extends BaseTimeEntity {
 
     @Column(name = "waiting_number", nullable = false)
     private int waitingNumber;
+
+    @Column(name = "issued_time", nullable = false)
+    private LocalDateTime issuedTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "waiting_status", length = 31, nullable = false)
@@ -48,6 +53,7 @@ public class Waiting extends BaseTimeEntity {
         this.shopWaiting = shopWaiting;
         this.userId = userId;
         this.waitingNumber = shopWaiting.getWaitingCount();
+        this.issuedTime = LocalDateTime.now();
         this.waitingStatus = WaitingStatus.PROGRESS;
         this.postponedCount = 0;
         this.waitingPeople = waitingPeople;
@@ -75,6 +81,7 @@ public class Waiting extends BaseTimeEntity {
             throw new IllegalStateException("웨이팅 미루기는 2회 초과하여 불가능 합니다.");
         }
         postponedCount++;
+        this.issuedTime = LocalDateTime.now();
     }
 
     private boolean isProgress() {
