@@ -4,8 +4,8 @@ import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.ownerwaiting.application.OwnerWaitingService;
 import com.mdh.devtable.ownerwaiting.application.dto.WaitingInfoResponseForOwner;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
+import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +25,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -176,25 +176,26 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         var ownerId = 1L;
         var waitingNumber = 1;
         var phoneNumber = "0101234578";
-        var request = new WaitingInfoRequestForOwner(WaitingStatus.PROGRESS);
+        var status = WaitingStatus.PROGRESS;
         var response = Collections.singletonList(new WaitingInfoResponseForOwner(waitingNumber, phoneNumber));
-        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(Long.class), any(WaitingInfoRequestForOwner.class))).thenReturn(response);
+        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(Long.class), any(WaitingStatus.class))).thenReturn(response);
 
         //when & then
         mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .param("status", status.name())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$.statusCode").value("200"))
                 .andExpect(jsonPath("$.data[0].waitingNumber").value(waitingNumber))
                 .andExpect(jsonPath("$.data[0].phoneNumber").value(phoneNumber))
                 .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("owners-shop-waitingInfo",
+                .andDo(document("owners-shop-waiting-info",
+                        queryParameters(
+                                parameterWithName("status").description("예약 상태")
+                        ),
                         pathParameters(
                                 parameterWithName("ownerId").description("매장 주인의 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
@@ -211,23 +212,23 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
     void findWaitingByShopIdAndWaitingStatusThrowsException() throws Exception {
         //given
         var ownerId = 1L;
-        var request = new HashMap<String, String>();
-        request.put("waitingStatus", "asf");
+        var invalidStatus = "INVALID_STATUS";
 
         //when & then
         mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .param("status", invalidStatus)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
+                .andDo(print())
                 .andExpect(jsonPath("$.statusCode").value("400"))
-                .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentTypeMismatchException"))
                 .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("owners-shop-waitingInfo-invalid",
+                .andDo(document("owners-shop-waiting-info-invalid",
+                        queryParameters(
+                                parameterWithName("status").description("예약 상태")
+                        ),
                         pathParameters(
                                 parameterWithName("ownerId").description("매장 주인의 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
@@ -236,6 +237,82 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
                                 fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
                                 fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 매장의 웨이팅 정보를 변경할 수 있다.")
+    @Test
+    void updateShopWaitingInfo() throws Exception {
+        var shopId = 1L;
+        var ownerUpdateShopWaitingInfoRequest = new OwnerUpdateShopWaitingInfoRequest(true,
+                1,
+                2,
+                3);
+
+        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}/waiting", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ownerUpdateShopWaitingInfoRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-change-shop-waiting-info",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("childEnabled").type(JsonFieldType.BOOLEAN).description("유아 가능 여부"),
+                                fieldWithPath("maximumPeople").type(JsonFieldType.NUMBER).description("최대 인원 수"),
+                                fieldWithPath("minimumPeople").type(JsonFieldType.NUMBER).description("최소 인원 수"),
+                                fieldWithPath("maximumWaitingTeam").type(JsonFieldType.NUMBER).description("최대 웨이팅 팀 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 매장의 웨이팅 정보를 잘못된 형태로 변경할 수 없다.")
+    @Test
+    void updateShopWaitingInfoThrowException() throws Exception {
+        var shopId = 1L;
+        var ownerUpdateShopWaitingInfoRequest = new OwnerUpdateShopWaitingInfoRequest(true,
+                -1,
+                -2,
+                -3);
+
+        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}/waiting", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ownerUpdateShopWaitingInfoRequest)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-change-shop-waiting-info-error",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("childEnabled").type(JsonFieldType.BOOLEAN).description("유아 가능 여부"),
+                                fieldWithPath("maximumPeople").type(JsonFieldType.NUMBER).description("최대 인원 수"),
+                                fieldWithPath("minimumPeople").type(JsonFieldType.NUMBER).description("최소 인원 수"),
+                                fieldWithPath("maximumWaitingTeam").type(JsonFieldType.NUMBER).description("최대 웨이팅 팀 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("data.validationError[]").type(JsonFieldType.ARRAY).description("유효성 검사 오류 목록"),
+                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사에 실패한 필드"),
+                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
                 ));

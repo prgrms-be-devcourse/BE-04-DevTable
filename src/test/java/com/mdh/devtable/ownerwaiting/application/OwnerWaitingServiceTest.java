@@ -6,7 +6,6 @@ import com.mdh.devtable.ownerwaiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.devtable.ownerwaiting.presentaion.dto.OwnerWaitingStatusChangeRequest;
-import com.mdh.devtable.ownerwaiting.presentaion.dto.WaitingInfoRequestForOwner;
 import com.mdh.devtable.waiting.domain.ShopWaitingStatus;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import org.assertj.core.api.Assertions;
@@ -82,11 +81,11 @@ class OwnerWaitingServiceTest {
     void findWaitingByShopIdAndWaitingStatus(String status) {
         var ownerId = 1L;
         var response = Collections.singletonList(new WaitingInfoResponseForOwner(1, "test"));
-        var request = new WaitingInfoRequestForOwner(WaitingStatus.valueOf(status));
+        var waitingStatus = WaitingStatus.valueOf(status);
         given(ownerWaitingRepository.findWaitingByOwnerIdAndWaitingStatus(ownerId, WaitingStatus.valueOf(status))).willReturn(response);
 
         //when
-        var result = ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(ownerId, request);
+        var result = ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(ownerId, waitingStatus);
 
         //then
         Assertions.assertThat(result).isEqualTo(response);
