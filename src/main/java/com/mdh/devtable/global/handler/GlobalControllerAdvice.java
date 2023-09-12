@@ -65,6 +65,8 @@ public class GlobalControllerAdvice {
         problemDetail.setTitle("RuntimeException");
 
         log.warn("런타임 예외가 발생했습니다. {}", e.getMessage(), e);
+        return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
