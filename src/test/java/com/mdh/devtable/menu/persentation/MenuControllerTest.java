@@ -255,11 +255,10 @@ class MenuControllerTest extends RestDocsSupport {
     @DisplayName("점주는 메뉴 카테고리를 업데이트할 수 있다.")
     @Test
     void updateMenuCategory() throws Exception {
-        var shopId = 1L;
         var categoryId = 1L;
         var request = new MenuCategoryUpdateRequest("Updated Main Course", "Updated description");
 
-        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}/categories/{categoryId}", shopId, categoryId)
+        mockMvc.perform(patch("/api/owner/v1/shops/categories/{categoryId}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -268,7 +267,6 @@ class MenuControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owner-menu-category-update",
                         pathParameters(
-                                parameterWithName("shopId").description("매장 id"),
                                 parameterWithName("categoryId").description("카테고리 id")
                         ),
                         requestFields(
@@ -286,11 +284,10 @@ class MenuControllerTest extends RestDocsSupport {
     @DisplayName("점주는 잘못된 메뉴 카테고리 정보로 업데이트할 수 없다.")
     @Test
     void updateMenuCategoryWithInvalidInput() throws Exception {
-        var shopId = 1L;
         var categoryId = 1L;
         var request = new MenuCategoryUpdateRequest("", "This description is way too long to fit into the database and should trigger a validation error");
 
-        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}/categories/{categoryId}", shopId, categoryId)
+        mockMvc.perform(patch("/api/owner/v1/shops/categories/{categoryId}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -298,7 +295,6 @@ class MenuControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
                 .andDo(document("owner-menu-category-update-invalid",
                         pathParameters(
-                                parameterWithName("shopId").description("매장 id"),
                                 parameterWithName("categoryId").description("카테고리 id")
                         ),
                         requestFields(
@@ -322,11 +318,11 @@ class MenuControllerTest extends RestDocsSupport {
     @DisplayName("점주는 매장의 메뉴 카테고리를 삭제할 수 있다.")
     @Test
     void deleteMenuCategory() throws Exception {
-        var shopId = 1L;
+
         var categoryId = 1L;
         var request = new MenuCategoryUpdateRequest("Delete Main Course", "Delete description");
 
-        mockMvc.perform(delete("/api/owner/v1/shops/{shopId}/categories/{categoryId}", shopId, categoryId)
+        mockMvc.perform(delete("/api/owner/v1/shops/categories/{categoryId}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNoContent())
@@ -335,7 +331,6 @@ class MenuControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owner-menu-category-delete",
                         pathParameters(
-                                parameterWithName("shopId").description("매장 id"),
                                 parameterWithName("categoryId").description("카테고리 id")
                         ),
                         requestFields(
