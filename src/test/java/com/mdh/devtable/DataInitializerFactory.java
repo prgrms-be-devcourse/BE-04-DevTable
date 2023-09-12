@@ -141,7 +141,7 @@ public final class DataInitializerFactory {
 
     public static Menu menu(Long categoryId) {
         return Menu.builder()
-                .mealType(MealType.BREAK_FAST)
+                .mealType(MealType.BREAKFAST)
                 .menuType(MenuType.APPETIZER)
                 .price(1)
                 .label("label")

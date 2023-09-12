@@ -6,6 +6,7 @@ import com.mdh.devtable.menu.domain.Menu;
 import com.mdh.devtable.menu.domain.MenuType;
 import com.mdh.devtable.menu.infra.persistence.MenuRepository;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -70,10 +70,12 @@ class MenuServiceTest {
                 MenuType.MAIN,
                 MealType.DINNER
         );
-        doThrow(new NoSuchElementException("등록된 카테고리 ID가 없습니다."))
+        doThrow(new NoSuchElementException("등록된 카테고리 ID가 없습니다." + invalidCategoryId))
                 .when(menuServiceValidator).validateMenuCreate(invalidCategoryId);
 
         // When & Then
-        assertThrows(NoSuchElementException.class, () -> menuService.createMenu(request));
+        Assertions.assertThatThrownBy(() -> menuService.createMenu(request))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("등록된 카테고리 ID가 없습니다." + invalidCategoryId);
     }
 }

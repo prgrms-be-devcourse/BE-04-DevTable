@@ -16,6 +16,6 @@ public class MenuServiceValidator {
     @Transactional(readOnly = true)
     public void validateMenuCreate(Long categoryId) {
         menuCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("등록된 카테고리 ID가 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("등록된 카테고리 ID가 없습니다." + categoryId));
     }
 }
