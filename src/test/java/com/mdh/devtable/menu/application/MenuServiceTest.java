@@ -117,4 +117,35 @@ class MenuServiceTest {
                 .extracting("name", "description")
                 .containsExactly(request.name(), request.description());
     }
+
+
+    @DisplayName("점주는 메뉴 카테고리를 삭제할 수 있다.")
+    @Test
+    void deleteMenuCategory() {
+        // Given
+        Long shopId = 1L;
+        Long categoryId = 1L;
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        given(menuCategoryRepository.findById(categoryId)).willReturn(Optional.of(menuCategory));
+
+        // When
+        menuService.deleteMenuCategory(shopId, categoryId);
+
+        // Then
+        verify(menuCategoryRepository, times(1)).delete(menuCategory);
+    }
+
+    @DisplayName("존재하지 않는 카테고리 ID로 메뉴 카테고리를 삭제하려고 하면 예외가 발생한다.")
+    @Test
+    void deleteMenuCategoryWithInvalidCategoryId() {
+        // Given
+        Long shopId = 1L;
+        Long invalidCategoryId = -1L;
+        given(menuCategoryRepository.findById(invalidCategoryId)).willReturn(Optional.empty());
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> menuService.deleteMenuCategory(shopId, invalidCategoryId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("등록된 카테고리 ID가 없습니다.");
+    }
 }
