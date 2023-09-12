@@ -56,12 +56,6 @@ public class ShopReservationDateTimeSeat extends BaseTimeEntity {
         this.seatStatus = SeatStatus.AVAILABLE;
     }
 
-    public void changeSeatStatus(SeatStatus seatStatus) {
-        validChangeSeatStatus(seatStatus);
-        this.seatStatus = seatStatus;
-        this.reservation = null;
-    }
-
     private void validChangeSeatStatus(SeatStatus seatStatus) {
         if (this.seatStatus == seatStatus) {
             throw new IllegalStateException("동일한 좌석 상태로 변경 할 수 없습니다." + seatStatus.name());

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "reservations")
@@ -63,14 +64,16 @@ public class Reservation extends BaseTimeEntity {
         }
     }
 
-    /**
-     * 예약이 가지고 있는 좌석에 상태중 Available 인 좌석이 있다면 해당 좌석은 취소가 불가능 합니다.
-     */
     public boolean isCancelShopReservation() {
-        shopReservationDateTimeSeats.forEach(shopReservationDateTimeSeat -> shopReservationDateTimeSeat.changeSeatStatus(SeatStatus.AVAILABLE));
+        if (this.reservationStatus != ReservationStatus.CREATED) {
+            throw new IllegalStateException("생성 상태가 아니라면 예약을 취소 할 수 없습니다.");
+        }
         var yesterdayLocalDateTime = getYesterdayLocalDateTime();
 
+        shopReservationDateTimeSeats.forEach(ShopReservationDateTimeSeat::cancelReservation);
         this.shopReservationDateTimeSeats.clear();
+
+        this.reservationStatus = ReservationStatus.CANCEL;
         var now = LocalDateTime.now();
         return !now.isAfter(yesterdayLocalDateTime);
     }
@@ -79,7 +82,7 @@ public class Reservation extends BaseTimeEntity {
         return size <= personCount;
     }
 
-    public void updateReservation(ReservationStatus reservationStatus) {
+    public void updateReservationStatus(ReservationStatus reservationStatus) {
         validUpdateReservation(reservationStatus);
         this.reservationStatus = reservationStatus;
     }
