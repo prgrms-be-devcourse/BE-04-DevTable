@@ -13,7 +13,7 @@ public class OwnerShopService {
     private final OwnerShopRepository ownerShopRepository;
 
     @Transactional
-    public Long createShop(Long userId, OwnerShopCreateRequest ownerShopCreateRequest) {
-        return ownerShopRepository.save(ownerShopCreateRequest.toEntity(userId));
+    public Long createShop(Long ownerId, OwnerShopCreateRequest ownerShopCreateRequest) {
+        return ownerShopRepository.save(ownerShopCreateRequest.toEntity(ownerId));
     }
 }
