@@ -22,16 +22,16 @@ public class MenuController {
 
     @PostMapping("/api/owner/v1/categories/{categoryId}/menus")
     public ResponseEntity<ApiResponse<Void>> createMenu(@PathVariable("categoryId") Long categoryId, @Valid @RequestBody MenuCreateRequest request) {
-        var created = menuService.createMenu(categoryId, request);
-        var uri = URI.create(String.format("/api/owner/v1/categories/%d/menus/%d", categoryId, created));
+        var menuId = menuService.createMenu(categoryId, request);
+        var uri = URI.create(String.format("/api/owner/v1/categories/%d/menus/%d", categoryId, menuId));
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
     }
 
     @PostMapping("/api/owner/v1/shops/{shopId}/categories")
     public ResponseEntity<ApiResponse<Void>> createMenuCategory(@PathVariable("shopId") Long shopId, @Valid @RequestBody MenuCategoryCreateRequest request) {
-        var created = menuService.createMenuCategory(shopId, request);
-        var uri = URI.create(String.format("/api/owner/v1/shops/%d/categories/%d", shopId, created));
+        var menuCategoryId = menuService.createMenuCategory(shopId, request);
+        var uri = URI.create(String.format("/api/owner/v1/shops/%d/categories/%d", shopId, menuCategoryId));
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
     }
