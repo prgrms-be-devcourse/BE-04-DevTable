@@ -3,14 +3,12 @@ package com.mdh.devtable.menu.persentation;
 import com.mdh.devtable.global.ApiResponse;
 import com.mdh.devtable.menu.application.MenuService;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
+import com.mdh.devtable.menu.persentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -34,5 +32,11 @@ public class MenuController {
         var uri = URI.create(String.format("/api/owner/v1/shops/%d/categories/%d", shopId, menuCategoryId));
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
+    }
+
+    @PatchMapping("/api/owner/v1/shops/{shopId}/categories/{categoryId}")
+    public ResponseEntity<ApiResponse<Void>> updateMenuCategory(@PathVariable("shopId") Long shopId, @PathVariable("categoryId") Long categoryId, @Valid @RequestBody MenuCategoryUpdateRequest request) {
+        menuService.updateMenuCategory(shopId, categoryId, request);
+        return ResponseEntity.ok(ApiResponse.ok(null));
     }
 }
