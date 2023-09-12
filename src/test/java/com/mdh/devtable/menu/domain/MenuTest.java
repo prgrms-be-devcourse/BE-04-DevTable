@@ -11,8 +11,7 @@ class MenuTest {
     @Test
     void update() {
         //given
-        var categoryId = 1L;
-        var menu = DataInitializerFactory.menu(categoryId);
+        var menu = DataInitializerFactory.menu();
         var updatedMenuName = "Updated Menu";
         var updatedPrice = 200;
         var updatedDescription = "Updated Description";

@@ -121,16 +121,16 @@ operation::owner-menu-category-create[snippets='path-parameters,http-request,htt
 
 === 점주의 메뉴 카테고리 등록 오류
 
-operation::owner-menu-category-create-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+operation::owner-menu-category-create-invalid[snippets='path-parameters,path-parameters,http-request,http-response,request-fields,response-fields']
 
 === 점주의 메뉴 등록
 
-operation::owner-menu-create[snippets='http-request,http-response,request-fields,response-fields,response-headers']
+operation::owner-menu-create[snippets='path-parameters,http-request,http-response,request-fields,response-fields,response-headers']
 
 === 점주의 메뉴 등록 오류
 
-operation::owner-menu-create[snippets='http-request,http-response,request-fields,response-fields']
+operation::owner-menu-create[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
 
 === 점주의 메뉴 등록 오류 잘못된 카테고리
 
-operation::owner-menu-create-invalid-category[snippets='http-request,http-response,request-fields,response-fields']
+operation::owner-menu-create-invalid-category[snippets='path-parameters,http-request,http-response,request-fields,response-fields']

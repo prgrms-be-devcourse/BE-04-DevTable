@@ -61,4 +61,24 @@ class MenuCategoryTest {
                 .extracting("maxPrice")
                 .isEqualTo(updatedMaxPrice);
     }
+
+    @DisplayName("메뉴 카테고리에 메뉴를 추가한다.")
+    @Test
+    public void addMenuTest() {
+        // given
+        var shopId = 1L;
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        var menu = DataInitializerFactory.menu();
+
+        // when
+        menuCategory.addMenu(menu);
+
+        // then
+        Assertions.assertThat(menuCategory.getMenus())
+                .contains(menu);
+
+        Assertions.assertThat(menu.getMenuCategory())
+                .isEqualTo(menuCategory);
+    }
+
 }

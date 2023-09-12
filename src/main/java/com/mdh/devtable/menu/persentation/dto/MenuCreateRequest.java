@@ -10,9 +10,6 @@ import jakarta.validation.constraints.Size;
 
 public record MenuCreateRequest(
 
-        @NotNull(message = "카테고리 id를 입력해 주세요.")
-        Long categoryId,
-
         @NotBlank(message = "메뉴 이름을 입력해 주세요.")
         @Size(max = 31, message = "메뉴 이름은 31글자 이하로 작성해 주세요.")
         String menuName,
@@ -34,7 +31,6 @@ public record MenuCreateRequest(
 ) {
     public Menu toEntity() {
         return Menu.builder()
-                .categoryId(categoryId)
                 .menuName(menuName)
                 .price(price)
                 .description(description)
