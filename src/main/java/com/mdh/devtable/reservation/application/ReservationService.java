@@ -4,13 +4,9 @@ import com.mdh.devtable.reservation.controller.dto.ReservationCreateRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ShopReservation;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
-import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
-import com.mdh.devtable.reservation.infra.persistence.ShopReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,22 +14,14 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
 
-    private final ShopReservationRepository shopReservationRepository;
-
-    private final ShopReservationDateTimeSeatRepository shopReservationDateTimeSeatRepository;
+    private final ReservationValidator reservationValidator;
 
     @Transactional
     public void createReservation(ReservationCreateRequest reservationCreateRequest) {
         var shopId = reservationCreateRequest.shopId();
 
-        var shopReservation = shopReservationRepository.findById(shopId)
-                .orElseThrow(() -> new NoSuchElementException("매장의 예약 정보가 없습니다. shopId " + shopId));
-
-        var shopReservationDateTimeSeats = reservationCreateRequest.shopReservationDateTimeSeatIds().stream()
-                .map(shopReservationDateTimeSeatId ->
-                        shopReservationDateTimeSeatRepository.findById(shopReservationDateTimeSeatId)
-                                .orElseThrow(() -> new NoSuchElementException("예약 좌석 정보가 없습니다. shopReservationDateTimeSeatId : " + shopReservationDateTimeSeatId)))
-                .toList();
+        var shopReservation = reservationValidator.validShopReservation(shopId);
+        var shopReservationDateTimeSeats = reservationValidator.validShopReservationDateTimeSeats(reservationCreateRequest.shopReservationDateTimeSeatIds());
 
         var reservation = saveReservation(reservationCreateRequest, shopReservation);
         var size = shopReservationDateTimeSeats.size();
