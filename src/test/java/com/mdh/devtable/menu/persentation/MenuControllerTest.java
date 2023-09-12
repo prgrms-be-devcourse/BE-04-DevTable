@@ -7,6 +7,7 @@ import com.mdh.devtable.menu.domain.MenuType;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
+import com.mdh.devtable.menu.persentation.dto.MenuUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -345,4 +346,89 @@ class MenuControllerTest extends RestDocsSupport {
                 ));
     }
 
+    @DisplayName("점주는 메뉴를 업데이트할 수 있다.")
+    @Test
+    void updateMenu() throws Exception {
+        var menuId = 1L;
+        var request = new MenuUpdateRequest(
+                "Updated Spaghetti",
+                16000,
+                "Updated delicious spaghetti with tomato sauce",
+                "Updated Popular",
+                MenuType.MAIN,
+                MealType.DINNER
+        );
+
+        mockMvc.perform(patch("/api/owner/v1/menus/{menuId}", menuId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-menu-update",
+                        pathParameters(
+                                parameterWithName("menuId").description("메뉴 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("menuName").type(JsonFieldType.STRING).description("메뉴 이름"),
+                                fieldWithPath("price").type(JsonFieldType.NUMBER).description("가격"),
+                                fieldWithPath("description").type(JsonFieldType.STRING).description("설명"),
+                                fieldWithPath("label").type(JsonFieldType.STRING).description("라벨"),
+                                fieldWithPath("menuType").type(JsonFieldType.STRING).description("메뉴 타입"),
+                                fieldWithPath("mealType").type(JsonFieldType.STRING).description("식사 타입")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 잘못된 메뉴 정보로 업데이트할 수 없다.")
+    @Test
+    void updateMenuWithInvalidInput() throws Exception {
+        var menuId = 1L;
+        var request = new MenuUpdateRequest(
+                "",
+                -1,
+                "This description is way too long to fit into the database and should trigger a validation error",
+                "Invalid Label",
+                null,
+                null
+        );
+
+        mockMvc.perform(patch("/api/owner/v1/menus/{menuId}", menuId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andDo(document("owner-menu-update-invalid",
+                        pathParameters(
+                                parameterWithName("menuId").description("메뉴 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("menuName").type(JsonFieldType.STRING).description("메뉴 이름"),
+                                fieldWithPath("price").type(JsonFieldType.NUMBER).description("가격"),
+                                fieldWithPath("description").type(JsonFieldType.STRING).description("설명"),
+                                fieldWithPath("label").type(JsonFieldType.STRING).description("라벨"),
+                                fieldWithPath("menuType").type(JsonFieldType.NULL).description("메뉴 타입"),
+                                fieldWithPath("mealType").type(JsonFieldType.NULL).description("식사 타입")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
+                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+
+    }
 }
