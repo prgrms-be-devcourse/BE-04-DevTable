@@ -11,6 +11,7 @@ import com.mdh.devtable.waiting.infra.persistence.WaitingRepository;
 import com.mdh.devtable.waiting.infra.persistence.dto.UserWaitingQueryDto;
 import com.mdh.devtable.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -264,17 +265,11 @@ class WaitingServiceTest {
         var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
         var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
         given(waitingRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(waiting));
+        given(waitingLine.isPostpone(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(false);
 
-        //when
-        waitingService.postPoneWaiting(waitingId);
-
-        //then
-        verify(waitingRepository, times(1)).findById(any(Long.class));
-        verify(waitingLine, never()).postpone(
-                any(Long.class),
-                any(Long.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)
-        );
+        //when & then
+        Assertions.assertThatThrownBy(() -> waitingService.postPoneWaiting(waitingId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId);
     }
 }
