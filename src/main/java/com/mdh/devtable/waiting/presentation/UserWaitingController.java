@@ -46,4 +46,10 @@ public class UserWaitingController {
         var waitingDetailsResponse = waitingService.findWaitingDetails(waitingId);
         return new ResponseEntity<>(ApiResponse.ok(waitingDetailsResponse), HttpStatus.OK);
     }
+
+    @PatchMapping("/{waitingId}/postpone")
+    public ResponseEntity<ApiResponse<Void>> postponeWaiting(@PathVariable Long waitingId) {
+        waitingService.postPoneWaiting(waitingId);
+        return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
+    }
 }
