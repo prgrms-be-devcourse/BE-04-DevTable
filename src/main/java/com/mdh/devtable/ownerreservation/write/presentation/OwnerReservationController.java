@@ -71,4 +71,10 @@ public class OwnerReservationController {
         ownerReservationService.markReservationAsVisitedByOwner(reservationId);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
+
+    @PatchMapping("/reservation/{reservationId}/no-show")
+    public ResponseEntity<ApiResponse<Void>> markReservationAsNoShowByOwner(@PathVariable("reservationId") Long reservationId) {
+        ownerReservationService.markReservationAsNoShowByOwner(reservationId);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
 }
