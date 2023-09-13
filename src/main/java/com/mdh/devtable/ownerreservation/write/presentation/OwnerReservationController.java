@@ -59,4 +59,10 @@ public class OwnerReservationController {
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
     }
+
+    @PatchMapping("/reservation/{reservationId}/cancel")
+    public ResponseEntity<ApiResponse<Void>> cancelReservationByOwner(@PathVariable("reservationId") Long reservationId) {
+        ownerReservationService.cancelReservationByOwner(reservationId);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
 }
