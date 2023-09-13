@@ -57,7 +57,6 @@ public class Reservation extends BaseTimeEntity {
         this.reservationStatus = ReservationStatus.CREATED;
     }
 
-<<<<<<< HEAD
     public void addShopReservationDateTimeSeats(ShopReservationDateTimeSeat shopReservationDateTimeSeat) {
         if (!this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat)) {
             this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
@@ -79,14 +78,10 @@ public class Reservation extends BaseTimeEntity {
         return !now.isAfter(yesterdayLocalDateTime);
     }
 
-    public boolean isSeatsSizeUnderOrSamePersonCount(int size) {
-        return size <= personCount;
-=======
     public void validSeatSizeAndPersonCount(int size) {
-        if (size > personCount) {
-            throw new IllegalArgumentException("예약하려는 좌석의 수가 예약 인원 수를 초과했습니다. seats size : " + size + ", person count : " + personCount);
+        if (size > personCount + 2) {
+            throw new IllegalArgumentException("예약하려는 좌석의 수가 예약 인원 수 + 2를 초과했습니다. seats size : " + size + ", person count : " + personCount);
         }
->>>>>>> fbcfa75 ([MDH-61] refactor : 매장 예약과 예약 좌석 찾는 로직 메서드로 분리 및 테스트 수정)
     }
 
     public void updateReservationStatus(ReservationStatus reservationStatus) {
