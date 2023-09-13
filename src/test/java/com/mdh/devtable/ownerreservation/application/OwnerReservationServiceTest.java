@@ -121,7 +121,7 @@ class OwnerReservationServiceTest {
     @Test
     void cancelReservation() {
         // given
-        Long reservationId = 1L;
+        var reservationId = 1L;
         var reservation = mock(Reservation.class); // Assuming Reservation is the class you're using
         when(ownerReservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
@@ -131,5 +131,21 @@ class OwnerReservationServiceTest {
         // then
         verify(reservation, times(1)).updateReservationStatus(ReservationStatus.CANCEL);
         verify(ownerReservationRepository, times(1)).findReservationById(reservationId);
+    }
+
+    @DisplayName("점주는 예약을 방문 완료로 표시할 수 있다.")
+    @Test
+    void markReservationAsVisited() {
+        // given
+        var reservationId = 1L;
+        var mockReservation = mock(Reservation.class);
+        when(ownerReservationRepository.findReservationById(reservationId))
+                .thenReturn(Optional.of(mockReservation));
+
+        // when
+        ownerReservationService.markReservationAsVisitedByOwner(reservationId);
+
+        // then
+        verify(mockReservation, times(1)).updateReservationStatus(ReservationStatus.VISITED);
     }
 }
