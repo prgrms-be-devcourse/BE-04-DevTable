@@ -20,9 +20,11 @@ import java.util.HashMap;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -272,6 +274,29 @@ class OwnerReservationControllerTest extends RestDocsSupport {
                         ),
                         responseHeaders(
                                 headerWithName("Location").description("새로 생성된 예약 날짜와 시간에 추가된 좌석의 URI")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 예약을 취소할 수 있다.")
+    @Test
+    void cancelReservationByOwner() throws Exception {
+        // given
+        var reservationId = 1L;
+        doNothing().when(ownerReservationService).cancelReservationByOwner(any(Long.class));
+
+        // when & then
+        mockMvc.perform(patch("/api/owner/v1/reservation/{reservationId}/cancel", reservationId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("owner-reservation-cancel",
+                        pathParameters(
+                                parameterWithName("reservationId").description("예약 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
                 ));
     }
