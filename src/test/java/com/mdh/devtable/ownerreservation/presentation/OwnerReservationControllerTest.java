@@ -112,7 +112,7 @@ class OwnerReservationControllerTest extends RestDocsSupport {
     @Test
     void createSeat() throws Exception {
         var shopId = 1L;
-        var request = new SeatCreateRequest(SeatType.BAR);
+        var request = new SeatCreateRequest(SeatType.BAR, 3);
         given(ownerReservationService.saveSeat(any(Long.class), any(SeatCreateRequest.class))).willReturn(1L);
 
         mockMvc.perform(post("/api/owner/v1/shops/{shopId}/seats", shopId)
@@ -128,7 +128,8 @@ class OwnerReservationControllerTest extends RestDocsSupport {
                                 parameterWithName("shopId").description("매장 id")
                         ),
                         requestFields(
-                                fieldWithPath("seatType").type(JsonFieldType.STRING).description("좌석 타입")
+                                fieldWithPath("seatType").type(JsonFieldType.STRING).description("좌석 타입"),
+                                fieldWithPath("count").type(JsonFieldType.NUMBER).description("좌석 인원(테이블에 존재하는 좌석)")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
@@ -145,7 +146,7 @@ class OwnerReservationControllerTest extends RestDocsSupport {
     @Test
     void createSeatWithInvalidInput() throws Exception {
         var shopId = 1L;
-        var request = new SeatCreateRequest(null);  // Invalid value (null for seatType)
+        var request = new SeatCreateRequest(null, -1);  // Invalid value (null for seatType)
 
         mockMvc.perform(post("/api/owner/v1/shops/{shopId}/seats", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -158,7 +159,8 @@ class OwnerReservationControllerTest extends RestDocsSupport {
                                 parameterWithName("shopId").description("매장 id")
                         ),
                         requestFields(
-                                fieldWithPath("seatType").type(JsonFieldType.STRING).description("좌석 타입").optional()
+                                fieldWithPath("seatType").type(JsonFieldType.NULL).description("좌석 타입"),
+                                fieldWithPath("count").type(JsonFieldType.NUMBER).description("좌석 인원(테이블에 존재하는 좌석)")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
