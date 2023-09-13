@@ -4,8 +4,7 @@ import com.mdh.devtable.menu.domain.MealType;
 import com.mdh.devtable.menu.domain.Menu;
 import com.mdh.devtable.menu.domain.MenuCategory;
 import com.mdh.devtable.menu.domain.MenuType;
-import com.mdh.devtable.reservation.domain.Reservation;
-import com.mdh.devtable.reservation.domain.ShopReservation;
+import com.mdh.devtable.reservation.domain.*;
 import com.mdh.devtable.shop.*;
 import com.mdh.devtable.user.domain.Role;
 import com.mdh.devtable.user.domain.User;
@@ -15,7 +14,9 @@ import com.mdh.devtable.waiting.domain.WaitingPeople;
 import com.mdh.devtable.waiting.domain.WaitingStatus;
 import com.mdh.devtable.waiting.infra.persistence.dto.WaitingDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public final class DataInitializerFactory {
 
@@ -133,6 +134,27 @@ public final class DataInitializerFactory {
                 .requirement("요구사항 입니다. 요구 사항은 null 일 수 있습니다.")
                 .personCount(personCount)
                 .build();
+    }
+
+    public static Seat seat(ShopReservation shopReservation, int seatCount) {
+        return new Seat(shopReservation, seatCount, SeatType.ROOM);
+    }
+
+    public static ShopReservationDateTime shopReservationDateTime(
+            ShopReservation shopReservation) {
+        return new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
+    }
+
+    public static ShopReservationDateTime shopReservationDateTime(
+            ShopReservation shopReservation,
+            LocalDate localDate,
+            LocalTime localTime) {
+        return new ShopReservationDateTime(shopReservation, localDate, localTime);
+    }
+
+    public static ShopReservationDateTimeSeat shopReservationDateTimeSeat(ShopReservationDateTime shopReservationDateTime,
+                                                                          Seat seat) {
+        return new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
     }
 
     public static MenuCategory menuCategory(Long shopId) {
