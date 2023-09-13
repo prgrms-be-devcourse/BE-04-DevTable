@@ -49,4 +49,16 @@ public class OwnerReservationController {
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
     }
+
+    @PostMapping("/api/owner/v1/shop-reservation-date-times/{shopReservationDateTimeId}/seats/{seatId}/shop-reservation-date-time-seats")
+    public ResponseEntity<ApiResponse<Void>> createShopReservationDateTimeSeat(@PathVariable("shopReservationDateTimeId") Long shopReservationDateTimeId, @PathVariable("seatId") Long seatId) {
+        var shopReservationDateTimeSeatId = ownerReservationService.createShopReservationDateTimeSeat(shopReservationDateTimeId, seatId);
+        var uri = URI.create(String.format("/api/owner/v1/shop-reservation-date-times/%d/seats/%d/shop-reservation-date-time-seats/%d",
+                shopReservationDateTimeId,
+                seatId,
+                shopReservationDateTimeSeatId));
+
+        return ResponseEntity.created(uri)
+                .body(ApiResponse.created(null));
+    }
 }
