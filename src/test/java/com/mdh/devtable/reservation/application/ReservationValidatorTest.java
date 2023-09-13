@@ -70,10 +70,11 @@ class ReservationValidatorTest {
         //given
         var shopId = 1L;
         var shopReservationDateTimeSeatIds = List.of(1L, 2L, 3L);
+        var seatCount = 2;
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 10);
 
-        var seat = DataInitializerFactory.seat(shopReservation);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
         var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
 
         var shopReservationDateTimeSeat = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
