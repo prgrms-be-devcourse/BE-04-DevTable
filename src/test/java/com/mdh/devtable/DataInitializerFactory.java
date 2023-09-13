@@ -172,11 +172,7 @@ public final class DataInitializerFactory {
                 .build();
     }
 
-    public static ShopReservationDateTime shopReservationDateTime(ShopReservation shopReservation) {
-        return new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
-    }
-
     public static Seat seat(ShopReservation shopReservation) {
-        return new Seat(shopReservation, SeatType.BAR);
+        return new Seat(shopReservation, 3, SeatType.BAR);
     }
 }

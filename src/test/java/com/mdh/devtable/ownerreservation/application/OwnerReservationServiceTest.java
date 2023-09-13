@@ -52,7 +52,7 @@ class OwnerReservationServiceTest {
         // given
         var shopId = 1L;
         var seatType = SeatType.BAR;
-        var seatCreateRequest = new SeatCreateRequest(seatType);
+        var seatCreateRequest = new SeatCreateRequest(seatType, 5);
         ShopReservation shopReservation = DataInitializerFactory.shopReservation(shopId, 1, 5);
 
         when(ownerReservationRepository.findShopReservationByShopId(shopId))
@@ -98,7 +98,7 @@ class OwnerReservationServiceTest {
         var seatId = 1L;
         var shopId = 1L;
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 1, 5);
-        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
         var seat = DataInitializerFactory.seat(shopReservation);
 
         when(ownerReservationRepository.findShopReservationDateTimeById(any(Long.class)))

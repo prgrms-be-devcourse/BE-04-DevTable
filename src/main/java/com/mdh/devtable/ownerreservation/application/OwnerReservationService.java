@@ -29,7 +29,7 @@ public class OwnerReservationService {
     public Long saveSeat(Long shopId, SeatCreateRequest seatCreateRequest) {
         var shopReservation = ownerReservationRepository.findShopReservationByShopId(shopId)
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 매장의 예약정보가 존재하지 않습니다:" + shopId));
-        var seat = new Seat(shopReservation, seatCreateRequest.seatType());
+        var seat = new Seat(shopReservation, seatCreateRequest.count(), seatCreateRequest.seatType());
 
         return ownerReservationRepository.saveSeat(seat);
     }
