@@ -4,7 +4,6 @@ import com.mdh.devtable.reservation.controller.dto.ReservationCreateRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ShopReservation;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
-import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,13 +44,6 @@ public class ReservationService {
         }
 
         return "당일 취소의 경우 패널티가 발생 할 수 있습니다.";
-    }
-
-    @Transactional
-    public void updateReservation(Long reservationId, ReservationUpdateRequest reservationUpdateRequest) {
-        var reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new NoSuchElementException("등록된 예약이 존재하지 않습니다. id : " + reservationId));
-        
     }
 
     private Reservation saveReservation(ReservationCreateRequest reservationCreateRequest, ShopReservation shopReservation) {
