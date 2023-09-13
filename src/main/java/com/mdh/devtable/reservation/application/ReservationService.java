@@ -54,8 +54,8 @@ public class ReservationService {
                 .orElseThrow(() -> new NoSuchElementException("등록된 예약이 존재하지 않습니다. id : " + reservationId));
 
         var shopReservationDateTimeSeats =
-                shopReservationDateTimeSeatRepository.findAllById(request.shopReservationDateTimeSeatsId());
-        
+                shopReservationDateTimeSeatRepository.findAllById(request.shopReservationDateTimeSeatsIds());
+
         reservation.updateReservation(shopReservationDateTimeSeats);
     }
 
