@@ -161,7 +161,7 @@ public final class DataInitializerFactory {
         return new MenuCategory(shopId, "Main Course", "Delicious main courses");
     }
 
-    public static Menu menu(Long categoryId) {
+    public static Menu menu() {
         return Menu.builder()
                 .mealType(MealType.BREAKFAST)
                 .menuType(MenuType.APPETIZER)
@@ -169,7 +169,6 @@ public final class DataInitializerFactory {
                 .label("label")
                 .menuName("menu")
                 .description("description")
-                .categoryId(categoryId)
                 .build();
     }
 }

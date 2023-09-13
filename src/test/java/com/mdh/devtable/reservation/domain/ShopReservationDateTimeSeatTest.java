@@ -18,7 +18,8 @@ class ShopReservationDateTimeSeatTest {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
-        var seat = new Seat(shopReservation, SeatType.ROOM);
+        var seatCount = 2;
+        var seat = new Seat(shopReservation, seatCount, SeatType.ROOM);
 
         var shopReservationDateTime = new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
         var shopReservationDateTimeSeat = new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
@@ -39,7 +40,8 @@ class ShopReservationDateTimeSeatTest {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
-        var seat = new Seat(shopReservation, SeatType.ROOM);
+        var seatCount = 2;
+        var seat = new Seat(shopReservation, seatCount, SeatType.ROOM);
 
         var shopReservationDateTime = new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
         var shopReservationDateTimeSeat = new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
@@ -60,7 +62,8 @@ class ShopReservationDateTimeSeatTest {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
-        var seat = new Seat(shopReservation, SeatType.ROOM);
+        var seatCount = 2;
+        var seat = new Seat(shopReservation, seatCount, SeatType.ROOM);
 
         var shopReservationDateTime = new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
         var shopReservationDateTimeSeat = new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
@@ -83,7 +86,8 @@ class ShopReservationDateTimeSeatTest {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
-        var seat = new Seat(shopReservation, SeatType.ROOM);
+        var seatCount = 2;
+        var seat = new Seat(shopReservation, seatCount, SeatType.ROOM);
 
         var shopReservationDateTime = new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
         var shopReservationDateTimeSeat = new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
