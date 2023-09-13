@@ -5,10 +5,7 @@ import com.mdh.devtable.ownerreservation.infra.persistence.OwnerReservationRepos
 import com.mdh.devtable.ownerreservation.presentation.dto.SeatCreateRequest;
 import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationCreateRequest;
 import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationDateTimeCreateRequest;
-import com.mdh.devtable.reservation.domain.Seat;
-import com.mdh.devtable.reservation.domain.SeatType;
-import com.mdh.devtable.reservation.domain.ShopReservation;
-import com.mdh.devtable.reservation.domain.ShopReservationDateTime;
+import com.mdh.devtable.reservation.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -91,5 +88,31 @@ class OwnerReservationServiceTest {
         // then
         assertThat(result).isEqualTo(1L);
         verify(ownerReservationRepository, times(1)).saveShopReservationDateTime(any(ShopReservationDateTime.class));
+    }
+
+    @DisplayName("점주는 매장의 예약 날짜에 해당하는 좌석을 생성할 수 있다.")
+    @Test
+    void createShopReservationDateTimeSeat() {
+        // given
+        var shopReservationDateTimeId = 1L;
+        var seatId = 1L;
+        var shopId = 1L;
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 1, 5);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
+        var seat = DataInitializerFactory.seat(shopReservation);
+
+        when(ownerReservationRepository.findShopReservationDateTimeById(any(Long.class)))
+                .thenReturn(Optional.of(shopReservationDateTime));
+        when(ownerReservationRepository.findSeatById(any(Long.class)))
+                .thenReturn(Optional.of(seat));
+        when(ownerReservationRepository.saveShopReservationDateTimeSeat(any(ShopReservationDateTimeSeat.class)))
+                .thenReturn(1L);
+
+        // when
+        var result = ownerReservationService.createShopReservationDateTimeSeat(shopReservationDateTimeId, seatId);
+
+        // then
+        assertThat(result).isEqualTo(1L);
+        verify(ownerReservationRepository, times(1)).saveShopReservationDateTimeSeat(any(ShopReservationDateTimeSeat.class));
     }
 }
