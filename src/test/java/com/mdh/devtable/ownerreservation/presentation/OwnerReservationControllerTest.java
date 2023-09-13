@@ -301,5 +301,28 @@ class OwnerReservationControllerTest extends RestDocsSupport {
                 ));
     }
 
+    @DisplayName("점주는 예약을 방문 완료로 표시할 수 있다.")
+    @Test
+    void markReservationAsVisitedByOwner() throws Exception {
+        // given
+        var reservationId = 1L;
+        doNothing().when(ownerReservationService).markReservationAsVisitedByOwner(any(Long.class));
+
+        // when & then
+        mockMvc.perform(patch("/api/owner/v1/reservation/{reservationId}/visit", reservationId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("owner-reservation-mark-as-visited",
+                        pathParameters(
+                                parameterWithName("reservationId").description("예약 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
 
 }
