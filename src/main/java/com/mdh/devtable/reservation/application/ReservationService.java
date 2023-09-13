@@ -32,8 +32,7 @@ public class ReservationService {
         var shopReservationDateTimeSeats = findShopReservationDateTimeSeats(reservationCreateRequest.shopReservationDateTimeSeatIds());
 
         var reservation = saveReservation(reservationCreateRequest, shopReservation);
-        var size = shopReservationDateTimeSeats.size();
-        reservation.validSeatSizeAndPersonCount(size);
+        reservation.validSeatSizeAndPersonCount(reservationCreateRequest.seatTotalCount());
 
         shopReservationDateTimeSeats.forEach(reservation::addShopReservationDateTimeSeats);
     }
