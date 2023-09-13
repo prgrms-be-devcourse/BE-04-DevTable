@@ -20,12 +20,16 @@ public class Seat extends BaseTimeEntity {
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopReservation shopReservation;
 
+    @Column(name = "seat_count", nullable = false)
+    private int seatCount;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_type", length = 15, nullable = false)
     private SeatType seatType;
 
-    public Seat(ShopReservation shopReservation, SeatType seatType) {
+    public Seat(ShopReservation shopReservation, int seatCount, SeatType seatType) {
         this.shopReservation = shopReservation;
+        this.seatCount = seatCount;
         this.seatType = seatType;
     }
 }
