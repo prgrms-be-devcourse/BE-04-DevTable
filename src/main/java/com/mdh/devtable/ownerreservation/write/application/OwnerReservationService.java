@@ -1,9 +1,9 @@
-package com.mdh.devtable.ownerreservation.application;
+package com.mdh.devtable.ownerreservation.write.application;
 
-import com.mdh.devtable.ownerreservation.infra.persistence.OwnerReservationRepository;
-import com.mdh.devtable.ownerreservation.presentation.dto.SeatCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationDateTimeCreateRequest;
+import com.mdh.devtable.ownerreservation.write.infra.persistence.OwnerReservationRepository;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.SeatCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationDateTimeCreateRequest;
 import com.mdh.devtable.reservation.domain.Seat;
 import com.mdh.devtable.reservation.domain.ShopReservationDateTime;
 import com.mdh.devtable.reservation.domain.ShopReservationDateTimeSeat;

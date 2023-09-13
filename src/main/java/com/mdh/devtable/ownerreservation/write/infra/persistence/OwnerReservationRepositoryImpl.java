@@ -1,4 +1,4 @@
-package com.mdh.devtable.ownerreservation.infra.persistence;
+package com.mdh.devtable.ownerreservation.write.infra.persistence;
 
 import com.mdh.devtable.reservation.domain.Seat;
 import com.mdh.devtable.reservation.domain.ShopReservation;

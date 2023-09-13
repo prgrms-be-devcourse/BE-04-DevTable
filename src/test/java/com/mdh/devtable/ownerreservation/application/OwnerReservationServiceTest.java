@@ -1,10 +1,11 @@
 package com.mdh.devtable.ownerreservation.application;
 
 import com.mdh.devtable.DataInitializerFactory;
-import com.mdh.devtable.ownerreservation.infra.persistence.OwnerReservationRepository;
-import com.mdh.devtable.ownerreservation.presentation.dto.SeatCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationDateTimeCreateRequest;
+import com.mdh.devtable.ownerreservation.write.application.OwnerReservationService;
+import com.mdh.devtable.ownerreservation.write.infra.persistence.OwnerReservationRepository;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.SeatCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationDateTimeCreateRequest;
 import com.mdh.devtable.reservation.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
