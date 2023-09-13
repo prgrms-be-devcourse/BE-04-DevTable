@@ -1,10 +1,11 @@
 package com.mdh.devtable.ownerreservation.presentation;
 
 import com.mdh.devtable.RestDocsSupport;
-import com.mdh.devtable.ownerreservation.application.OwnerReservationService;
-import com.mdh.devtable.ownerreservation.presentation.dto.SeatCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationDateTimeCreateRequest;
+import com.mdh.devtable.ownerreservation.write.application.OwnerReservationService;
+import com.mdh.devtable.ownerreservation.write.presentation.OwnerReservationController;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.SeatCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationDateTimeCreateRequest;
 import com.mdh.devtable.reservation.domain.SeatType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
