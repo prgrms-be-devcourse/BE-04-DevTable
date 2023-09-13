@@ -65,4 +65,10 @@ public class OwnerReservationController {
         ownerReservationService.cancelReservationByOwner(reservationId);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
+
+    @PatchMapping("/reservation/{reservationId}/visit")
+    public ResponseEntity<ApiResponse<Void>> markReservationAsVisitedByOwner(@PathVariable("reservationId") Long reservationId) {
+        ownerReservationService.markReservationAsVisitedByOwner(reservationId);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
 }
