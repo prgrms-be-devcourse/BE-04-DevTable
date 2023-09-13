@@ -46,7 +46,8 @@ class ReservationServiceTest {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
-        var seat = DataInitializerFactory.seat(shopReservation);
+        var seatCount = 2;
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
 
         var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
 
@@ -82,7 +83,8 @@ class ReservationServiceTest {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
-        var seat = DataInitializerFactory.seat(shopReservation);
+        var seatCount = 2;
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
 
         var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
 
@@ -120,9 +122,10 @@ class ReservationServiceTest {
         var userId = 1L;
         var shopId = 1L;
         var reservationId = 1L;
+        var seatCount = 2;
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
-        var seat = DataInitializerFactory.seat(shopReservation);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
         var shopReservationDateTime = DataInitializerFactory
                 .shopReservationDateTime(shopReservation, LocalDate.now().plusDays(2), LocalTime.now());
 
@@ -157,9 +160,10 @@ class ReservationServiceTest {
         var userId = 1L;
         var shopId = 1L;
         var reservationId = 1L;
+        var seatCount = 2;
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
-        var seat = DataInitializerFactory.seat(shopReservation);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
         var shopReservationDateTime = DataInitializerFactory
                 .shopReservationDateTime(shopReservation);
 
@@ -195,9 +199,10 @@ class ReservationServiceTest {
         var userId = 1L;
         var shopId = 1L;
         var reservationId = 1L;
+        var seatCount = 2;
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
-        var seat = DataInitializerFactory.seat(shopReservation);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
         var shopReservationDateTime = DataInitializerFactory
                 .shopReservationDateTime(shopReservation);
 

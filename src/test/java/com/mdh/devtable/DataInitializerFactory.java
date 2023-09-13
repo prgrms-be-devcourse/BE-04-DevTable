@@ -136,8 +136,8 @@ public final class DataInitializerFactory {
                 .build();
     }
 
-    public static Seat seat(ShopReservation shopReservation) {
-        return new Seat(shopReservation, SeatType.ROOM);
+    public static Seat seat(ShopReservation shopReservation, int seatCount) {
+        return new Seat(shopReservation, seatCount, SeatType.ROOM);
     }
 
     public static ShopReservationDateTime shopReservationDateTime(
