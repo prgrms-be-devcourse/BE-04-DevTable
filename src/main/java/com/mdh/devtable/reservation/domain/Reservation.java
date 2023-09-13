@@ -57,11 +57,14 @@ public class Reservation extends BaseTimeEntity {
         this.reservationStatus = ReservationStatus.CREATED;
     }
 
-    public void addShopReservationDateTimeSeats(ShopReservationDateTimeSeat shopReservationDateTimeSeat) {
-        if (!this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat)) {
-            this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
-            shopReservationDateTimeSeat.registerReservation(this);
-        }
+    public void addShopReservationDateTimeSeats(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
+        shopReservationDateTimeSeats.stream()
+                .filter((shopReservationDateTimeSeat) -> !this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat))
+                .forEach((shopReservationDateTimeSeat -> {
+                            this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
+                            shopReservationDateTimeSeat.registerReservation(this);
+                        })
+                );
     }
 
     public boolean isCancelShopReservation() {
@@ -74,8 +77,7 @@ public class Reservation extends BaseTimeEntity {
         this.shopReservationDateTimeSeats.clear();
 
         this.reservationStatus = ReservationStatus.CANCEL;
-        return !LocalDateTime.now()
-                .isAfter(yesterdayLocalDateTime);
+        return !isAfterYesterday(yesterdayLocalDateTime);
     }
 
     public void validSeatSizeAndPersonCount(int size) {
@@ -107,14 +109,21 @@ public class Reservation extends BaseTimeEntity {
                 .minusDays(1);
     }
 
-    public boolean isAvailableUpdateReservation() {
-        var yesterdayLocalDateTime = getYesterdayLocalDateTime();
-        return !LocalDateTime.now()
-                .isAfter(yesterdayLocalDateTime);
+    public void updateReservation(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
+        validAvailableUpdateReservation();
+        this.shopReservationDateTimeSeats.forEach(ShopReservationDateTimeSeat::cancelReservation);
+        addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
     }
 
-    public void updateReservation(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
-        this.shopReservationDateTimeSeats.forEach(ShopReservationDateTimeSeat::cancelReservation);
-        shopReservationDateTimeSeats.forEach(this::addShopReservationDateTimeSeats);
+    private void validAvailableUpdateReservation() {
+        var yesterdayLocalDateTime = getYesterdayLocalDateTime();
+
+        if (isAfterYesterday(yesterdayLocalDateTime)) {
+            throw new IllegalStateException("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : " + id);
+        }
+    }
+
+    private boolean isAfterYesterday(LocalDateTime yesterdayLocalDateTime) {
+        return LocalDateTime.now().isAfter(yesterdayLocalDateTime);
     }
 }

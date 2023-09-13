@@ -33,7 +33,7 @@ public class ReservationService {
         var reservation = saveReservation(reservationCreateRequest, shopReservation);
         reservation.validSeatSizeAndPersonCount(reservationCreateRequest.seatTotalCount());
 
-        shopReservationDateTimeSeats.forEach(reservation::addShopReservationDateTimeSeats);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
     }
 
     @Transactional
@@ -55,11 +55,7 @@ public class ReservationService {
 
         var shopReservationDateTimeSeats =
                 shopReservationDateTimeSeatRepository.findAllById(request.shopReservationDateTimeSeatsId());
-
-        if (!reservation.isAvailableUpdateReservation()) {
-            throw new IllegalStateException("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : " + reservationId);
-        }
-
+        
         reservation.updateReservation(shopReservationDateTimeSeats);
     }
 
