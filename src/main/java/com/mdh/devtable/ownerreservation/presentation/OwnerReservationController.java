@@ -8,20 +8,18 @@ import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationDateTim
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@RequestMapping("/api/owner/v1")
 @RequiredArgsConstructor
 @RestController
 public class OwnerReservationController {
 
     private final OwnerReservationService ownerReservationService;
 
-    @PostMapping("/api/owner/v1/shops/{shopId}/reservation")
+    @PostMapping("/shops/{shopId}/reservation")
     public ResponseEntity<ApiResponse<Void>> createShopReservation(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopReservationCreateRequest request) {
         var shopReservationId = ownerReservationService.createShopReservation(shopId, request);
         var uri = URI.create(String.format("/api/owner/v1/shops/%d/reservation/%d", shopId, shopReservationId));
@@ -30,7 +28,7 @@ public class OwnerReservationController {
                 .body(ApiResponse.created(null));
     }
 
-    @PostMapping("/api/owner/v1/shops/{shopId}/seats")
+    @PostMapping("/shops/{shopId}/seats")
     public ResponseEntity<ApiResponse<Void>> createSeat(@PathVariable("shopId") Long shopId, @Valid @RequestBody SeatCreateRequest request) {
         var seatId = ownerReservationService.saveSeat(shopId, request);
         var uri = URI.create(String.format("/api/owner/v1/shops/%d/seats/%d", shopId, seatId));
@@ -39,10 +37,10 @@ public class OwnerReservationController {
                 .body(ApiResponse.created(null));
     }
 
-    @PostMapping("/api/owner/v1/shops/{shopId}/reservation/date")
+    @PostMapping("/shops/{shopId}/reservation-date-time")
     public ResponseEntity<ApiResponse<Void>> createShopReservationDateTime(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopReservationDateTimeCreateRequest request) {
         var shopReservationDateTimeId = ownerReservationService.createShopReservationDateTime(shopId, request);
-        var uri = URI.create(String.format("/api/owner/v1/shops/%d/reservation/date/%d",
+        var uri = URI.create(String.format("/api/owner/v1/shops/%d/reservation-date-time/%d",
                 shopId,
                 shopReservationDateTimeId));
 
@@ -50,7 +48,7 @@ public class OwnerReservationController {
                 .body(ApiResponse.created(null));
     }
 
-    @PostMapping("/api/owner/v1/shop-reservation-date-times/{shopReservationDateTimeId}/seats/{seatId}/shop-reservation-date-time-seats")
+    @PostMapping("/shop-reservation-date-times/{shopReservationDateTimeId}/seats/{seatId}/shop-reservation-date-time-seats")
     public ResponseEntity<ApiResponse<Void>> createShopReservationDateTimeSeat(@PathVariable("shopReservationDateTimeId") Long shopReservationDateTimeId, @PathVariable("seatId") Long seatId) {
         var shopReservationDateTimeSeatId = ownerReservationService.createShopReservationDateTimeSeat(shopReservationDateTimeId, seatId);
         var uri = URI.create(String.format("/api/owner/v1/shop-reservation-date-times/%d/seats/%d/shop-reservation-date-time-seats/%d",

@@ -181,11 +181,11 @@ class OwnerReservationControllerTest extends RestDocsSupport {
         var request = new ShopReservationDateTimeCreateRequest(LocalDate.of(2023, 9, 12), LocalTime.of(12, 30));
         given(ownerReservationService.createShopReservationDateTime(any(Long.class), any(ShopReservationDateTimeCreateRequest.class))).willReturn(1L);
 
-        mockMvc.perform(post("/api/owner/v1/shops/{shopId}/reservation/date", shopId)
+        mockMvc.perform(post("/api/owner/v1/shops/{shopId}/reservation-date-time", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d/reservation/date/%d", shopId, 1L)))
+                .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d/reservation-date-time/%d", shopId, 1L)))
                 .andExpect(jsonPath("$.statusCode").value("201"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
@@ -217,7 +217,7 @@ class OwnerReservationControllerTest extends RestDocsSupport {
         request.put("localDate", "asdf");
         request.put("localTime", "asdf");
 
-        mockMvc.perform(post("/api/owner/v1/shops/{shopId}/reservation/date", shopId)
+        mockMvc.perform(post("/api/owner/v1/shops/{shopId}/reservation-date-time", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
