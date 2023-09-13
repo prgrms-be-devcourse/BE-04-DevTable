@@ -126,7 +126,7 @@ class OwnerReservationServiceTest {
         when(ownerReservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
         // when
-        ownerReservationService.cancelReservation(reservationId);
+        ownerReservationService.cancelReservationByOwner(reservationId);
 
         // then
         verify(reservation, times(1)).updateReservationStatus(ReservationStatus.CANCEL);
