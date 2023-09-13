@@ -129,11 +129,11 @@ class ReservationTest {
         var personCount = 3;
         var reservation = DataInitializerFactory.reservation(userId, shopReservation, personCount);
 
-        var shopReservationDateTimeSeatsSize = 4;
+        var shopReservationDateTimeSeatsSize = 6;
 
         //when & then
         assertThatThrownBy(() -> reservation.validSeatSizeAndPersonCount(shopReservationDateTimeSeatsSize))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("예약하려는 좌석의 수가 예약 인원 수를 초과했습니다. seats size : " + shopReservationDateTimeSeatsSize + ", person count : " + personCount);
+                .hasMessage("예약하려는 좌석의 수가 예약 인원 수 + 2를 초과했습니다. seats size : " + shopReservationDateTimeSeatsSize + ", person count : " + personCount);
     }
 }

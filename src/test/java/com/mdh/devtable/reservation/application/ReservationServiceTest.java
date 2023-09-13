@@ -72,8 +72,9 @@ class ReservationServiceTest {
         var reservationCreateRequest = new ReservationCreateRequest(1L,
                 2L,
                 List.of(3L, 4L),
+                4,
                 "요구사항 입니다.",
-                2);
+                4);
 
         //when
         reservationService.createReservation(reservationCreateRequest);
@@ -96,8 +97,9 @@ class ReservationServiceTest {
         var reservationCreateRequest = new ReservationCreateRequest(1L,
                 shopId,
                 List.of(3L, 4L, 5L),
+                3,
                 "요구사항 입니다.",
-                2);
+                3);
 
         //when&then
         assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest))
@@ -128,8 +130,9 @@ class ReservationServiceTest {
         var reservationCreateRequest = new ReservationCreateRequest(1L,
                 2L,
                 List.of(shopReservationDateTimeSeatId, 4L),
+                4,
                 "요구사항 입니다.",
-                2);
+                4);
 
         //when&then
         assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest))

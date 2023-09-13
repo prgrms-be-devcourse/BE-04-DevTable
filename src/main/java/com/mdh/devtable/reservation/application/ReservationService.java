@@ -54,7 +54,7 @@ public class ReservationService {
         var reservation = new Reservation(reservationCreateRequest.userId(),
                 shopReservation,
                 reservationCreateRequest.requirement(),
-                reservationCreateRequest.person_count());
+                reservationCreateRequest.personCount());
         return reservationRepository.save(reservation);
     }
 

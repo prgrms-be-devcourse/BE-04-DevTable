@@ -6,7 +6,8 @@ public record ReservationCreateRequest(
         Long userId,
         Long shopId,
         List<Long> shopReservationDateTimeSeatIds,
+        int seatTotalCount,
         String requirement,
-        int person_count
+        int personCount
 ) {
 }
