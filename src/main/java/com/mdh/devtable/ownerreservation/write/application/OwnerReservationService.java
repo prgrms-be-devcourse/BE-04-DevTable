@@ -4,6 +4,7 @@ import com.mdh.devtable.ownerreservation.write.infra.persistence.OwnerReservatio
 import com.mdh.devtable.ownerreservation.write.presentation.dto.SeatCreateRequest;
 import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationCreateRequest;
 import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationDateTimeCreateRequest;
+import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.domain.Seat;
 import com.mdh.devtable.reservation.domain.ShopReservationDateTime;
 import com.mdh.devtable.reservation.domain.ShopReservationDateTimeSeat;
@@ -55,5 +56,12 @@ public class OwnerReservationService {
         var shopReservationDateTimeSeat = new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
 
         return ownerReservationRepository.saveShopReservationDateTimeSeat(shopReservationDateTimeSeat);
+    }
+
+    @Transactional
+    public void cancelReservation(Long reservationId) {
+        var reservation = ownerReservationRepository.findReservationById(reservationId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
+        reservation.updateReservationStatus(ReservationStatus.CANCEL);
     }
 }

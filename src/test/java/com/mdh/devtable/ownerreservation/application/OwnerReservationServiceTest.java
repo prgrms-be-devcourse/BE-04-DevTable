@@ -116,4 +116,20 @@ class OwnerReservationServiceTest {
         assertThat(result).isEqualTo(1L);
         verify(ownerReservationRepository, times(1)).saveShopReservationDateTimeSeat(any(ShopReservationDateTimeSeat.class));
     }
+
+    @DisplayName("예약을 취소할 수 있다.")
+    @Test
+    void cancelReservation() {
+        // given
+        Long reservationId = 1L;
+        var reservation = mock(Reservation.class); // Assuming Reservation is the class you're using
+        when(ownerReservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
+
+        // when
+        ownerReservationService.cancelReservation(reservationId);
+
+        // then
+        verify(reservation, times(1)).updateReservationStatus(ReservationStatus.CANCEL);
+        verify(ownerReservationRepository, times(1)).findReservationById(reservationId);
+    }
 }
