@@ -1,13 +1,7 @@
 package com.mdh.devtable.ownerreservation.write.infra.persistence;
 
-import com.mdh.devtable.reservation.domain.Seat;
-import com.mdh.devtable.reservation.domain.ShopReservation;
-import com.mdh.devtable.reservation.domain.ShopReservationDateTime;
-import com.mdh.devtable.reservation.domain.ShopReservationDateTimeSeat;
-import com.mdh.devtable.reservation.infra.persistence.SeatRepository;
-import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeRepository;
-import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
-import com.mdh.devtable.reservation.infra.persistence.ShopReservationRepository;
+import com.mdh.devtable.reservation.domain.*;
+import com.mdh.devtable.reservation.infra.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +15,7 @@ public class OwnerReservationRepositoryImpl implements OwnerReservationRepositor
     private final SeatRepository seatRepository;
     private final ShopReservationDateTimeRepository shopReservationDateTimeRepository;
     private final ShopReservationDateTimeSeatRepository shopReservationDateTimeSeatRepository;
+    private final ReservationRepository reservationRepository;
 
     @Override
     public Long saveShopReservation(ShopReservation shopReservation) {
@@ -55,5 +50,10 @@ public class OwnerReservationRepositoryImpl implements OwnerReservationRepositor
     @Override
     public Optional<Seat> findSeatById(Long seatId) {
         return seatRepository.findById(seatId);
+    }
+
+    @Override
+    public Optional<Reservation> findReservationById(Long reservationId) {
+        return reservationRepository.findById(reservationId);
     }
 }
