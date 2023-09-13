@@ -19,6 +19,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -148,4 +149,23 @@ class OwnerReservationServiceTest {
         // then
         verify(mockReservation, times(1)).updateReservationStatus(ReservationStatus.VISITED);
     }
+
+    @DisplayName("점주는 예약을 노쇼로 표시할 수 있다.")
+    @Test
+    void markReservationAsNoShowByOwner() {
+        // given
+        var reservationId = 1L;
+        var reservation = mock(Reservation.class);
+
+        given(ownerReservationRepository.findReservationById(any(Long.class)))
+                .willReturn(Optional.of(reservation));
+
+        // when
+        ownerReservationService.markReservationAsNoShowByOwner(reservationId);
+
+        // then
+        verify(ownerReservationRepository).findReservationById(reservationId);
+        verify(reservation).updateReservationStatus(ReservationStatus.NO_SHOW);
+    }
+
 }
