@@ -35,8 +35,19 @@ public class ReservationService {
         var size = shopReservationDateTimeSeats.size();
         reservation.validSeatSizeAndPersonCount(size);
 
-        shopReservationDateTimeSeats.forEach(shopReservationDateTimeSeat ->
-                shopReservationDateTimeSeat.registerReservation(reservation));
+        shopReservationDateTimeSeats.forEach(reservation::addShopReservationDateTimeSeats);
+    }
+
+    @Transactional
+    public String cancelReservation(Long reservationId) {
+        var reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NoSuchElementException("등록된 예약이 존재하지 않습니다. id : " + reservationId));
+
+        if (reservation.isCancelShopReservation()) {
+            return "정상적으로 예약이 취소되었습니다.";
+        }
+
+        return "당일 취소의 경우 패널티가 발생 할 수 있습니다.";
     }
 
     private Reservation saveReservation(ReservationCreateRequest reservationCreateRequest, ShopReservation shopReservation) {

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -35,5 +36,9 @@ public class ShopReservationDateTime extends BaseTimeEntity {
         this.shopReservation = shopReservation;
         this.reservationDate = reservationDate;
         this.reservationTime = reservationTime;
+    }
+
+    public LocalDateTime getReservationDateTime() {
+        return LocalDateTime.of(this.reservationDate, this.reservationTime);
     }
 }

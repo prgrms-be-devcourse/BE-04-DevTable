@@ -69,7 +69,7 @@ class ReservationTest {
         var reservation = DataInitializerFactory.reservation(userId, shopReservation, personCount);
 
         //when
-        reservation.updateReservation(reservationStatus);
+        reservation.updateReservationStatus(reservationStatus);
 
         //then
         assertThat(reservation.getReservationStatus()).isEqualTo(reservationStatus);
@@ -89,7 +89,7 @@ class ReservationTest {
         var reservation = DataInitializerFactory.reservation(userId, shopReservation, personCount);
 
         //when & then
-        assertThatThrownBy(() -> reservation.updateReservation(ReservationStatus.CREATED))
+        assertThatThrownBy(() -> reservation.updateReservationStatus(ReservationStatus.CREATED))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("예약 상태를 동일한 상태로 변경 할 수 없습니다.");
     }
@@ -108,10 +108,10 @@ class ReservationTest {
         var personCount = 3;
         var reservation = DataInitializerFactory.reservation(userId, shopReservation, personCount);
 
-        reservation.updateReservation(reservationStatus);
+        reservation.updateReservationStatus(reservationStatus);
 
         //when & then
-        assertThatThrownBy(() -> reservation.updateReservation(ReservationStatus.CREATED))
+        assertThatThrownBy(() -> reservation.updateReservationStatus(ReservationStatus.CREATED))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("예약이 CREATED 상태에서만 상태변경이 가능합니다.");
     }
