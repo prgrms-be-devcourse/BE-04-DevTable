@@ -71,4 +71,11 @@ public class OwnerReservationService {
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
         reservation.updateReservationStatus(ReservationStatus.VISITED);
     }
+
+    @Transactional
+    public void markReservationAsNoShowByOwner(Long reservationId) {
+        var reservation = ownerReservationRepository.findReservationById(reservationId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
+        reservation.updateReservationStatus(ReservationStatus.NO_SHOW);
+    }
 }
