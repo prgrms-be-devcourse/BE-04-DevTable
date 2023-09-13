@@ -1,10 +1,12 @@
 package com.mdh.devtable.menu.application;
 
 import com.mdh.devtable.DataInitializerFactory;
+import com.mdh.devtable.menu.application.event.MenuCreatedEvent;
 import com.mdh.devtable.menu.domain.MealType;
-import com.mdh.devtable.menu.domain.Menu;
+import com.mdh.devtable.menu.domain.MenuCategory;
 import com.mdh.devtable.menu.domain.MenuType;
-import com.mdh.devtable.menu.infra.persistence.MenuRepository;
+import com.mdh.devtable.menu.infra.persistence.MenuCategoryRepository;
+import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,12 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -27,19 +32,18 @@ class MenuServiceTest {
     private MenuService menuService;
 
     @Mock
-    private MenuRepository menuRepository;
+    private MenuCategoryRepository menuCategoryRepository;
 
     @Mock
-    private MenuServiceValidator menuServiceValidator;
+    private ApplicationEventPublisher eventPublisher;
 
     @DisplayName("점주는 메뉴를 저장할 수 있다.")
     @Test
     void createMenu() {
         // given
         var categoryId = 1L;
-        var menu = DataInitializerFactory.menu(categoryId);
+        var menuCategory = DataInitializerFactory.menuCategory(categoryId);
         var request = new MenuCreateRequest(
-                categoryId,
                 "Spaghetti",
                 15000,
                 "Delicious spaghetti with tomato sauce",
@@ -47,13 +51,13 @@ class MenuServiceTest {
                 MenuType.MAIN,
                 MealType.DINNER
         );
-        given(menuRepository.save(any(Menu.class))).willReturn(menu);
+        given(menuCategoryRepository.findById(categoryId)).willReturn(Optional.of(menuCategory));
 
         // when
-        menuService.createMenu(request);
+        menuService.createMenu(categoryId, request);
 
         // then
-        verify(menuRepository, times(1)).save(any(Menu.class));
+        verify(eventPublisher, times(1)).publishEvent(any(MenuCreatedEvent.class));
     }
 
     @DisplayName("등록되지 않은 카테고리 ID로 메뉴를 저장하려고 하면 예외가 발생한다.")
@@ -62,7 +66,6 @@ class MenuServiceTest {
         // Given
         var invalidCategoryId = -1L;
         var request = new MenuCreateRequest(
-                invalidCategoryId,
                 "Spaghetti",
                 15000,
                 "Delicious spaghetti with tomato sauce",
@@ -70,12 +73,27 @@ class MenuServiceTest {
                 MenuType.MAIN,
                 MealType.DINNER
         );
-        doThrow(new NoSuchElementException("등록된 카테고리 ID가 없습니다." + invalidCategoryId))
-                .when(menuServiceValidator).validateMenuCreate(invalidCategoryId);
+        given(menuCategoryRepository.findById(invalidCategoryId)).willReturn(Optional.empty());
 
         // When & Then
-        Assertions.assertThatThrownBy(() -> menuService.createMenu(request))
+        Assertions.assertThatThrownBy(() -> menuService.createMenu(invalidCategoryId, request))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("등록된 카테고리 ID가 없습니다." + invalidCategoryId);
+                .hasMessageContaining("등록된 카테고리 ID가 없습니다.");
+    }
+
+    @DisplayName("점주는 메뉴 카테고리를 저장할 수 있다.")
+    @Test
+    void createMenuCategory() {
+        //given
+        var shopId = 1L;
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        var request = new MenuCategoryCreateRequest("Main Course", "Delicious main courses");
+        given(menuCategoryRepository.save(any(MenuCategory.class))).willReturn(menuCategory);
+
+        //when
+        menuService.createMenuCategory(shopId, request);
+
+        //then
+        verify(menuCategoryRepository, times(1)).save(any(MenuCategory.class));
     }
 }

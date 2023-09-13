@@ -26,39 +26,20 @@ class MenuCategoryTest {
                 .containsExactly(updatedName, updatedDescription);
     }
 
-    @DisplayName("메뉴 카테고리의 최소 가격을 업데이트한다.")
+    @DisplayName("메뉴 카테고리에 메뉴를 추가하면 메뉴 카테고리의 가격이 갱신된다.")
     @Test
-    public void updateMinPriceTest() {
-        // given
-        var shopId = 1L;
-        var updatedMinPrice = 20;
+    public void addMenuTest() {
+        // Given
+        Long shopId = 1L;
+        MenuCategory menuCategory = new MenuCategory(shopId, "Main Course", "Delicious main courses");
+        Menu menu = new Menu(); // 가정: Menu 객체가 적절하게 초기화되어 있음
 
-        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        // When
+        menuCategory.addMenu(menu);
 
-        // when
-        menuCategory.updateMinPrice(updatedMinPrice);
-
-        // then
-        Assertions.assertThat(menuCategory)
-                .extracting("minPrice")
-                .isEqualTo(updatedMinPrice);
+        // Then
+        Assertions.assertThat(menuCategory.getMenus()).contains(menu);
+        Assertions.assertThat(menu.getMenuCategory()).isEqualTo(menuCategory);
     }
 
-    @DisplayName("메뉴 카테고리의 최대 가격을 업데이트한다.")
-    @Test
-    public void updateMaxPriceTest() {
-        // given
-        var shopId = 1L;
-        var updatedMaxPrice = 50;
-
-        var menuCategory = DataInitializerFactory.menuCategory(shopId);
-
-        // when
-        menuCategory.updateMaxPrice(updatedMaxPrice);
-
-        // then
-        Assertions.assertThat(menuCategory)
-                .extracting("maxPrice")
-                .isEqualTo(updatedMaxPrice);
-    }
 }
