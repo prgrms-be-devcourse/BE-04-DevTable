@@ -5,7 +5,8 @@ import com.mdh.devtable.reservation.controller.dto.ReservationCreateRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
-import org.assertj.core.api.Assertions;
+import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
+import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,9 @@ class ReservationServiceTest {
 
     @Mock
     private ReservationRepository reservationRepository;
+
+    @Mock
+    private ShopReservationDateTimeSeatRepository shopReservationDateTimeSeatRepository;
 
     @Mock
     private ReservationValidator reservationValidator;
@@ -221,9 +225,84 @@ class ReservationServiceTest {
         reservation.updateReservationStatus(reservationStatus);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> reservationService.cancelReservation(reservationId))
+        assertThatThrownBy(() -> reservationService.cancelReservation(reservationId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("생성 상태가 아니라면 예약을 취소 할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("매장 예약을 24시간 이전에는 수정 할 수 있다.")
+    void updateReservationTest() {
+        //given
+        var userId = 1L;
+        var shopId = 1L;
+        var reservationId = 1L;
+        var seatCount = 2;
+
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
+        var shopReservationDateTime = DataInitializerFactory
+                .shopReservationDateTime(shopReservation, LocalDate.now().plusDays(1), LocalTime.now().plusHours(1));
+
+        var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+        var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
+        var request = new ReservationUpdateRequest(List.of(4L, 5L, 6L, 7L), 4);
+
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
+        given(shopReservationDateTimeSeatRepository.findAllById(anyList()))
+                .willReturn(List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3));
+
+        //when
+        reservationService.updateReservation(reservationId, request);
+
+        //then
+        verify(reservationRepository, times(1)).findById(any(Long.class));
+        verify(shopReservationDateTimeSeatRepository, times(1)).findAllById(anyList());
+    }
+
+    @Test
+    @DisplayName("매장 예약이 24시간 이내라면 수정이 불가능하다.")
+    void updateReservationExTest() {
+        //given
+        var userId = 1L;
+        var shopId = 1L;
+        var reservationId = 1L;
+        var seatCount = 2;
+
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
+        var shopReservationDateTime = DataInitializerFactory
+                .shopReservationDateTime(shopReservation);
+
+        var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+        var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
+        var request = new ReservationUpdateRequest(List.of(4L, 5L, 6L, 7L), 4);
+
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
+        given(shopReservationDateTimeSeatRepository.findAllById(anyList()))
+                .willReturn(List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3));
+
+        //when && then
+        assertThatThrownBy(() -> reservationService.updateReservation(reservationId, request))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : " + reservationId);
+
+        verify(reservationRepository, times(1)).findById(any(Long.class));
+        verify(shopReservationDateTimeSeatRepository, times(1)).findAllById(anyList());
     }
 
 }

@@ -74,8 +74,8 @@ public class Reservation extends BaseTimeEntity {
         this.shopReservationDateTimeSeats.clear();
 
         this.reservationStatus = ReservationStatus.CANCEL;
-        var now = LocalDateTime.now();
-        return !now.isAfter(yesterdayLocalDateTime);
+        return !LocalDateTime.now()
+                .isAfter(yesterdayLocalDateTime);
     }
 
     public boolean isSeatsSizeUnderOrSamePersonCount(int size) {
@@ -103,5 +103,16 @@ public class Reservation extends BaseTimeEntity {
                 .getShopReservationDateTime()
                 .getReservationDateTime()
                 .minusDays(1);
+    }
+
+    public boolean isAvailableUpdateReservation() {
+        var yesterdayLocalDateTime = getYesterdayLocalDateTime();
+        return !LocalDateTime.now()
+                .isAfter(yesterdayLocalDateTime);
+    }
+
+    public void updateReservation(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
+        this.shopReservationDateTimeSeats.forEach(ShopReservationDateTimeSeat::cancelReservation);
+        shopReservationDateTimeSeats.forEach(this::addShopReservationDateTimeSeats);
     }
 }

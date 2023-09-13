@@ -4,6 +4,8 @@ import com.mdh.devtable.reservation.controller.dto.ReservationCreateRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ShopReservation;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
+import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
+import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.NoSuchElementException;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final ShopReservationDateTimeSeatRepository shopReservationDateTimeSeatRepository;
 
     private final ReservationValidator reservationValidator;
 
@@ -44,6 +47,21 @@ public class ReservationService {
         }
 
         return "당일 취소의 경우 패널티가 발생 할 수 있습니다.";
+    }
+
+    @Transactional
+    public void updateReservation(Long reservationId, ReservationUpdateRequest request) {
+        var reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NoSuchElementException("등록된 예약이 존재하지 않습니다. id : " + reservationId));
+
+        var shopReservationDateTimeSeats =
+                shopReservationDateTimeSeatRepository.findAllById(request.shopReservationDateTimeSeatsId());
+
+        if (!reservation.isAvailableUpdateReservation()) {
+            throw new IllegalStateException("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : " + reservationId);
+        }
+
+        reservation.updateReservation(shopReservationDateTimeSeats);
     }
 
     private Reservation saveReservation(ReservationCreateRequest reservationCreateRequest, ShopReservation shopReservation) {
