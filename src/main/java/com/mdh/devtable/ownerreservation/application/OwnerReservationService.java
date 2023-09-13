@@ -6,6 +6,7 @@ import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationCreateR
 import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationDateTimeCreateRequest;
 import com.mdh.devtable.reservation.domain.Seat;
 import com.mdh.devtable.reservation.domain.ShopReservationDateTime;
+import com.mdh.devtable.reservation.domain.ShopReservationDateTimeSeat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,5 +43,17 @@ public class OwnerReservationService {
                 shopReservationDateTimeCreateRequest.localTime());
 
         return ownerReservationRepository.saveShopReservationDateTime(shopReservationDateTime);
+    }
+
+    @Transactional
+    public Long createShopReservationDateTimeSeat(Long shopReservationDateTimeId, Long seatId) {
+        var shopReservationDateTime = ownerReservationRepository.findShopReservationDateTimeById(shopReservationDateTimeId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 매장의 예약 날짜 정보가 없습니다.: " + shopReservationDateTimeId));
+        var seat = ownerReservationRepository.findSeatById(seatId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 좌석 정보가 없습니다.: " + seatId));
+
+        var shopReservationDateTimeSeat = new ShopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+        return ownerReservationRepository.saveShopReservationDateTimeSeat(shopReservationDateTimeSeat);
     }
 }

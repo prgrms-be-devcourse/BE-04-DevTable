@@ -175,4 +175,12 @@ public final class DataInitializerFactory {
                 .description("description")
                 .build();
     }
+
+    public static ShopReservationDateTime shopReservationDateTime(ShopReservation shopReservation) {
+        return new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
+    }
+
+    public static Seat seat(ShopReservation shopReservation) {
+        return new Seat(shopReservation, SeatType.BAR);
+    }
 }
