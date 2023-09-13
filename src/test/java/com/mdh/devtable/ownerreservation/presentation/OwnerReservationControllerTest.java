@@ -243,5 +243,35 @@ class OwnerReservationControllerTest extends RestDocsSupport {
                 ));
     }
 
+    @DisplayName("점주는 매장의 예약 날짜와 시간에 좌석을 추가할 수 있다.")
+    @Test
+    void createShopReservationDateTimeSeat() throws Exception {
+        var shopReservationDateTimeId = 1L;
+        var seatId = 1L;
+        given(ownerReservationService.createShopReservationDateTimeSeat(any(Long.class), any(Long.class))).willReturn(1L);
+
+        mockMvc.perform(post("/api/owner/v1/shop-reservation-date-times/{shopReservationDateTimeId}/seats/{seatId}/shop-reservation-date-time-seats", shopReservationDateTimeId, seatId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", String.format("/api/owner/v1/shop-reservation-date-times/%d/seats/%d/shop-reservation-date-time-seats/%d", shopReservationDateTimeId, seatId, 1L)))
+                .andExpect(jsonPath("$.statusCode").value("201"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-shop-reservation-date-time-seat-create",
+                        pathParameters(
+                                parameterWithName("shopReservationDateTimeId").description("매장 예약 날짜와 시간 ID"),
+                                parameterWithName("seatId").description("좌석 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
+                        ),
+                        responseHeaders(
+                                headerWithName("Location").description("새로 생성된 예약 날짜와 시간에 추가된 좌석의 URI")
+                        )
+                ));
+    }
+
 
 }
