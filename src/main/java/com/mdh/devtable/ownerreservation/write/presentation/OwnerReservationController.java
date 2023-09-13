@@ -1,10 +1,10 @@
-package com.mdh.devtable.ownerreservation.presentation;
+package com.mdh.devtable.ownerreservation.write.presentation;
 
 import com.mdh.devtable.global.ApiResponse;
-import com.mdh.devtable.ownerreservation.application.OwnerReservationService;
-import com.mdh.devtable.ownerreservation.presentation.dto.SeatCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationCreateRequest;
-import com.mdh.devtable.ownerreservation.presentation.dto.ShopReservationDateTimeCreateRequest;
+import com.mdh.devtable.ownerreservation.write.application.OwnerReservationService;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.SeatCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationCreateRequest;
+import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationDateTimeCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

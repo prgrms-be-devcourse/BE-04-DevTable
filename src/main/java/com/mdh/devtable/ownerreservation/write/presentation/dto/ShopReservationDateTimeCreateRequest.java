@@ -1,4 +1,4 @@
-package com.mdh.devtable.ownerreservation.presentation.dto;
+package com.mdh.devtable.ownerreservation.write.presentation.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
