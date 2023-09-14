@@ -2,6 +2,7 @@ package com.mdh.devtable.ownerreservation.application;
 
 import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.ownerreservation.write.application.OwnerReservationService;
+import com.mdh.devtable.ownerreservation.write.application.OwnerReservationServiceValidator;
 import com.mdh.devtable.ownerreservation.write.infra.persistence.OwnerReservationRepository;
 import com.mdh.devtable.ownerreservation.write.presentation.dto.SeatCreateRequest;
 import com.mdh.devtable.ownerreservation.write.presentation.dto.ShopReservationCreateRequest;
@@ -19,6 +20,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -30,6 +32,9 @@ class OwnerReservationServiceTest {
 
     @Mock
     private OwnerReservationRepository ownerReservationRepository;
+
+    @Mock
+    private OwnerReservationServiceValidator ownerReservationServiceValidator;
 
 
     @DisplayName("매장의 예약 정보를 생성할 수 있다.")
@@ -92,20 +97,18 @@ class OwnerReservationServiceTest {
         verify(ownerReservationRepository, times(1)).saveShopReservationDateTime(any(ShopReservationDateTime.class));
     }
 
-    @DisplayName("점주는 매장의 예약 날짜에 해당하는 좌석을 생성할 수 있다.")
+    @DisplayName("점주는 매장의 예약 날짜에 해당하는 좌석을 생성할 수 있다. - 유효한 경우")
     @Test
-    void createShopReservationDateTimeSeat() {
+    void createShopReservationDateTimeSeat_Valid() {
         // given
         var shopReservationDateTimeId = 1L;
         var seatId = 1L;
-        var shopId = 1L;
-        var shopReservation = DataInitializerFactory.shopReservation(shopId, 1, 5);
-        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now());
-        var seat = DataInitializerFactory.seat(shopReservation);
+        var shopReservationDateTime = mock(ShopReservationDateTime.class);
+        var seat = mock(Seat.class);
 
-        when(ownerReservationRepository.findShopReservationDateTimeById(any(Long.class)))
+        when(ownerReservationRepository.findShopReservationDateTimeById(shopReservationDateTimeId))
                 .thenReturn(Optional.of(shopReservationDateTime));
-        when(ownerReservationRepository.findSeatById(any(Long.class)))
+        when(ownerReservationRepository.findSeatById(seatId))
                 .thenReturn(Optional.of(seat));
         when(ownerReservationRepository.saveShopReservationDateTimeSeat(any(ShopReservationDateTimeSeat.class)))
                 .thenReturn(1L);
@@ -115,8 +118,28 @@ class OwnerReservationServiceTest {
 
         // then
         assertThat(result).isEqualTo(1L);
-        verify(ownerReservationRepository, times(1)).saveShopReservationDateTimeSeat(any(ShopReservationDateTimeSeat.class));
+        verify(ownerReservationServiceValidator).validateCreateShopReservationDateTimeSeat(shopReservationDateTimeId, seatId);
+        verify(ownerReservationRepository).saveShopReservationDateTimeSeat(any(ShopReservationDateTimeSeat.class));
     }
+
+    @DisplayName("점주는 매장의 예약 날짜에 해당하는 좌석을 생성할 수 없다. - 유효하지 않은 경우")
+    @Test
+    void createShopReservationDateTimeSeat_Invalid() {
+        // given
+        var shopReservationDateTimeId = 1L;
+        var seatId = 1L;
+
+        doThrow(new IllegalArgumentException(String.format("해당 날짜의 해당 좌석은 이미 예약 되었습니다. 날짜 id: %d, 좌석 id: %d", shopReservationDateTimeId, seatId)))
+                .when(ownerReservationServiceValidator).validateCreateShopReservationDateTimeSeat(shopReservationDateTimeId, seatId);
+
+        // when & then
+        assertThatThrownBy(() -> ownerReservationService.createShopReservationDateTimeSeat(shopReservationDateTimeId, seatId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format("해당 날짜의 해당 좌석은 이미 예약 되었습니다. 날짜 id: %d, 좌석 id: %d", shopReservationDateTimeId, seatId));
+
+        verify(ownerReservationServiceValidator).validateCreateShopReservationDateTimeSeat(shopReservationDateTimeId, seatId);
+    }
+
 
     @DisplayName("예약을 취소할 수 있다.")
     @Test
