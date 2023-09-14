@@ -1,6 +1,9 @@
 package com.mdh.devtable.reservation.application;
 
 import com.mdh.devtable.DataInitializerFactory;
+import com.mdh.devtable.reservation.controller.dto.ReservationCancelRequest;
+import com.mdh.devtable.reservation.controller.dto.ReservationPreemptiveRequest;
+import com.mdh.devtable.reservation.controller.dto.ReservationRegisterRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
@@ -242,7 +245,6 @@ class ReservationServiceTest {
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("예약 좌석 정보들 중 일부가 없습니다.");
     }
-
 
     @Test
     @DisplayName("선점한 예약을 취소한다.")
