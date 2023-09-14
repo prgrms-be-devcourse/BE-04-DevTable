@@ -416,7 +416,7 @@ class ReservationServiceTest {
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
         var seat = DataInitializerFactory.seat(shopReservation, seatCount);
-        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(1), LocalTime.now().plusHours(1));
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(2), LocalTime.now().plusHours(1));
 
         var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
