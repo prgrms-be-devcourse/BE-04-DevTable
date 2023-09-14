@@ -136,6 +136,10 @@ public final class DataInitializerFactory {
                 .build();
     }
 
+    public static Reservation preemptiveReservation(Long userId, int personCount) {
+        return new Reservation(userId, "요구사항 입니다. 요구 사항은 null 일 수 있습니다.", personCount);
+    }
+
     public static Seat seat(ShopReservation shopReservation, int seatCount) {
         return new Seat(shopReservation, seatCount, SeatType.ROOM);
     }

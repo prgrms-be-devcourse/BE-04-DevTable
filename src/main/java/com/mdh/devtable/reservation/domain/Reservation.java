@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Getter
@@ -42,6 +43,9 @@ public class Reservation extends BaseTimeEntity {
     @Column(name = "status", length = 15, nullable = false)
     private ReservationStatus reservationStatus;
 
+    @Transient
+    private UUID reservationId;
+
     @Builder
     public Reservation(
             Long userId,
@@ -54,14 +58,35 @@ public class Reservation extends BaseTimeEntity {
         this.shopReservation = shopReservation;
         this.requirement = requirement;
         this.personCount = personCount;
+        this.reservationId = UUID.randomUUID();
         this.reservationStatus = ReservationStatus.CREATED;
     }
 
-    public void addShopReservationDateTimeSeats(ShopReservationDateTimeSeat shopReservationDateTimeSeat) {
-        if (!this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat)) {
-            this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
-            shopReservationDateTimeSeat.registerReservation(this);
-        }
+    public Reservation(
+            Long userId,
+            String requirement,
+            int personCount
+    ) {
+        this.userId = userId;
+        this.requirement = requirement;
+        this.personCount = personCount;
+        this.reservationId = UUID.randomUUID();
+        this.reservationStatus = ReservationStatus.CREATED;
+    }
+
+    public void addShopReservation(ShopReservation shopReservation) {
+        shopReservation.validPersonCount(this.personCount);
+        this.shopReservation = shopReservation;
+    }
+
+    public void addShopReservationDateTimeSeats(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
+        shopReservationDateTimeSeats.stream()
+                .filter((shopReservationDateTimeSeat) -> !this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat))
+                .forEach((shopReservationDateTimeSeat -> {
+                            this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
+                            shopReservationDateTimeSeat.registerReservation(this);
+                        })
+                );
     }
 
     public boolean isCancelShopReservation() {
@@ -74,12 +99,13 @@ public class Reservation extends BaseTimeEntity {
         this.shopReservationDateTimeSeats.clear();
 
         this.reservationStatus = ReservationStatus.CANCEL;
-        var now = LocalDateTime.now();
-        return !now.isAfter(yesterdayLocalDateTime);
+        return !isAfterYesterday(yesterdayLocalDateTime);
     }
 
-    public boolean isSeatsSizeUnderOrSamePersonCount(int size) {
-        return size <= personCount;
+    public void validSeatSizeAndPersonCount(int size) {
+        if (size > personCount + 2) {
+            throw new IllegalArgumentException("예약하려는 좌석의 수가 예약 인원 수 + 2를 초과했습니다. seats size : " + size + ", person count : " + personCount);
+        }
     }
 
     public void updateReservationStatus(ReservationStatus reservationStatus) {
@@ -103,5 +129,23 @@ public class Reservation extends BaseTimeEntity {
                 .getShopReservationDateTime()
                 .getReservationDateTime()
                 .minusDays(1);
+    }
+
+    public void updateReservation(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
+        validAvailableUpdateReservation();
+        this.shopReservationDateTimeSeats.forEach(ShopReservationDateTimeSeat::cancelReservation);
+        addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
+    }
+
+    private void validAvailableUpdateReservation() {
+        var yesterdayLocalDateTime = getYesterdayLocalDateTime();
+
+        if (isAfterYesterday(yesterdayLocalDateTime)) {
+            throw new IllegalStateException("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : " + id);
+        }
+    }
+
+    private boolean isAfterYesterday(LocalDateTime yesterdayLocalDateTime) {
+        return LocalDateTime.now().isAfter(yesterdayLocalDateTime);
     }
 }
