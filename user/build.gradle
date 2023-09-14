@@ -1,0 +1,51 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+configurations {
+    asciidoctorExt
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // rest docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+ext { // 전역 변수
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    configurations 'asciidoctorExt'
+    baseDirFollowsSourceFile()
+    inputs.dir snippetsDir
+    dependsOn test
+    outputDir file('build/docs/asciidoc')
+}
+
+task copyAsciidoc(type: Copy) {
+    from "build/docs/asciidoc/"
+    into "src/main/resources/static/docs"
+    include "index.html"
+
+    doFirst {
+        delete "src/main/resources/static/docs/index.html"
+    }
+    dependsOn asciidoctor
+}
+
+build {
+    dependsOn copyAsciidoc
+}
