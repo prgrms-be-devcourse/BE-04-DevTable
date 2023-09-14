@@ -5,6 +5,7 @@ import com.mdh.devtable.reservation.infra.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -38,22 +39,17 @@ public class OwnerReservationRepositoryImpl implements OwnerReservationRepositor
     }
 
     @Override
-    public Long saveShopReservationDateTimeSeat(ShopReservationDateTimeSeat shopReservationDateTimeSeat) {
-        return shopReservationDateTimeSeatRepository.save(shopReservationDateTimeSeat).getId();
-    }
-
-    @Override
-    public Optional<ShopReservationDateTime> findShopReservationDateTimeById(Long shopReservationDateTimeId) {
-        return shopReservationDateTimeRepository.findById(shopReservationDateTimeId);
-    }
-
-    @Override
-    public Optional<Seat> findSeatById(Long seatId) {
-        return seatRepository.findById(seatId);
-    }
-
-    @Override
     public Optional<Reservation> findReservationById(Long reservationId) {
         return reservationRepository.findById(reservationId);
+    }
+
+    @Override
+    public List<Seat> findAllSeatsByShopId(Long shopId) {
+        return seatRepository.findAllByShopReservationShopId(shopId);
+    }
+
+    @Override
+    public void saveAllShopReservationDateTimeSeat(Iterable<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
+        shopReservationDateTimeSeatRepository.saveAll(shopReservationDateTimeSeats);
     }
 }
