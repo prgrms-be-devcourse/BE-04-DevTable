@@ -1,9 +1,6 @@
 package com.mdh.devtable.reservation.application;
 
 import com.mdh.devtable.DataInitializerFactory;
-import com.mdh.devtable.reservation.controller.dto.ReservationCancelRequest;
-import com.mdh.devtable.reservation.controller.dto.ReservationPreemptiveRequest;
-import com.mdh.devtable.reservation.controller.dto.ReservationRegisterRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;

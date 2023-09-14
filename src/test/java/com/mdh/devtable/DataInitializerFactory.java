@@ -175,4 +175,8 @@ public final class DataInitializerFactory {
                 .description("description")
                 .build();
     }
+
+    public static Seat seat(ShopReservation shopReservation) {
+        return new Seat(shopReservation, 3, SeatType.BAR);
+    }
 }

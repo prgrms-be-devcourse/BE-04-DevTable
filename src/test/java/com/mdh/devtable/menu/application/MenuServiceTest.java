@@ -6,8 +6,11 @@ import com.mdh.devtable.menu.domain.MealType;
 import com.mdh.devtable.menu.domain.MenuCategory;
 import com.mdh.devtable.menu.domain.MenuType;
 import com.mdh.devtable.menu.infra.persistence.MenuCategoryRepository;
+import com.mdh.devtable.menu.infra.persistence.MenuRepository;
 import com.mdh.devtable.menu.persentation.dto.MenuCategoryCreateRequest;
+import com.mdh.devtable.menu.persentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.devtable.menu.persentation.dto.MenuCreateRequest;
+import com.mdh.devtable.menu.persentation.dto.MenuUpdateRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +39,9 @@ class MenuServiceTest {
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
+
+    @Mock
+    private MenuRepository menuRepository;
 
     @DisplayName("점주는 메뉴를 저장할 수 있다.")
     @Test
@@ -95,5 +101,89 @@ class MenuServiceTest {
 
         //then
         verify(menuCategoryRepository, times(1)).save(any(MenuCategory.class));
+    }
+
+    @DisplayName("점주는 메뉴 카테고리를 업데이트할 수 있다.")
+    @Test
+    void updateMenuCategory() {
+        // given
+        var shopId = 1L;
+        var categoryId = 1L;
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        var request = new MenuCategoryUpdateRequest("Updated Main Course", "Updated description");
+        given(menuCategoryRepository.findById(categoryId)).willReturn(Optional.of(menuCategory));
+
+        // when
+        menuService.updateMenuCategory(categoryId, request);
+
+        // then
+        verify(menuCategoryRepository, times(1)).findById(categoryId);
+        Assertions.assertThat(menuCategory)
+                .extracting("name", "description")
+                .containsExactly(request.name(), request.description());
+    }
+
+
+    @DisplayName("점주는 메뉴 카테고리를 삭제할 수 있다.")
+    @Test
+    void deleteMenuCategory() {
+        // Given
+        Long shopId = 1L;
+        Long categoryId = 1L;
+        var menuCategory = DataInitializerFactory.menuCategory(shopId);
+        given(menuCategoryRepository.findById(categoryId)).willReturn(Optional.of(menuCategory));
+
+        // When
+        menuService.deleteMenuCategory(categoryId);
+
+        // Then
+        verify(menuCategoryRepository, times(1)).delete(menuCategory);
+    }
+
+    @DisplayName("존재하지 않는 카테고리 ID로 메뉴 카테고리를 삭제하려고 하면 예외가 발생한다.")
+    @Test
+    void deleteMenuCategoryWithInvalidCategoryId() {
+        // Given
+        Long invalidCategoryId = -1L;
+        given(menuCategoryRepository.findById(invalidCategoryId)).willReturn(Optional.empty());
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> menuService.deleteMenuCategory(invalidCategoryId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("등록된 카테고리 ID가 없습니다.");
+    }
+
+    @DisplayName("점주는 메뉴를 수정 할 수 있다.")
+    @Test
+    void updateMenu() {
+        var menuUpdateRequest = new MenuUpdateRequest(
+                "New Name",
+                200,
+                "New Description",
+                "New Label",
+                MenuType.MAIN,
+                MealType.DINNER
+        );
+        Long menuId = 1L;
+        var menu = DataInitializerFactory.menu();
+
+        given(menuRepository.findById(any(Long.class))).willReturn(Optional.of(menu));
+
+        //when
+        menuService.updateMenu(menuId, menuUpdateRequest);
+
+        //then
+        verify(menuRepository, times(1)).findById(menuId);
+        Assertions.assertThat(menu)
+                .extracting("menuName", "price", "description", "label", "menuType", "mealType")
+                .containsExactly(
+                        menuUpdateRequest.menuName(),
+                        menuUpdateRequest.price(),
+                        menuUpdateRequest.description(),
+                        menuUpdateRequest.label(),
+                        menuUpdateRequest.menuType(),
+                        menuUpdateRequest.mealType()
+                );
+
     }
 }

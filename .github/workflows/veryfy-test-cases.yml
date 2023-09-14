@@ -5,11 +5,11 @@ name: Verify Test Cases with Gradle
 
 on:
   pull_request:
-    branches: [ develop ]
     paths:
       - '**.java'
       - '**/build.gradle*'
       - '**/settings.gradle*'
+
 
 
 jobs:

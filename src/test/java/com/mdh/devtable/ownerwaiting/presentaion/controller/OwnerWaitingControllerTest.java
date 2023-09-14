@@ -107,7 +107,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
 
     @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 변경할 수 있다.")
     @Test
-    void changWaitingStatus() throws Exception {
+    void changeWaitingStatus() throws Exception {
         //given
         var waitingId = 1L;
         var request = new OwnerWaitingStatusChangeRequest(WaitingStatus.VISITED);

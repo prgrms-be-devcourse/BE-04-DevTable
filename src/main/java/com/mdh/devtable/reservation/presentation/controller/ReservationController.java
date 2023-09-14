@@ -2,6 +2,8 @@ package com.mdh.devtable.reservation.presentation.controller;
 
 import com.mdh.devtable.global.ApiResponse;
 import com.mdh.devtable.reservation.application.ReservationService;
+import com.mdh.devtable.reservation.application.dto.ReservationResponses;
+import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.presentation.dto.ReservationCancelRequest;
 import com.mdh.devtable.reservation.presentation.dto.ReservationPreemptiveRequest;
 import com.mdh.devtable.reservation.presentation.dto.ReservationRegisterRequest;
@@ -57,5 +59,14 @@ public class ReservationController {
     ) {
         reservationService.updateReservation(reservationId, request);
         return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
+    }
+
+    @GetMapping("/me/{userId}")
+    public ResponseEntity<ApiResponse<ReservationResponses>> findReservations(
+            @PathVariable Long userId,
+            @RequestParam("status") ReservationStatus status
+    ) {
+        var reservationResponses = reservationService.findAllReservations(userId, status);
+        return new ResponseEntity<>(ApiResponse.ok(reservationResponses), HttpStatus.OK);
     }
 }
