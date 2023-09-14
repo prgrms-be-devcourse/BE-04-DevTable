@@ -39,12 +39,14 @@ public class OwnerReservationService {
         var shopReservation = ownerReservationRepository.findShopReservationByShopId(shopId).orElseThrow(() -> new NoSuchElementException("해당 ID의 매장의 예약정보가 존재하지 않습니다:" + shopId));
         var shopReservationDateTime = new ShopReservationDateTime(shopReservation, shopReservationDateTimeCreateRequest.localDate(), shopReservationDateTimeCreateRequest.localTime());
 
+        var shopReservationDateTimeId = ownerReservationRepository.saveShopReservationDateTime(shopReservationDateTime);
+
         var seats = ownerReservationRepository.findAllSeatsByShopId(shopId);
         var shopReservationDateTimeSeats = seats.stream()
                 .map(seat -> new ShopReservationDateTimeSeat(shopReservationDateTime, seat)).toList();
         ownerReservationRepository.saveAllShopReservationDateTimeSeat(shopReservationDateTimeSeats);
 
-        return ownerReservationRepository.saveShopReservationDateTime(shopReservationDateTime);
+        return shopReservationDateTimeId;
     }
 
     @Transactional
