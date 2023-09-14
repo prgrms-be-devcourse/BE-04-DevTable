@@ -68,7 +68,7 @@ public class ReservationService {
 
         // 연결함
         savedReservation.addShopReservation(shopReservation);
-        shopReservationDateTimeSeats.forEach(savedReservation::addShopReservationDateTimeSeats);
+        savedReservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
         // 모두 삭제
         removeAll(reservationId, shopReservationDateTimeSeatIds);
