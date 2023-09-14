@@ -8,7 +8,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "shop_reservation_datetime_seats")
+@Table(name = "shop_reservation_datetime_seats",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"seat_id", "shop_reservation_datetime_id"}
+                )
+        }
+)
 @Entity
 public class ShopReservationDateTimeSeat extends BaseTimeEntity {
 

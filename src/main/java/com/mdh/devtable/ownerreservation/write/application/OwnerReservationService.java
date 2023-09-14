@@ -20,6 +20,8 @@ public class OwnerReservationService {
 
     private final OwnerReservationRepository ownerReservationRepository;
 
+    private final OwnerReservationServiceValidator ownerReservationServiceValidator;
+
     @Transactional
     public Long createShopReservation(Long shopId, ShopReservationCreateRequest shopReservationCreateRequest) {
         var shopReservation = shopReservationCreateRequest.toEntity(shopId);
@@ -48,6 +50,8 @@ public class OwnerReservationService {
 
     @Transactional
     public Long createShopReservationDateTimeSeat(Long shopReservationDateTimeId, Long seatId) {
+        ownerReservationServiceValidator.validateCreateShopReservationDateTimeSeat(shopReservationDateTimeId, seatId);
+
         var shopReservationDateTime = ownerReservationRepository.findShopReservationDateTimeById(shopReservationDateTimeId)
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 매장의 예약 날짜 정보가 없습니다.: " + shopReservationDateTimeId));
         var seat = ownerReservationRepository.findSeatById(seatId)
