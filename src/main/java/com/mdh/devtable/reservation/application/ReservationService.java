@@ -1,7 +1,10 @@
 package com.mdh.devtable.reservation.application;
 
+import com.mdh.devtable.reservation.application.dto.ReservationResponse;
+import com.mdh.devtable.reservation.application.dto.ReservationResponses;
 import com.mdh.devtable.reservation.controller.dto.ReservationCreateRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
+import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.domain.ShopReservation;
 import com.mdh.devtable.reservation.domain.ShopReservationDateTimeSeat;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
@@ -78,5 +81,14 @@ public class ReservationService {
             throw new NoSuchElementException("예약 좌석 정보들 중 일부가 없습니다.");
         }
         return shopReservationDateTimeSeats;
+    }
+
+    public ReservationResponses findAllReservations(Long userId, ReservationStatus reservationStatus) {
+        var reservationResponses = reservationRepository.findByUserIdAndReservationStatus(userId, reservationStatus)
+                .stream()
+                .map(ReservationResponse::new)
+                .toList();
+
+        return new ReservationResponses(reservationResponses);
     }
 }
