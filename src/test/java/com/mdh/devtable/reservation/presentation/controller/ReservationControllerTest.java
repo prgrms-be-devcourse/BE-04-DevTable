@@ -6,6 +6,9 @@ import com.mdh.devtable.reservation.application.dto.ReservationResponse;
 import com.mdh.devtable.reservation.application.dto.ReservationResponses;
 import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.dto.ReservationQueryDto;
+import com.mdh.devtable.reservation.presentation.dto.ReservationCancelRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationPreemptiveRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import com.mdh.devtable.shop.ShopType;
 import org.junit.jupiter.api.DisplayName;
@@ -22,17 +25,19 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ReservationController.class)
 class ReservationControllerTest extends RestDocsSupport {
@@ -44,6 +49,107 @@ class ReservationControllerTest extends RestDocsSupport {
 
     @MockBean
     private ReservationService reservationService;
+
+    @Test
+    @DisplayName("예약 좌석을 선점할 수 있다.")
+    void preemptReservation() throws Exception {
+        //given
+        var reservationId = UUID.randomUUID();
+        var request = new ReservationPreemptiveRequest(1L, List.of(1L, 2L), "요구사항 입니다.", 4);
+        when(reservationService.preemtiveReservation(request)).thenReturn(reservationId);
+
+        //when & then
+        mockMvc.perform(post("/api/customer/v1/reservations/preemption")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").value(String.valueOf(reservationId)))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("s",
+                        requestFields(
+                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                                fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점하려는 좌석들"),
+                                fieldWithPath("requirement").type(JsonFieldType.STRING).description("요구사항"),
+                                fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("선점된 예약 아이디"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("선점하던 예약을 확정할 수 있다.")
+    void registerReservation() throws Exception {
+        //given
+        var reservationId = UUID.randomUUID();
+        var registerdReservationId = 1L;
+        var request = new ReservationRegisterRequest(1L, List.of(1L, 2L), 4);
+        when(reservationService.registerReservation(reservationId, request)).thenReturn(registerdReservationId);
+
+        //when & then
+        mockMvc.perform(post("/api/customer/v1/reservations/{reservationId}/register", reservationId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", String.format("/api/customer/v1/reservations/%d", registerdReservationId)))
+                .andExpect(jsonPath("$.statusCode").value("201"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("change-shop-waiting-status",
+                        pathParameters(
+                                parameterWithName("reservationId").description("예약 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                                fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점하려는 좌석들"),
+                                fieldWithPath("totalSeatCount").type(JsonFieldType.NUMBER).description("선점하려는 좌석들의 수")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                        ),
+                        responseHeaders(
+                                headerWithName("Location").description("새로 생성된 예약의 URI")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("선점하던 예약을 취소할 수 있다.")
+    void cancelPreemptiveReservation() throws Exception {
+        //given
+        var reservationId = UUID.randomUUID();
+        var cancelMessage = "성공적으로 선점된 예약을 취소했습니다.";
+        var request = new ReservationCancelRequest(List.of(1L, 2L));
+        given(reservationService.cancelPreemptiveReservation(reservationId, request)).willReturn(cancelMessage);
+
+        //when & then
+        mockMvc.perform(post("/api/customer/v1/reservations/preemption/{reservationId}/cancel", reservationId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").value(cancelMessage))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("change-shop-waiting-status",
+                        pathParameters(
+                                parameterWithName("reservationId").description("예약 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점 취소하려는 좌석들")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("선점 취소 성공 메시지"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                        )
+                ));
+    }
 
     @Test
     @DisplayName("매장의 예약을 취소 할 수 있다.")

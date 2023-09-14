@@ -1,12 +1,14 @@
 package com.mdh.devtable.reservation.application;
 
 import com.mdh.devtable.DataInitializerFactory;
-import com.mdh.devtable.reservation.controller.dto.ReservationCreateRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationRepository;
+import com.mdh.devtable.reservation.presentation.dto.ReservationCancelRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationPreemptiveRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,9 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,9 +45,66 @@ class ReservationServiceTest {
     @Mock
     private ShopReservationRepository shopReservationRepository;
 
+    @Mock
+    private Set<Long> preemtiveShopReservationDateTimeSeats;
+
+    @Mock
+    private Map<UUID, Reservation> preemtiveReservations;
+
     @Test
-    @DisplayName("예약을 등록한다.")
-    void createReservationTest() {
+    @DisplayName("예약을 선점한다.")
+    void preemptiveReservationTest() {
+        //given
+        var userId = 1L;
+        var shopReservationDateTimeSeatIds = List.of(1L, 2L, 3L);
+        var requirement = "요구사항입니다.";
+        var personCount = 3;
+        var reservationPreemptiveRequest = new ReservationPreemptiveRequest(userId,
+                shopReservationDateTimeSeatIds,
+                requirement,
+                personCount);
+        var reservation = DataInitializerFactory.preemptiveReservation(userId, personCount);
+
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(false);
+        given(preemtiveShopReservationDateTimeSeats.addAll(anyList())).willReturn(true);
+        given(preemtiveReservations.put(any(UUID.class), any(Reservation.class))).willReturn(reservation);
+
+        //when
+        UUID reservationId = reservationService.preemtiveReservation(reservationPreemptiveRequest);
+
+        //then
+        verify(preemtiveShopReservationDateTimeSeats, times(3)).contains(any(Long.class));
+        verify(preemtiveShopReservationDateTimeSeats, times(1)).addAll(anyList());
+        verify(preemtiveReservations, times(1)).put(any(UUID.class), any(Reservation.class));
+
+        assertThat(reservationId).isEqualTo(reservation.getReservationId());
+    }
+
+    @Test
+    @DisplayName("좌석을 선점할 때 이미 선점된 좌석이면 예외가 발생한다.")
+    void preemptiveReservationExTest() {
+        //given
+        var userId = 1L;
+        var shopReservationDateTimeSeatIds = List.of(1L, 2L, 3L);
+        var requirement = "요구사항입니다.";
+        var personCount = 3;
+        var reservationPreemptiveRequest = new ReservationPreemptiveRequest(userId,
+                shopReservationDateTimeSeatIds,
+                requirement,
+                personCount);
+        var reservation = DataInitializerFactory.preemptiveReservation(userId, personCount);
+
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(true);
+
+        //when
+        assertThatThrownBy(() -> reservationService.preemtiveReservation(reservationPreemptiveRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 선점된 좌석이므로 선점할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("선점한 예약을 확정한다.")
+    void registerReservationTest() {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
 
@@ -59,43 +116,106 @@ class ReservationServiceTest {
         var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
-        var reservation = DataInitializerFactory.reservation(1L, shopReservation, 3);
+        var reservationRegisterRequest = new ReservationRegisterRequest(1L,
+                List.of(1L, 2L),
+                4);
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(true);
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(true);
+        given(preemtiveReservations.get(any(UUID.class))).willReturn(reservation);
 
         given(shopReservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(shopReservation));
         given(shopReservationDateTimeSeatRepository.findAllById(anyIterable())).willReturn(List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2));
+
         given(reservationRepository.save(any(Reservation.class))).willReturn(reservation);
 
-        var reservationCreateRequest = new ReservationCreateRequest(1L, 2L, List.of(3L, 4L), 4, "요구사항 입니다.", 4);
+        given(preemtiveReservations.remove(any(UUID.class))).willReturn(reservation);
+        given(preemtiveShopReservationDateTimeSeats.remove(any(Long.class))).willReturn(true);
 
         //when
-        reservationService.createReservation(reservationCreateRequest);
+        reservationService.registerReservation(reservationId, reservationRegisterRequest);
 
         //then
+        verify(preemtiveShopReservationDateTimeSeats, times(2)).contains(any(Long.class));
+        verify(preemtiveReservations, times(1)).containsKey(any(UUID.class));
+        verify(preemtiveReservations, times(1)).get(any(UUID.class));
+
         verify(shopReservationRepository, times(1)).findById(any(Long.class));
         verify(shopReservationDateTimeSeatRepository, times(1)).findAllById(anyIterable());
+
         verify(reservationRepository, times(1)).save(any(Reservation.class));
+
+        verify(preemtiveReservations, times(1)).remove(any(UUID.class));
+        verify(preemtiveShopReservationDateTimeSeats, times(2)).remove(any(Long.class));
     }
 
     @Test
-    @DisplayName("해당 매장의 예약 정보가 없다면 예외가 발생한다.")
-    void createReservationNoSuchShopReservationExTest() {
+    @DisplayName("선점된 예약이 아니라면 예약을 확정할 때 예외가 발생한다.")
+    void registerReservationNotPreemptiveReservationExTest() {
+        //given
+        var reservationRegisterRequest = new ReservationRegisterRequest(1L,
+                List.of(1L, 2L),
+                4);
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(false);
+
+        //when & then
+        assertThatThrownBy(() -> reservationService.registerReservation(reservationId, reservationRegisterRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("선점된 예약이 아니므로 예약 확정할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("선점된 좌석이 아니라면 예약을 확정할 때 예외가 발생한다.")
+    void registerReservationNotPreemptiveSeatExTest() {
+        //given
+        var reservationRegisterRequest = new ReservationRegisterRequest(1L,
+                List.of(1L, 2L),
+                4);
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(true);
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(false);
+
+        //when & then
+        assertThatThrownBy(() -> reservationService.registerReservation(reservationId, reservationRegisterRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("선점된 좌석이 아니므로 예약 확정할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("해당 매장의 예약 정보가 없다면 예약을 확정할 때 예외가 발생한다.")
+    void registerReservationNotFoundShopReservationExTest() {
         //given
         var shopId = 1L;
+        var reservationRegisterRequest = new ReservationRegisterRequest(shopId,
+                List.of(1L, 2L),
+                4);
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(true);
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(true);
+        given(preemtiveReservations.get(any(UUID.class))).willReturn(reservation);
 
         given(shopReservationRepository.findById(any(Long.class))).willReturn(Optional.empty());
 
-        var reservationCreateRequest = new ReservationCreateRequest(1L, shopId, List.of(3L, 4L, 5L), 3, "요구사항 입니다.", 3);
-
-        //when&then
-        assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest)).isInstanceOf(NoSuchElementException.class).hasMessage("매장의 예약 정보가 없습니다. shopId " + shopId);
+        //when & then
+        assertThatThrownBy(() -> reservationService.registerReservation(reservationId, reservationRegisterRequest))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("매장의 예약 정보가 없습니다. shopId " + shopId);
     }
 
     @Test
-    @DisplayName("예약 좌석들 중 일부가 없다면 예외가 발생한다.")
-    void ecreateReservationTest() {
+    @DisplayName("해당 예약 좌석 정보가 없다면 예약을 확정할 때 예외가 발생한다.")
+    void registerReservationNotFoundSeatsExTest() {
         //given
         var shopReservation = DataInitializerFactory.shopReservation(1L, 2, 10);
-        var shopReservationDateTimeSeatId = 3L;
 
         var seatCount = 2;
         var seat = DataInitializerFactory.seat(shopReservation, seatCount);
@@ -104,14 +224,83 @@ class ReservationServiceTest {
 
         var shopReservationDateTimeSeat = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
+        var reservationRegisterRequest = new ReservationRegisterRequest(1L,
+                List.of(1L, 2L),
+                4);
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(true);
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(true);
+        given(preemtiveReservations.get(any(UUID.class))).willReturn(reservation);
 
         given(shopReservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(shopReservation));
         given(shopReservationDateTimeSeatRepository.findAllById(anyIterable())).willReturn(List.of(shopReservationDateTimeSeat));
 
-        var reservationCreateRequest = new ReservationCreateRequest(1L, 2L, List.of(shopReservationDateTimeSeatId, 4L), 4, "요구사항 입니다.", 4);
+        //when & then
+        assertThatThrownBy(() -> reservationService.registerReservation(reservationId, reservationRegisterRequest))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("예약 좌석 정보들 중 일부가 없습니다.");
+    }
 
-        //when&then
-        assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest)).isInstanceOf(NoSuchElementException.class).hasMessage("예약 좌석 정보들 중 일부가 없습니다.");
+    @Test
+    @DisplayName("선점한 예약을 취소한다.")
+    void registerCancelTest() {
+        //given
+        var reservationCancelRequest = new ReservationCancelRequest(List.of(1L, 2L));
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(true);
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(true);
+
+        given(preemtiveReservations.remove(any(UUID.class))).willReturn(reservation);
+        given(preemtiveShopReservationDateTimeSeats.remove(any(Long.class))).willReturn(true);
+
+        //when
+        String message = reservationService.cancelPreemptiveReservation(reservationId, reservationCancelRequest);
+
+        //then
+        verify(preemtiveShopReservationDateTimeSeats, times(2)).contains(any(Long.class));
+        verify(preemtiveReservations, times(1)).containsKey(any(UUID.class));
+
+        verify(preemtiveReservations, times(1)).remove(any(UUID.class));
+        verify(preemtiveShopReservationDateTimeSeats, times(2)).remove(any(Long.class));
+
+        assertThat(message).isEqualTo("성공적으로 선점된 예약을 취소했습니다.");
+    }
+
+    @Test
+    @DisplayName("선점된 예약이 아니라면 예약을 취소할 때 예외가 발생한다.")
+    void registerCancelNotPreemptiveReservationTest() {
+        //given
+        var reservationCancelRequest = new ReservationCancelRequest(List.of(1L, 2L));
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(false);
+
+        //when & then
+        assertThatThrownBy(() -> reservationService.cancelPreemptiveReservation(reservationId, reservationCancelRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("선점된 예약이 아니므로 예약 취소할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("선점된 좌석이 아니라면 예약을 취소할 때 예외가 발생한다.")
+    void registerCancelNotPreemptiveSeatTest() {
+        //given
+        var reservationCancelRequest = new ReservationCancelRequest(List.of(1L, 2L));
+        var reservation = DataInitializerFactory.preemptiveReservation(1L, 3);
+        var reservationId = reservation.getReservationId();
+
+        given(preemtiveReservations.containsKey(any(UUID.class))).willReturn(true);
+        given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(false);
+
+        //when & then
+        assertThatThrownBy(() -> reservationService.cancelPreemptiveReservation(reservationId, reservationCancelRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("선점된 좌석이 아니므로 예약 취소할 수 없습니다.");
     }
 
     @Test
