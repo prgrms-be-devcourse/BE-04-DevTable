@@ -2,6 +2,7 @@ package com.mdh.devtable.ownerreservation.write.infra.persistence;
 
 import com.mdh.devtable.reservation.domain.*;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OwnerReservationRepository {
@@ -14,11 +15,11 @@ public interface OwnerReservationRepository {
 
     Long saveShopReservationDateTime(ShopReservationDateTime shopReservationDateTime);
 
-    Long saveShopReservationDateTimeSeat(ShopReservationDateTimeSeat shopReservationDateTimeSeat);
-
-    Optional<ShopReservationDateTime> findShopReservationDateTimeById(Long shopReservationDateTimeId);
-
-    Optional<Seat> findSeatById(Long seatId);
+    ;
 
     Optional<Reservation> findReservationById(Long reservationId);
+
+    List<Seat> findAllSeatsByShopId(Long shopId);
+
+    void saveAllShopReservationDateTimeSeat(Iterable<ShopReservationDateTimeSeat> shopReservationDateTimeSeats);
 }
