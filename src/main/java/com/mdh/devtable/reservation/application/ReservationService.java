@@ -9,6 +9,9 @@ import com.mdh.devtable.reservation.domain.ShopReservationDateTimeSeat;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationRepository;
+import com.mdh.devtable.reservation.presentation.dto.ReservationCancelRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationPreemptiveRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,7 +49,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public void registerReservation(UUID reservationId, ReservationRegisterRequest reservationRegisterRequest) {
+    public Long registerReservation(UUID reservationId, ReservationRegisterRequest reservationRegisterRequest) {
         // 선점한 예약인지 확인
         var shopReservationDateTimeSeatIds = reservationRegisterRequest.shopReservationDateTimeSeatIds();
         validRegisterReservations(reservationId, shopReservationDateTimeSeatIds);
@@ -64,6 +67,7 @@ public class ReservationService {
 
         // reservation 저장
         var savedReservation = reservationRepository.save(reservation);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
         // 연결함
         savedReservation.addShopReservation(shopReservation);
@@ -71,14 +75,18 @@ public class ReservationService {
 
         // 모두 삭제
         removeAll(reservationId, shopReservationDateTimeSeatIds);
+
+        return savedReservation.getId();
     }
 
-    public void cancelPreemptiveReservation(UUID reservationId, ReservationCancelRequest reservationCancelRequest) {
+    public String cancelPreemptiveReservation(UUID reservationId, ReservationCancelRequest reservationCancelRequest) {
         var shopReservationDateTimeSeatIds = reservationCancelRequest.shopReservationDateTimeSeatIds();
         validCancelReservations(reservationId, shopReservationDateTimeSeatIds);
 
         // 선점에서 모두 삭제
         removeAll(reservationId, shopReservationDateTimeSeatIds);
+
+        return "성공적으로 선점된 예약을 취소했습니다.";
     }
 
     @Transactional
