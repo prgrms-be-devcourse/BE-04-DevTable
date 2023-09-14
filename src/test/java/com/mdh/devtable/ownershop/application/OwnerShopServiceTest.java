@@ -3,6 +3,9 @@ package com.mdh.devtable.ownershop.application;
 import com.mdh.devtable.DataInitializerFactory;
 import com.mdh.devtable.ownershop.infra.persistence.OwnerShopRepository;
 import com.mdh.devtable.ownershop.presentation.dto.OwnerShopCreateRequest;
+import com.mdh.devtable.ownershop.presentation.dto.RegionRequest;
+import com.mdh.devtable.ownershop.presentation.dto.ShopAddressRequest;
+import com.mdh.devtable.ownershop.presentation.dto.ShopDetailsRequest;
 import com.mdh.devtable.shop.Shop;
 import com.mdh.devtable.shop.ShopType;
 import org.junit.jupiter.api.DisplayName;
@@ -39,9 +42,9 @@ public class OwnerShopServiceTest {
                 "test",
                 "Test Shop",
                 ShopType.ASIAN,
-                new OwnerShopCreateRequest.ShopDetailsRequest("Introduce", "9-5", "Info", "www.test.com", "123-456", "Sunday"),
-                new OwnerShopCreateRequest.ShopAddressRequest("123 Test St", "12345", "37.123", "127.123"),
-                new OwnerShopCreateRequest.RegionRequest("city", "district")
+                new ShopDetailsRequest("Introduce", "9-5", "Info", "www.test.com", "123-456", "Sunday"),
+                new ShopAddressRequest("123 Test St", "12345", "37.123", "127.123"),
+                new RegionRequest("city", "district")
         );
         given(ownerShopRepository.save(any(Shop.class))).willReturn(1L);
 
