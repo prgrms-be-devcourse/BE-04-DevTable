@@ -3,9 +3,6 @@ package com.mdh.devtable.ownershop.presentation;
 import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.ownershop.application.OwnerShopService;
 import com.mdh.devtable.ownershop.presentation.dto.OwnerShopCreateRequest;
-import com.mdh.devtable.ownershop.presentation.dto.RegionRequest;
-import com.mdh.devtable.ownershop.presentation.dto.ShopAddressRequest;
-import com.mdh.devtable.ownershop.presentation.dto.ShopDetailsRequest;
 import com.mdh.devtable.shop.ShopType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +20,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OwnerShopController.class)
@@ -46,22 +44,21 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 "ShopName",
                 "ShopDescription",
                 ShopType.AMERICAN,
-                new ShopDetailsRequest(
+                new OwnerShopCreateRequest.ShopDetailsRequest(
                         "Introduce",
                         "OpeningHours",
                         "Info",
-                        "URL",
-                        "PhoneNumber",
+                        "https://example.com",
+                        "01012345678",
                         "Holiday"
                 ),
-                new ShopAddressRequest(
+                new OwnerShopCreateRequest.ShopAddressRequest(
                         "123 Main St",
                         "12345",
                         "37.7749",
                         "-122.4194"
-                )
-                ,
-                new RegionRequest(
+                ),
+                new OwnerShopCreateRequest.RegionRequest(
                         "City",
                         "District"
                 )
@@ -72,6 +69,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
         mockMvc.perform(post("/api/owner/v1/shops/{ownerId}", ownerId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d/%d", ownerId, shopId)))
                 .andExpect(jsonPath("$.statusCode").value("201"))
@@ -111,7 +109,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("점주는 상점을 잘못 생성할 수 없다.")
+    @DisplayName("점주는 상점을 생성할 때 잘못된 값을 입력할 수 없다.")
     @Test
     void createShopThrowException() throws Exception {
         var ownerId = 1L;
@@ -119,9 +117,9 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 "", // 빈 이름
                 "상점 설명",
                 ShopType.AMERICAN,
-                new ShopDetailsRequest("소개", "영업 시간", null, null, null, null),
-                new ShopAddressRequest("주소", "우편번호", "위도", "경도"),
-                new RegionRequest("도시", "지역")
+                new OwnerShopCreateRequest.ShopDetailsRequest("소개", "영업 시간", null, null, "109", null),
+                new OwnerShopCreateRequest.ShopAddressRequest("주소", "우편번호", "위도", "경도"),
+                new OwnerShopCreateRequest.RegionRequest("도시", "지역")
         );
 
         mockMvc.perform(post("/api/owner/v1/shops/{ownerId}", ownerId)
@@ -130,6 +128,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+                .andDo(print())
                 .andDo(document("owner-shop-create-invalid",
                         pathParameters(
                                 parameterWithName("ownerId").description("점주 ID")
@@ -143,7 +142,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
                                 fieldWithPath("shopDetailsRequest.openingHours").type(JsonFieldType.STRING).description("Shop opening hours"),
                                 fieldWithPath("shopDetailsRequest.info").type(JsonFieldType.NULL).description("Shop info"),
                                 fieldWithPath("shopDetailsRequest.url").type(JsonFieldType.NULL).description("Shop URL"),
-                                fieldWithPath("shopDetailsRequest.phoneNumber").type(JsonFieldType.NULL).description("Shop phone number"),
+                                fieldWithPath("shopDetailsRequest.phoneNumber").type(JsonFieldType.STRING).description("Shop phone number"),
                                 fieldWithPath("shopDetailsRequest.holiday").type(JsonFieldType.NULL).description("Shop holiday"),
                                 fieldWithPath("shopDetailsRequest.openingHours").type(JsonFieldType.STRING).description("영업 시간"),
                                 fieldWithPath("shopAddressRequest.address").type(JsonFieldType.STRING).description("주소"),
