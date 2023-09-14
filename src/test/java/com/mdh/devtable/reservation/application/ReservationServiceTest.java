@@ -1,14 +1,14 @@
 package com.mdh.devtable.reservation.application;
 
 import com.mdh.devtable.DataInitializerFactory;
-import com.mdh.devtable.reservation.controller.dto.ReservationCancelRequest;
-import com.mdh.devtable.reservation.controller.dto.ReservationPreemptiveRequest;
-import com.mdh.devtable.reservation.controller.dto.ReservationRegisterRequest;
 import com.mdh.devtable.reservation.domain.Reservation;
 import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationRepository;
+import com.mdh.devtable.reservation.presentation.dto.ReservationCancelRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationPreemptiveRequest;
+import com.mdh.devtable.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -259,7 +259,7 @@ class ReservationServiceTest {
         given(preemtiveShopReservationDateTimeSeats.remove(any(Long.class))).willReturn(true);
 
         //when
-        reservationService.cancelPreemptiveReservation(reservationId, reservationCancelRequest);
+        String message = reservationService.cancelPreemptiveReservation(reservationId, reservationCancelRequest);
 
         //then
         verify(preemtiveShopReservationDateTimeSeats, times(2)).contains(any(Long.class));
@@ -267,6 +267,8 @@ class ReservationServiceTest {
 
         verify(preemtiveReservations, times(1)).remove(any(UUID.class));
         verify(preemtiveShopReservationDateTimeSeats, times(2)).remove(any(Long.class));
+
+        assertThat(message).isEqualTo("성공적으로 선점된 예약을 취소했습니다.");
     }
 
     @Test
