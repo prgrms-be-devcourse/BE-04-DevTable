@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Getter
@@ -42,6 +43,9 @@ public class Reservation extends BaseTimeEntity {
     @Column(name = "status", length = 15, nullable = false)
     private ReservationStatus reservationStatus;
 
+    @Transient
+    private UUID reservationId;
+
     @Builder
     public Reservation(
             Long userId,
@@ -54,7 +58,25 @@ public class Reservation extends BaseTimeEntity {
         this.shopReservation = shopReservation;
         this.requirement = requirement;
         this.personCount = personCount;
+        this.reservationId = UUID.randomUUID();
         this.reservationStatus = ReservationStatus.CREATED;
+    }
+
+    public Reservation(
+            Long userId,
+            String requirement,
+            int personCount
+    ) {
+        this.userId = userId;
+        this.requirement = requirement;
+        this.personCount = personCount;
+        this.reservationId = UUID.randomUUID();
+        this.reservationStatus = ReservationStatus.CREATED;
+    }
+
+    public void addShopReservation(ShopReservation shopReservation) {
+        shopReservation.validPersonCount(this.personCount);
+        this.shopReservation = shopReservation;
     }
 
     public void addShopReservationDateTimeSeats(ShopReservationDateTimeSeat shopReservationDateTimeSeat) {
