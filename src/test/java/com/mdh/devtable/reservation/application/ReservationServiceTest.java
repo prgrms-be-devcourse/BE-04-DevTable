@@ -7,7 +7,7 @@ import com.mdh.devtable.reservation.domain.ReservationStatus;
 import com.mdh.devtable.reservation.infra.persistence.ReservationRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationDateTimeSeatRepository;
 import com.mdh.devtable.reservation.infra.persistence.ShopReservationRepository;
-import org.assertj.core.api.Assertions;
+import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,10 +40,10 @@ class ReservationServiceTest {
     private ReservationRepository reservationRepository;
 
     @Mock
-    private ShopReservationRepository shopReservationRepository;
+    private ShopReservationDateTimeSeatRepository shopReservationDateTimeSeatRepository;
 
     @Mock
-    private ShopReservationDateTimeSeatRepository shopReservationDateTimeSeatRepository;
+    private ShopReservationRepository shopReservationRepository;
 
     @Test
     @DisplayName("예약을 등록한다.")
@@ -62,19 +61,11 @@ class ReservationServiceTest {
 
         var reservation = DataInitializerFactory.reservation(1L, shopReservation, 3);
 
-        given(shopReservationRepository.findById(any(Long.class)))
-                .willReturn(Optional.ofNullable(shopReservation));
-        given(shopReservationDateTimeSeatRepository.findAllById(anyIterable()))
-                .willReturn(List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2));
-        given(reservationRepository.save(any(Reservation.class)))
-                .willReturn(reservation);
+        given(shopReservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(shopReservation));
+        given(shopReservationDateTimeSeatRepository.findAllById(anyIterable())).willReturn(List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2));
+        given(reservationRepository.save(any(Reservation.class))).willReturn(reservation);
 
-        var reservationCreateRequest = new ReservationCreateRequest(1L,
-                2L,
-                List.of(3L, 4L),
-                4,
-                "요구사항 입니다.",
-                4);
+        var reservationCreateRequest = new ReservationCreateRequest(1L, 2L, List.of(3L, 4L), 4, "요구사항 입니다.", 4);
 
         //when
         reservationService.createReservation(reservationCreateRequest);
@@ -91,20 +82,12 @@ class ReservationServiceTest {
         //given
         var shopId = 1L;
 
-        given(shopReservationRepository.findById(any(Long.class)))
-                .willReturn(Optional.empty());
+        given(shopReservationRepository.findById(any(Long.class))).willReturn(Optional.empty());
 
-        var reservationCreateRequest = new ReservationCreateRequest(1L,
-                shopId,
-                List.of(3L, 4L, 5L),
-                3,
-                "요구사항 입니다.",
-                3);
+        var reservationCreateRequest = new ReservationCreateRequest(1L, shopId, List.of(3L, 4L, 5L), 3, "요구사항 입니다.", 3);
 
         //when&then
-        assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("매장의 예약 정보가 없습니다. shopId " + shopId);
+        assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest)).isInstanceOf(NoSuchElementException.class).hasMessage("매장의 예약 정보가 없습니다. shopId " + shopId);
     }
 
     @Test
@@ -122,22 +105,13 @@ class ReservationServiceTest {
         var shopReservationDateTimeSeat = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
 
-        given(shopReservationRepository.findById(any(Long.class)))
-                .willReturn(Optional.ofNullable(shopReservation));
-        given(shopReservationDateTimeSeatRepository.findAllById(anyIterable()))
-                .willReturn(List.of(shopReservationDateTimeSeat));
+        given(shopReservationRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(shopReservation));
+        given(shopReservationDateTimeSeatRepository.findAllById(anyIterable())).willReturn(List.of(shopReservationDateTimeSeat));
 
-        var reservationCreateRequest = new ReservationCreateRequest(1L,
-                2L,
-                List.of(shopReservationDateTimeSeatId, 4L),
-                4,
-                "요구사항 입니다.",
-                4);
+        var reservationCreateRequest = new ReservationCreateRequest(1L, 2L, List.of(shopReservationDateTimeSeatId, 4L), 4, "요구사항 입니다.", 4);
 
         //when&then
-        assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("예약 좌석 정보들 중 일부가 없습니다.");
+        assertThatThrownBy(() -> reservationService.createReservation(reservationCreateRequest)).isInstanceOf(NoSuchElementException.class).hasMessage("예약 좌석 정보들 중 일부가 없습니다.");
     }
 
     @Test
@@ -151,19 +125,17 @@ class ReservationServiceTest {
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
         var seat = DataInitializerFactory.seat(shopReservation, seatCount);
-        var shopReservationDateTime = DataInitializerFactory
-                .shopReservationDateTime(shopReservation, LocalDate.now().plusDays(2), LocalTime.now());
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(2), LocalTime.now());
 
         var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
+        var shopReservationDateTimeSeats = List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3);
 
         var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
 
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
         given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
 
@@ -189,19 +161,16 @@ class ReservationServiceTest {
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
         var seat = DataInitializerFactory.seat(shopReservation, seatCount);
-        var shopReservationDateTime = DataInitializerFactory
-                .shopReservationDateTime(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
 
         var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
+        var shopReservationDateTimeSeats = List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3);
 
         var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
-
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
         given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
 
@@ -228,27 +197,94 @@ class ReservationServiceTest {
 
         var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
         var seat = DataInitializerFactory.seat(shopReservation, seatCount);
-        var shopReservationDateTime = DataInitializerFactory
-                .shopReservationDateTime(shopReservation);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
 
         var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
         var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
 
+        var shopReservationDateTimeSeats = List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3);
 
         var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
 
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat1);
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat2);
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeat3);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
         given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
         reservation.updateReservationStatus(reservationStatus);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> reservationService.cancelReservation(reservationId))
+        assertThatThrownBy(() -> reservationService.cancelReservation(reservationId)).isInstanceOf(IllegalStateException.class).hasMessage("생성 상태가 아니라면 예약을 취소 할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("매장 예약을 24시간 이전에는 수정 할 수 있다.")
+    void updateReservationTest() {
+        //given
+        var userId = 1L;
+        var shopId = 1L;
+        var reservationId = 1L;
+        var seatCount = 2;
+
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(1), LocalTime.now().plusHours(1));
+
+        var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+        var shopReservationDateTimeSeats = List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3);
+
+        var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
+        var request = new ReservationUpdateRequest(List.of(4L, 5L, 6L, 7L), 4);
+
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
+
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
+        given(shopReservationDateTimeSeatRepository.findAllById(anyList())).willReturn(List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3));
+
+        //when
+        reservationService.updateReservation(reservationId, request);
+
+        //then
+        verify(reservationRepository, times(1)).findById(any(Long.class));
+        verify(shopReservationDateTimeSeatRepository, times(1)).findAllById(anyList());
+    }
+
+    @Test
+    @DisplayName("매장 예약이 24시간 이내라면 수정이 불가능하다.")
+    void updateReservationExTest() {
+        //given
+        var userId = 1L;
+        var shopId = 1L;
+        var reservationId = 1L;
+        var seatCount = 2;
+
+        var shopReservation = DataInitializerFactory.shopReservation(shopId, 2, 8);
+        var seat = DataInitializerFactory.seat(shopReservation, seatCount);
+        var shopReservationDateTime = DataInitializerFactory.shopReservationDateTime(shopReservation);
+
+        var shopReservationDateTimeSeat1 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat2 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+        var shopReservationDateTimeSeat3 = DataInitializerFactory.shopReservationDateTimeSeat(shopReservationDateTime, seat);
+
+        var shopReservationDateTimeSeats = List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3);
+
+        var reservation = DataInitializerFactory.reservation(userId, shopReservation, 3);
+        var request = new ReservationUpdateRequest(List.of(4L, 5L, 6L, 7L), 4);
+
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
+
+        given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
+        given(shopReservationDateTimeSeatRepository.findAllById(anyList())).willReturn(List.of(shopReservationDateTimeSeat1, shopReservationDateTimeSeat2, shopReservationDateTimeSeat3));
+
+        //when && then
+        assertThatThrownBy(() -> reservationService.updateReservation(reservationId, request))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("생성 상태가 아니라면 예약을 취소 할 수 없습니다.");
+                .hasMessageContaining("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다.");
+
+        verify(reservationRepository, times(1)).findById(any(Long.class));
+        verify(shopReservationDateTimeSeatRepository, times(1)).findAllById(anyList());
     }
 
 }
