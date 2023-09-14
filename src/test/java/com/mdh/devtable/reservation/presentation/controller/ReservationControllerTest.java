@@ -2,7 +2,12 @@ package com.mdh.devtable.reservation.presentation.controller;
 
 import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.reservation.application.ReservationService;
+import com.mdh.devtable.reservation.application.dto.ReservationResponse;
+import com.mdh.devtable.reservation.application.dto.ReservationResponses;
+import com.mdh.devtable.reservation.domain.ReservationStatus;
+import com.mdh.devtable.reservation.infra.persistence.dto.ReservationQueryDto;
 import com.mdh.devtable.reservation.presentation.dto.ReservationUpdateRequest;
+import com.mdh.devtable.shop.ShopType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,15 +18,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -211,5 +219,125 @@ class ReservationControllerTest extends RestDocsSupport {
                 Arguments.arguments(new ReservationUpdateRequest(List.of(1L), 0)),
                 Arguments.arguments(new ReservationUpdateRequest(List.of(), 2))
         );
+    }
+
+    @Test
+    @DisplayName("유저가 이전에 예약했던 정보들을 상태 별로 조회 할 수 있다.")
+    void findAllReservationsUserIdAndStatusTest() throws Exception {
+        //given
+        var shopId = 1L;
+        var userId = 1L;
+        var name = "shopName";
+        var shopType = ShopType.ASIAN;
+        var city = "city";
+        var district = "district";
+        var reservationDate = LocalDate.now();
+        var formattedReservationDate = reservationDate.format(DateTimeFormatter.ISO_DATE);
+
+        var reservationTime = LocalTime.now();
+        var formattedReservationTime = reservationTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        var personCount = 1;
+        var reservationStatus = ReservationStatus.VISITED;
+
+        var reservationQueryDto = new ReservationQueryDto(
+                shopId,
+                name,
+                shopType,
+                city,
+                district,
+                reservationDate,
+                reservationTime,
+                personCount,
+                reservationStatus
+        );
+
+        var reservationResponse = new ReservationResponse(reservationQueryDto);
+        var reservationResponses = new ReservationResponses(List.of(reservationResponse));
+
+        when(reservationService.findAllReservations(any(Long.class), any(ReservationStatus.class)))
+                .thenReturn(reservationResponses);
+
+        //when & then
+        mockMvc.perform(get("/api/customer/v1/reservations/me/{userId}", userId)
+                        .param("status", reservationStatus.name())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data.reservations[0].shop.id").value(shopId))
+                .andExpect(jsonPath("$.data.reservations[0].shop.name").value(name))
+                .andExpect(jsonPath("$.data.reservations[0].shop.shopType").value(shopType.name()))
+                .andExpect(jsonPath("$.data.reservations[0].shop.region").value(city + " " + district))
+                .andExpect(jsonPath("$.data.reservations[0].reservation.reservationDate").value(formattedReservationDate))
+                .andExpect(jsonPath("$.data.reservations[0].reservation.reservationTime").value(formattedReservationTime))
+                .andExpect(jsonPath("$.data.reservations[0].reservation.personCount").value(personCount))
+                .andExpect(jsonPath("$.data.reservations[0].reservation.reservationStatus").value(reservationStatus.name()))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("find-all-reservations-userId",
+                        pathParameters(
+                                parameterWithName("userId").description("고객 ID")
+                        ),
+                        queryParameters(
+                                parameterWithName("status").description("예약 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+                                subsectionWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간"),
+
+                                // "data" 하위 필드에 대한 문서화 시작
+                                subsectionWithPath("data.reservations").type(JsonFieldType.ARRAY).description("예약 목록"),
+
+                                // "data.reservations" 배열 요소의 문서화 시작
+                                subsectionWithPath("data.reservations[].shop").type(JsonFieldType.OBJECT).description("가게 정보"),
+                                subsectionWithPath("data.reservations[].reservation").type(JsonFieldType.OBJECT).description("예약 정보"),
+
+                                // "data.reservations[].shop" 객체의 문서화
+                                fieldWithPath("data.reservations[].shop.id").type(JsonFieldType.NUMBER).description("가게 ID"),
+                                fieldWithPath("data.reservations[].shop.name").type(JsonFieldType.STRING).description("가게 이름"),
+                                fieldWithPath("data.reservations[].shop.shopType").type(JsonFieldType.STRING).description("가게 유형"),
+                                fieldWithPath("data.reservations[].shop.region").type(JsonFieldType.STRING).description("가게 지역"),
+
+                                // "data.reservations[].reservation" 객체의 문서화
+                                fieldWithPath("data.reservations[].reservation.reservationDate").type(JsonFieldType.STRING).description("예약 날짜"),
+                                fieldWithPath("data.reservations[].reservation.reservationTime").type(JsonFieldType.STRING).description("예약 시간"),
+                                fieldWithPath("data.reservations[].reservation.personCount").type(JsonFieldType.NUMBER).description("인원 수"),
+                                fieldWithPath("data.reservations[].reservation.reservationStatus").type(JsonFieldType.STRING).description("예약 상태")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("유저가 이전에 예약했던 정보들을 상태별로 조회 시 상태가 잘못 입력되면 예외가 반환된다.")
+    void findAllReservationsUserIdAndStatusInvalidValueTest() throws Exception {
+        //given
+        var userId = 1L;
+        var reservationStatusName = "invalidReservationStatus";
+
+        //when & then
+        mockMvc.perform(get("/api/customer/v1/reservations/me/{userId}", userId)
+                        .param("status", reservationStatusName)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.data.title").value("MethodArgumentTypeMismatchException"))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("find-all-reservations-userId-invalidValue",
+                        pathParameters(
+                                parameterWithName("userId").description("유저 ID")
+                        ),
+                        queryParameters(
+                                parameterWithName("status").description("예약 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
     }
 }
