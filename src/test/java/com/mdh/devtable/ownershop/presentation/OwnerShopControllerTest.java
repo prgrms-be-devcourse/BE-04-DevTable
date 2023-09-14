@@ -3,6 +3,9 @@ package com.mdh.devtable.ownershop.presentation;
 import com.mdh.devtable.RestDocsSupport;
 import com.mdh.devtable.ownershop.application.OwnerShopService;
 import com.mdh.devtable.ownershop.presentation.dto.OwnerShopCreateRequest;
+import com.mdh.devtable.ownershop.presentation.dto.RegionRequest;
+import com.mdh.devtable.ownershop.presentation.dto.ShopAddressRequest;
+import com.mdh.devtable.ownershop.presentation.dto.ShopDetailsRequest;
 import com.mdh.devtable.shop.ShopType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +47,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 "ShopName",
                 "ShopDescription",
                 ShopType.AMERICAN,
-                new OwnerShopCreateRequest.ShopDetailsRequest(
+                new ShopDetailsRequest(
                         "Introduce",
                         "OpeningHours",
                         "Info",
@@ -52,13 +55,13 @@ class OwnerShopControllerTest extends RestDocsSupport {
                         "01012345678",
                         "Holiday"
                 ),
-                new OwnerShopCreateRequest.ShopAddressRequest(
+                new ShopAddressRequest(
                         "123 Main St",
                         "12345",
                         "37.7749",
                         "-122.4194"
                 ),
-                new OwnerShopCreateRequest.RegionRequest(
+                new RegionRequest(
                         "City",
                         "District"
                 )
@@ -117,9 +120,9 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 "", // 빈 이름
                 "상점 설명",
                 ShopType.AMERICAN,
-                new OwnerShopCreateRequest.ShopDetailsRequest("소개", "영업 시간", null, null, "109", null),
-                new OwnerShopCreateRequest.ShopAddressRequest("주소", "우편번호", "위도", "경도"),
-                new OwnerShopCreateRequest.RegionRequest("도시", "지역")
+                new ShopDetailsRequest("소개", "영업 시간", null, null, "109", null),
+                new ShopAddressRequest("주소", "우편번호", "위도", "경도"),
+                new RegionRequest("도시", "지역")
         );
 
         mockMvc.perform(post("/api/owner/v1/shops/{ownerId}", ownerId)
