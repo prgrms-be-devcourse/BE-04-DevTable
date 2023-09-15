@@ -1,6 +1,5 @@
 package com.mdh.user;
 
-import com.mdh.common.CommonApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class UserApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CommonApplication.class, args);
+        SpringApplication.run(UserApplication.class, args);
     }
 
 }
