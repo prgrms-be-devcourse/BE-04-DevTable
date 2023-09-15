@@ -1,0 +1,136 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Dev Table REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Dev-Table-API]]
+=== Dev Table API
+
+[[Hello]]
+=== Hello Get 요청
+
+operation::hello[snippets = 'http-request,http-response,request-body,response-fields']
+
+[[User]]
+== User API
+
+=== 유저 회원가입 요청
+
+operation::user-sign-up[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 유저 패스워드 불일치
+
+operation::user-sign-up-invalid-password-check[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 유저 email 에러
+
+operation::user-sign-up-invalid-email[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 유저 password 에러
+
+operation::user-sign-up-invalid-password[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 유저 phone-number 에러
+
+operation::user-sign-up-invalid-phone-number[snippets = 'http-request,http-response,request-body,response-fields']
+
+[[Waiting]]
+== Waiting API
+
+=== 웨이팅 생성
+
+operation::waiting-create[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 웨이팅 생성 허용 범위 예외
+
+operation::waiting-create-valid-count[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 웨이팅 입력 값 예외
+
+operation::waiting-create-valid-null[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 웨이팅 취소
+
+operation::waiting-cancel[snippets = 'http-request,http-response,request-body,response-fields']
+
+operation::find-my-waitings[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 웨이팅 미루기
+
+operation::waiting-postpone[snippets = 'http-request,http-response,request-body,response-fields']
+
+operation::waiting-postpone-notAcceptable[snippets = 'http-request,http-response,request-body,response-fields']
+
+=== 웨이팅 상세 조회
+
+operation::waiting-detail-find[snippets = 'http-request,http-response,request-body,response-fields']
+
+[[Owner-Waiting]]
+== Owner Waiting API
+
+=== 매장의 웨이팅 상태 변경
+
+operation::change-shop-waiting-status[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 매장의 웨이팅 상태 변경 오류
+
+operation::change-shop-waiting-status-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 웨이팅 상태 변경
+
+operation::change-waiting-status[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 웨이팅 상태 변경 오류
+
+operation::change-waiting-status-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회
+
+operation::owners-shop-waitingInfo[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회 오류
+
+operation::owners-shop-waitingInfo-invalid[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회
+
+operation::owners-shop-waiting-info[snippets='path-parameters,http-request,http-response,query-parameters,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 조회 오류
+
+operation::owners-shop-waiting-info-invalid[snippets='path-parameters,http-request,http-response,query-parameters,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 변경
+
+operation::owner-change-shop-waiting-info[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주가 갖고 있는 매장의 웨이팅 정보 변경 오류
+
+operation::owner-change-shop-waiting-info-error[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+[[Owner-Menu]]
+=== 점주의 메뉴 카테고리 등록
+
+operation::owner-menu-category-create[snippets='path-parameters,http-request,http-response,request-fields,response-fields,response-headers']
+
+=== 점주의 메뉴 카테고리 등록 오류
+
+operation::owner-menu-category-create-invalid[snippets='path-parameters,path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주의 메뉴 등록
+
+operation::owner-menu-create[snippets='path-parameters,http-request,http-response,request-fields,response-fields,response-headers']
+
+=== 점주의 메뉴 등록 오류
+
+operation::owner-menu-create[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
+
+=== 점주의 메뉴 등록 오류 잘못된 카테고리
+
+operation::owner-menu-create-invalid-category[snippets='path-parameters,http-request,http-response,request-fields,response-fields']
