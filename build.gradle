@@ -4,6 +4,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.3'
 }
 
+repositories {
+    mavenCentral()
+}
+
 bootJar {
     enabled = false
 }
@@ -17,6 +21,7 @@ subprojects {
     }
 
     apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
 
@@ -36,7 +41,7 @@ subprojects {
         mavenCentral()
     }
 
-//    tasks.register("prepareKotlinBuildScriptModel") {}
+    tasks.register("prepareKotlinBuildScriptModel") {}
 }
 
 project(':user') {
@@ -50,79 +55,3 @@ project(':owner') {
         implementation project(':common')
     }
 }
-/*
-group = 'com.mdh'
-version = '0.0.1-SNAPSHOT'
-
-java {
-	sourceCompatibility = '17'
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	asciidoctorExt
-}
-
-repositories {
-	mavenCentral()
-}
-
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
-}
-
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	// rest docs
-	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-}
-
-tasks.named('test') {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
-}
-
-ext { // 전역 변수
-	snippetsDir = file('build/generated-snippets')
-}
-
-test {
-	outputs.dir snippetsDir
-}
-
-asciidoctor {
-	configurations 'asciidoctorExt'
-	baseDirFollowsSourceFile()
-	inputs.dir snippetsDir
-	dependsOn test
-	outputDir file('build/docs/asciidoc')
-}
-
-task copyAsciidoc(type: Copy) {
-	from "build/docs/asciidoc/"
-	into "src/main/resources/static/docs"
-	include "index.html"
-
-	doFirst {
-		delete "src/main/resources/static/docs/index.html"
-	}
-	dependsOn asciidoctor
-}
-
-build {
-	dependsOn copyAsciidoc
-}
-*/

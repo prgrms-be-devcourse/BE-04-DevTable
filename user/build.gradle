@@ -8,6 +8,7 @@ configurations {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // rest docs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
@@ -39,9 +40,11 @@ task copyAsciidoc(type: Copy) {
     from "build/docs/asciidoc/"
     into "src/main/resources/static/docs"
     include "index.html"
+    destinationDir file("src/main/resources/static/docs/")
+    rename "index.html", "user-index.html"
 
     doFirst {
-        delete "src/main/resources/static/docs/index.html"
+        delete "src/main/resources/static/docs/user-index.html"
     }
     dependsOn asciidoctor
 }
