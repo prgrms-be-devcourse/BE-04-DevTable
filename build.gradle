@@ -57,3 +57,9 @@ project(':owner') {
         implementation project(':common')
     }
 }
+
+project(':alarm') {
+    dependencies {
+        implementation project(':common')
+    }
+}
