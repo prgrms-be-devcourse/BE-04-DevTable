@@ -4,15 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import com.mdh.alarm.common.api.SlackAlertRequest;
-import com.mdh.alarm.common.api.SlackClient;
-import org.junit.jupiter.api.BeforeEach;
+import com.mdh.alarm.slack.SlackAlertRequest;
+import com.mdh.alarm.slack.SlackClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @ExtendWith(MockitoExtension.class)
 class SlackFallbackTest {
