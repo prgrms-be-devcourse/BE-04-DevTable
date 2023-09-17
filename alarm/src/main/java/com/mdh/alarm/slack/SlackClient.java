@@ -1,4 +1,4 @@
-package com.mdh.alarm.common.api;
+package com.mdh.alarm.slack;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
