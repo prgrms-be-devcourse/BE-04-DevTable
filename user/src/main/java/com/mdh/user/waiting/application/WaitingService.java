@@ -8,7 +8,7 @@ import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.common.waiting.persistence.ShopWaitingRepository;
 import com.mdh.common.waiting.persistence.WaitingLine;
 import com.mdh.common.waiting.persistence.WaitingRepository;
-import com.mdh.user.waiting.application.event.WaitingCreatedEvent;
+import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
 import com.mdh.user.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.user.waiting.presentation.dto.WaitingCreateRequest;
 import lombok.RequiredArgsConstructor;
@@ -55,9 +55,8 @@ public class WaitingService {
         if (waitingServiceValidator.isExistsWaiting(userId)) {
             throw new IllegalStateException("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
         }
-        System.out.println("==================" + shopWaiting.getWaitingCount());
+
         shopWaiting.addWaitingCount();
-        System.out.println("==================" + shopWaiting.getWaitingCount());
 
         var waitingPeople = createWaitingPeople(waitingCreateRequest);
 
