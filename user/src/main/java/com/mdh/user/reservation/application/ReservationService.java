@@ -4,6 +4,7 @@ import com.mdh.common.reservation.domain.Reservation;
 import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.domain.ShopReservation;
 import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
+import com.mdh.common.reservation.domain.event.ReservationCreatedEvent;
 import com.mdh.user.reservation.application.dto.ReservationResponse;
 import com.mdh.user.reservation.application.dto.ReservationResponses;
 import com.mdh.common.reservation.persistence.ReservationRepository;
@@ -14,6 +15,7 @@ import com.mdh.user.reservation.presentation.dto.ReservationPreemptiveRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,8 @@ public class ReservationService {
 
     private final Map<UUID, Reservation> preemptiveReservations;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public UUID preemtiveReservation(ReservationPreemptiveRequest reservationPreemptiveRequest) {
         // 선점된 좌석인지 확인한다.
         var shopReservationDateTimeSeatIds = reservationPreemptiveRequest.shopReservationDateTimeSeatIds();
@@ -43,7 +47,9 @@ public class ReservationService {
         var reservation = createReservation(reservationPreemptiveRequest);
 
         // 만든 예약을 캐시에 저장
-        var createdReservation = preemptiveReservations.put(reservation.getReservationId(), reservation);
+        preemptiveReservations.put(reservation.getReservationId(), reservation);
+
+        var createdReservation = preemptiveReservations.get(reservation.getReservationId());
 
         return createdReservation.getReservationId();
     }
@@ -65,17 +71,18 @@ public class ReservationService {
         var shopReservation = findShopReservation(shopId);
         var shopReservationDateTimeSeats = findShopReservationDateTimeSeats(shopReservationDateTimeSeatIds);
 
-        // reservation 저장
-        var savedReservation = reservationRepository.save(reservation);
+        // 연결함
+        reservation.addShopReservation(shopReservation);
+        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
-        // 연결함
-        savedReservation.addShopReservation(shopReservation);
-        savedReservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
+        // reservation 저장
+        var savedReservation = reservationRepository.save(reservation);
 
         // 모두 삭제
         removeAll(reservationId, shopReservationDateTimeSeatIds);
 
+        eventPublisher.publishEvent(new ReservationCreatedEvent(savedReservation));
         return savedReservation.getId();
     }
 
@@ -112,7 +119,7 @@ public class ReservationService {
         reservation.updateReservation(shopReservationDateTimeSeats);
     }
 
-    public Reservation createReservation(ReservationPreemptiveRequest reservationPreemptiveRequest) {
+    private Reservation createReservation(ReservationPreemptiveRequest reservationPreemptiveRequest) {
         return new Reservation(reservationPreemptiveRequest.userId(), reservationPreemptiveRequest.requirement(), reservationPreemptiveRequest.personCount());
     }
 
