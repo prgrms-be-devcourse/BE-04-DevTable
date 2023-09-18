@@ -31,7 +31,7 @@ public class UserWaitingController {
     @PostMapping
     public ResponseEntity<ApiResponse<URI>> createWaiting(@RequestBody @Valid WaitingCreateRequest waitingCreateRequest) {
         Long waitingId = waitingService.createWaiting(waitingCreateRequest);
-        var createdResponse = ApiResponse.created(URI.create("/api/customer/v1/waitings" + waitingId));
+        var createdResponse = ApiResponse.created(URI.create("/api/customer/v1/waitings/" + waitingId));
         return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
     }
 
