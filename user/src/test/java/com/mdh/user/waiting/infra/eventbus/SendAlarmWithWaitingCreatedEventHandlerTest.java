@@ -3,7 +3,7 @@ package com.mdh.user.waiting.infra.eventbus;
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
-import com.mdh.user.waiting.application.event.WaitingCreatedEvent;
+import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

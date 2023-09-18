@@ -1,7 +1,7 @@
 package com.mdh.owner.shop.infra.eventbus;
 
 import com.mdh.owner.DataInitializerFactory;
-import com.mdh.owner.menu.application.event.MenuUpdatedEvent;
+import com.mdh.common.menu.domain.event.MenuUpdatedEvent;
 import com.mdh.common.shop.domain.Shop;
 import com.mdh.common.shop.domain.ShopPrice;
 import com.mdh.common.shop.persistence.ShopRepository;

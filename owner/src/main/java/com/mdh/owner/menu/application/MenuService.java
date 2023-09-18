@@ -1,7 +1,7 @@
 package com.mdh.owner.menu.application;
 
-import com.mdh.owner.menu.application.event.MenuCreatedEvent;
-import com.mdh.owner.menu.application.event.MenuUpdatedEvent;
+import com.mdh.common.menu.domain.event.MenuCreatedEvent;
+import com.mdh.common.menu.domain.event.MenuUpdatedEvent;
 import com.mdh.common.menu.persistence.MenuCategoryRepository;
 import com.mdh.common.menu.persistence.MenuRepository;
 import com.mdh.owner.menu.presentation.dto.MenuCategoryCreateRequest;
