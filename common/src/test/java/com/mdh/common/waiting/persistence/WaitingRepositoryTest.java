@@ -2,6 +2,7 @@ package com.mdh.common.waiting.persistence;
 
 import com.mdh.common.DataInitializerFactory;
 import com.mdh.common.global.config.JpaConfig;
+import com.mdh.common.global.config.QueryDslConfig;
 import com.mdh.common.shop.persistence.RegionRepository;
 import com.mdh.common.shop.persistence.ShopRepository;
 import com.mdh.common.user.persistence.UserRepository;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @DataJpaTest
-@Import({JpaConfig.class})
+@Import({JpaConfig.class, QueryDslConfig.class})
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class WaitingRepositoryTest {
