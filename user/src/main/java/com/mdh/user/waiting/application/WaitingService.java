@@ -8,9 +8,11 @@ import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.common.waiting.persistence.ShopWaitingRepository;
 import com.mdh.common.waiting.persistence.WaitingLine;
 import com.mdh.common.waiting.persistence.WaitingRepository;
+import com.mdh.user.waiting.application.event.WaitingCreatedEvent;
 import com.mdh.user.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.user.waiting.presentation.dto.WaitingCreateRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ public class WaitingService {
     private final ShopWaitingRepository shopWaitingRepository;
     private final WaitingServiceValidator waitingServiceValidator;
     private final WaitingLine waitingLine;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public WaitingDetailsResponse findWaitingDetails(Long waitingId) {
@@ -52,7 +55,9 @@ public class WaitingService {
         if (waitingServiceValidator.isExistsWaiting(userId)) {
             throw new IllegalStateException("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
         }
+        System.out.println("==================" + shopWaiting.getWaitingCount());
         shopWaiting.addWaitingCount();
+        System.out.println("==================" + shopWaiting.getWaitingCount());
 
         var waitingPeople = createWaitingPeople(waitingCreateRequest);
 
@@ -64,6 +69,8 @@ public class WaitingService {
 
         var savedWaiting = waitingRepository.save(waiting); // 저장
         saveWaitingLine(shopId, savedWaiting);
+
+        eventPublisher.publishEvent(new WaitingCreatedEvent(savedWaiting));
 
         return savedWaiting.getId();
     }
