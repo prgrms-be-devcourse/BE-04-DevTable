@@ -1,8 +1,8 @@
-package com.mdh.user.shop.infra;
+package com.mdh.common.shop.persistence;
 
 import com.mdh.common.shop.domain.ShopType;
-import com.mdh.common.shop.persistence.ShopRepositoryCustom;
 import com.mdh.common.shop.persistence.dto.ShopQueryDto;
+import com.mdh.common.shop.persistence.dto.ShopSearchCondParam;
 import com.mdh.common.waiting.domain.ShopWaitingStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
@@ -20,9 +20,9 @@ import java.util.List;
 
 import static com.mdh.common.shop.domain.QRegion.region;
 import static com.mdh.common.shop.domain.QShop.shop;
+import static com.mdh.common.shop.persistence.dto.ShopSearchCondParam.*;
+import static com.mdh.common.shop.persistence.dto.ShopSearchSortParam.PRICE_ASC;
 import static com.mdh.common.waiting.domain.QShopWaiting.shopWaiting;
-import static com.mdh.user.shop.infra.ShopSearchCondParam.*;
-import static com.mdh.user.shop.infra.ShopSearchSortParam.PRICE_ASC;
 
 @Repository
 @RequiredArgsConstructor
@@ -71,8 +71,8 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
                 .and(shopTypeEq(cond.getOrDefault(SHOP_TYPE.getParamName(), Collections.emptyList())))
                 .and(shopRegionContains(cond.getOrDefault(REGION.getParamName(), Collections.emptyList())))
                 .and(shopPriceEq(
-                        cond.getOrDefault(MIN_PRICE.getParamName(), Collections.emptyList()),
-                        cond.getOrDefault(MAX_PRICE.getParamName(), Collections.emptyList())))
+                        cond.getOrDefault(ShopSearchCondParam.MIN_PRICE.getParamName(), Collections.emptyList()),
+                        cond.getOrDefault(ShopSearchCondParam.MAX_PRICE.getParamName(), Collections.emptyList())))
                 .and(isPossibleWaiting());
 
     }
@@ -103,12 +103,10 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
         }
 
         if (!shopMinPrices.isEmpty() && shopMaxPrices.isEmpty()) {
-            return shop.shopPrice.lunchMinPrice.goe(Integer.parseInt(shopMinPrices.get(0)))
-                    .or(shop.shopPrice.dinnerMinPrice.goe(Integer.parseInt(shopMinPrices.get(0))));
+            return shop.shopPrice.shopMinPrice.goe(Integer.parseInt(shopMinPrices.get(0)));
         }
         if (shopMinPrices.isEmpty() && !shopMaxPrices.isEmpty()) {
-            return shop.shopPrice.lunchMaxPrice.loe(Integer.parseInt(shopMaxPrices.get(0)))
-                    .or(shop.shopPrice.dinnerMaxPrice.loe(Integer.parseInt(shopMaxPrices.get(0))));
+            return shop.shopPrice.shopMaxPrice.loe(Integer.parseInt(shopMaxPrices.get(0)));
         }
 
         return shopPriceBetween(shopMinPrices, shopMaxPrices);
@@ -119,10 +117,7 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
         Integer minPrice = Integer.parseInt(shopMinPrices.get(0));
         Integer maxPrice = Integer.parseInt(shopMaxPrices.get(0));
 
-        return shop.shopPrice.lunchMinPrice.goe(minPrice).and(shop.shopPrice.lunchMaxPrice.loe(maxPrice))
-                .or(shop.shopPrice.lunchMinPrice.goe(minPrice).and(shop.shopPrice.dinnerMaxPrice.loe(maxPrice)))
-                .or(shop.shopPrice.dinnerMinPrice.goe(minPrice).and(shop.shopPrice.lunchMaxPrice.loe(maxPrice)))
-                .or(shop.shopPrice.dinnerMinPrice.goe(minPrice).and(shop.shopPrice.dinnerMaxPrice.loe(maxPrice)));
+        return shop.shopPrice.shopMinPrice.goe(minPrice).and(shop.shopPrice.shopMaxPrice.loe(maxPrice));
     }
 
     private BooleanExpression isPossibleWaiting() {
@@ -131,9 +126,9 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
 
     private OrderSpecifier<?> getOrderSpecifier(List<String> sorts) {
         if (sorts.get(0).equals(PRICE_ASC.getSortParam())) {
-            return shop.shopPrice.lunchMaxPrice.asc();
+            return shop.shopPrice.shopMinPrice.asc();
         }
 
-        return shop.shopPrice.lunchMaxPrice.desc();
+        return shop.shopPrice.shopMaxPrice.desc();
     }
 }

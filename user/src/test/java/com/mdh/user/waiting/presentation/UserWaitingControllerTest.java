@@ -61,7 +61,7 @@ class UserWaitingControllerTest extends RestDocsSupport {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.statusCode").value("201"))
-                .andExpect(jsonPath("$.data").value("/api/customer/v1/waitings" + waitingId))
+                .andExpect(jsonPath("$.data").value("/api/customer/v1/waitings/" + waitingId))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("waiting-create",
                         requestFields(

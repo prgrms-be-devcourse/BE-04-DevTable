@@ -12,6 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class ShopPrice {
+    @Column(name = "shop_min_price", nullable = false)
+    private int shopMinPrice;
+
+    @Column(name = "shop_max_price", nullable = false)
+    private int shopMaxPrice;
 
     @Column(name = "lunch_min_price", nullable = false)
     private int lunchMinPrice;
@@ -27,11 +32,15 @@ public class ShopPrice {
 
     @Builder
     public ShopPrice(
+            int shopMinPrice,
+            int shopMaxPrice,
             int lunchMaxPrice,
             int lunchMinPrice,
             int dinnerMinPrice,
             int dinnerMaxPrice
     ) {
+        this.shopMinPrice = shopMinPrice;
+        this.shopMaxPrice = shopMaxPrice;
         this.lunchMaxPrice = lunchMaxPrice;
         this.lunchMinPrice = lunchMinPrice;
         this.dinnerMaxPrice = dinnerMaxPrice;
@@ -43,6 +52,13 @@ public class ShopPrice {
             case LUNCH -> updateLunchPrice(price);
             case DINNER -> updateDinnerPrice(price);
         }
+
+        updateShopPrice(price);
+    }
+
+    private void updateShopPrice(int price) {
+        shopMinPrice = Math.min(shopMinPrice, price);
+        shopMaxPrice = Math.max(shopMaxPrice, price);
     }
 
     private void updateLunchPrice(int lunchPrice) {

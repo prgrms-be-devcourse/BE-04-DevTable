@@ -1,4 +1,4 @@
-package com.mdh.user.shop.infra;
+package com.mdh.common.shop.persistence.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
