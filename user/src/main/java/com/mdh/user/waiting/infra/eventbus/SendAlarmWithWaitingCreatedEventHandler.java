@@ -2,10 +2,9 @@ package com.mdh.user.waiting.infra.eventbus;
 
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.user.global.message.AlarmMessage;
-import com.mdh.user.waiting.application.event.WaitingCreatedEvent;
+import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
