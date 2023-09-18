@@ -7,6 +7,7 @@ import com.mdh.common.shop.persistence.ShopRepository;
 import com.mdh.common.user.persistence.UserRepository;
 import com.mdh.common.waiting.domain.ShopWaitingStatus;
 import com.mdh.common.waiting.domain.WaitingStatus;
+import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -123,4 +124,50 @@ class WaitingRepositoryTest {
         assertThat(waitingDetails.createdDate()).isCloseTo(waiting.getCreatedDate(), within(1, ChronoUnit.SECONDS));
         assertThat(waitingDetails.modifiedDate()).isCloseTo(waiting.getModifiedDate(), within(1, ChronoUnit.SECONDS));
     }
+
+    @Test
+    @DisplayName("웨이팅 아이디로 알람 정보를 가져온다.")
+    void findWaitingAlarmInfoByIdTest() {
+        // Given
+        var owner = DataInitializerFactory.owner();
+        userRepository.save(owner);
+
+        var region = DataInitializerFactory.region();
+        regionRepository.save(region);
+
+        var shopAddress = DataInitializerFactory.shopAddress();
+        var shopDetails = DataInitializerFactory.shopDetails();
+
+        var shop = DataInitializerFactory.shop(owner.getId(), shopDetails, region, shopAddress);
+        shopRepository.save(shop);
+
+        var shopWaiting = DataInitializerFactory.shopWaiting(shop.getId(), 30, 8, 2);
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        shopWaitingRepository.save(shopWaiting);
+
+        var guest = DataInitializerFactory.guest();
+        userRepository.save(guest);
+
+        var waitingPeople = DataInitializerFactory.waitingPeople(2, 3);
+        var waiting = DataInitializerFactory.waiting(guest.getId(), shopWaiting, waitingPeople);
+        waitingRepository.save(waiting);
+
+        Long waitingId = waiting.getId(); // 실제로 저장된 Waiting 엔터티의 ID
+
+        // When
+        var optionalAlarmInfo = waitingRepository.findWaitingAlarmInfoById(waitingId);
+
+        // Then
+        assertThat(optionalAlarmInfo).isPresent();
+        var alarmInfo = optionalAlarmInfo.get();
+
+        assertThat(alarmInfo)
+                .extracting(WaitingAlarmInfo::userId, WaitingAlarmInfo::shopName, WaitingAlarmInfo::shopPhoneNumber)
+                .containsExactly(
+                        guest.getId(),
+                        shop.getName(),
+                        shopDetails.getPhoneNumber()
+                );
+    }
+
 }
