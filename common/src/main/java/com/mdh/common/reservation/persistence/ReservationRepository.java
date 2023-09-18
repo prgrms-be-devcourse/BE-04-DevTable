@@ -1,7 +1,7 @@
 package com.mdh.common.reservation.persistence;
 
-import com.mdh.common.reservation.Reservation;
-import com.mdh.common.reservation.ReservationStatus;
+import com.mdh.common.reservation.domain.Reservation;
+import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.persistence.dto.OwnerShopReservationInfoResponse;
 import com.mdh.common.reservation.persistence.dto.ReservationQueryDto;
 import org.springframework.data.jpa.repository.JpaRepository;

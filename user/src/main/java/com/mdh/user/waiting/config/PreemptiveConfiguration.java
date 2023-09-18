@@ -1,6 +1,6 @@
 package com.mdh.user.waiting.config;
 
-import com.mdh.common.reservation.Reservation;
+import com.mdh.common.reservation.domain.Reservation;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.*;

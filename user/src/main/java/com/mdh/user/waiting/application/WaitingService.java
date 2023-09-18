@@ -82,7 +82,7 @@ public class WaitingService {
 
         var shopId = waiting.getShopWaiting().getShopId();
 
-        waitingLine.cancel(shopId, waitingId, waiting.getCreatedDate());
+        waitingLine.cancel(shopId, waitingId, waiting.getIssuedTime());
         waiting.changeWaitingStatus(WaitingStatus.CANCEL);
         eventPublisher.publishEvent(new WaitingCanceledEvent(waiting));
     }

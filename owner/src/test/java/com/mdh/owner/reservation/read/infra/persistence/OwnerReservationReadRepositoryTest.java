@@ -1,7 +1,7 @@
 package com.mdh.owner.reservation.read.infra.persistence;
 
 import com.mdh.common.global.config.JpaConfig;
-import com.mdh.common.reservation.ReservationStatus;
+import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.persistence.*;
 import com.mdh.common.shop.persistence.RegionRepository;
 import com.mdh.common.shop.persistence.ShopRepository;

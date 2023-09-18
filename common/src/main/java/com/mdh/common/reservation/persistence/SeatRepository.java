@@ -1,6 +1,6 @@
 package com.mdh.common.reservation.persistence;
 
-import com.mdh.common.reservation.Seat;
+import com.mdh.common.reservation.domain.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

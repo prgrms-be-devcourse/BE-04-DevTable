@@ -1,8 +1,8 @@
 package com.mdh.common.reservation.persistence;
 
 import com.mdh.common.DataInitializerFactory;
-import com.mdh.common.reservation.ReservationStatus;
-import com.mdh.common.reservation.ShopReservationDateTimeSeat;
+import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
