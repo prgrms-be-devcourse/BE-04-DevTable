@@ -1,6 +1,6 @@
 package com.mdh.common.reservation.persistence;
 
-import com.mdh.common.reservation.ShopReservationDateTimeSeat;
+import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

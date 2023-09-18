@@ -1,4 +1,4 @@
-package com.mdh.common.reservation;
+package com.mdh.common.reservation.domain;
 
 import com.mdh.common.global.BaseTimeEntity;
 import jakarta.persistence.*;

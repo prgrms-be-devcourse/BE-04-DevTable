@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import com.mdh.common.reservation.ReservationStatus;
+import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.persistence.dto.ReservationQueryDto;
 import com.mdh.common.shop.domain.ShopType;
 
@@ -71,5 +71,3 @@ public record ReservationResponse(
         }
     }
 }
-
-

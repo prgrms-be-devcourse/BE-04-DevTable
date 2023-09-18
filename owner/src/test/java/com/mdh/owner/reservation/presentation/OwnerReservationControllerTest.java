@@ -1,7 +1,7 @@
 package com.mdh.owner.reservation.presentation;
 
 import com.mdh.owner.RestDocsSupport;
-import com.mdh.common.reservation.SeatType;
+import com.mdh.common.reservation.domain.SeatType;
 import com.mdh.owner.reservation.write.application.OwnerReservationService;
 import com.mdh.owner.reservation.write.presentation.OwnerReservationController;
 import com.mdh.owner.reservation.write.presentation.dto.SeatCreateRequest;

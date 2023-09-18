@@ -1,9 +1,9 @@
 package com.mdh.owner.reservation.write.application;
 
 import com.mdh.owner.DataInitializerFactory;
-import com.mdh.common.reservation.SeatStatus;
-import com.mdh.common.reservation.ShopReservationDateTime;
-import com.mdh.common.reservation.ShopReservationDateTimeSeat;
+import com.mdh.common.reservation.domain.SeatStatus;
+import com.mdh.common.reservation.domain.ShopReservationDateTime;
+import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
 import com.mdh.common.reservation.persistence.SeatRepository;
 import com.mdh.common.reservation.persistence.ShopReservationDateTimeRepository;
 import com.mdh.common.reservation.persistence.ShopReservationDateTimeSeatRepository;

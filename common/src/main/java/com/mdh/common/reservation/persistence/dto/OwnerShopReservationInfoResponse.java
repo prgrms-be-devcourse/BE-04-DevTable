@@ -1,8 +1,8 @@
 package com.mdh.common.reservation.persistence.dto;
 
 
-import com.mdh.common.reservation.ReservationStatus;
-import com.mdh.common.reservation.SeatType;
+import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.common.reservation.domain.SeatType;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

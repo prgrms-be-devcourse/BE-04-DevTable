@@ -1,8 +1,8 @@
 package com.mdh.user.reservation.application;
 
 import com.mdh.user.DataInitializerFactory;
-import com.mdh.common.reservation.Reservation;
-import com.mdh.common.reservation.ReservationStatus;
+import com.mdh.common.reservation.domain.Reservation;
+import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.persistence.ReservationRepository;
 import com.mdh.common.reservation.persistence.ShopReservationDateTimeSeatRepository;
 import com.mdh.common.reservation.persistence.ShopReservationRepository;
