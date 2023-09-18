@@ -100,7 +100,7 @@ class WaitingServiceTest {
         var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
 
         given(waitingRepository.findById(any(Long.class))).willReturn(Optional.of(waiting));
-        doNothing().when(waitingLine).cancel(shopId, waitingId, waiting.getCreatedDate());
+        doNothing().when(waitingLine).cancel(shopId, waitingId, waiting.getIssuedTime());
 
         //when
         waitingService.cancelWaiting(waitingId);
