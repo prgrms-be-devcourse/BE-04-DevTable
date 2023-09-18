@@ -1,6 +1,7 @@
 package com.mdh.common.waiting.domain;
 
 import com.mdh.common.global.BaseTimeEntity;
+import com.mdh.common.global.util.TimeUtils;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -53,7 +54,7 @@ public class Waiting extends BaseTimeEntity {
         this.shopWaiting = shopWaiting;
         this.userId = userId;
         this.waitingNumber = shopWaiting.getWaitingCount();
-        this.issuedTime = LocalDateTime.now();
+        this.issuedTime = TimeUtils.roundToNearestNanos(LocalDateTime.now(), 3);
         this.waitingStatus = WaitingStatus.PROGRESS;
         this.postponedCount = 0;
         this.waitingPeople = waitingPeople;

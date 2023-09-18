@@ -1,7 +1,7 @@
 package com.mdh.user.reservation.presentation.controller;
 
 import com.mdh.user.global.ApiResponse;
-import com.mdh.common.reservation.ReservationStatus;
+import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.user.reservation.application.ReservationService;
 import com.mdh.user.reservation.application.dto.ReservationResponses;
 import com.mdh.user.reservation.presentation.dto.ReservationCancelRequest;

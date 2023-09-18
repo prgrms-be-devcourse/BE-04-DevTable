@@ -1,7 +1,6 @@
 package com.mdh.common.reservation.domain;
 
 import com.mdh.common.DataInitializerFactory;
-import com.mdh.common.reservation.ReservationStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

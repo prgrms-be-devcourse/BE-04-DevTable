@@ -1,6 +1,6 @@
 package com.mdh.common.reservation.persistence.dto;
 
-import com.mdh.common.reservation.ReservationStatus;
+import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.shop.domain.ShopType;
 
 import java.time.LocalDate;
