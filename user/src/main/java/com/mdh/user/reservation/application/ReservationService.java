@@ -4,6 +4,7 @@ import com.mdh.common.reservation.domain.Reservation;
 import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.domain.ShopReservation;
 import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
+import com.mdh.common.reservation.domain.event.ReservationCanceledEvent;
 import com.mdh.common.reservation.domain.event.ReservationCreatedEvent;
 import com.mdh.user.reservation.application.dto.ReservationResponse;
 import com.mdh.user.reservation.application.dto.ReservationResponses;
@@ -102,6 +103,7 @@ public class ReservationService {
                 .orElseThrow(() -> new NoSuchElementException("등록된 예약이 존재하지 않습니다. id : " + reservationId));
 
         if (reservation.isCancelShopReservation()) {
+            eventPublisher.publishEvent(new ReservationCanceledEvent(reservation));
             return "정상적으로 예약이 취소되었습니다.";
         }
 
