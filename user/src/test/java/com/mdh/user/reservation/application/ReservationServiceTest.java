@@ -1,5 +1,7 @@
 package com.mdh.user.reservation.application;
 
+import com.mdh.common.reservation.domain.event.ReservationCanceledEvent;
+import com.mdh.common.reservation.domain.event.ReservationCreatedEvent;
 import com.mdh.user.DataInitializerFactory;
 import com.mdh.common.reservation.domain.Reservation;
 import com.mdh.common.reservation.domain.ReservationStatus;
@@ -18,6 +20,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,8 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -51,6 +53,9 @@ class ReservationServiceTest {
     @Mock
     private Map<UUID, Reservation> preemtiveReservations;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @Test
     @DisplayName("예약을 선점한다.")
     void preemptiveReservationTest() {
@@ -67,7 +72,8 @@ class ReservationServiceTest {
 
         given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(false);
         given(preemtiveShopReservationDateTimeSeats.addAll(anyList())).willReturn(true);
-        given(preemtiveReservations.put(any(UUID.class), any(Reservation.class))).willReturn(reservation);
+        given(preemtiveReservations.get(any(UUID.class))).willReturn(reservation);
+
 
         //when
         UUID reservationId = reservationService.preemtiveReservation(reservationPreemptiveRequest);
@@ -133,6 +139,7 @@ class ReservationServiceTest {
 
         given(preemtiveReservations.remove(any(UUID.class))).willReturn(reservation);
         given(preemtiveShopReservationDateTimeSeats.remove(any(Long.class))).willReturn(true);
+        doNothing().when(eventPublisher).publishEvent(any(ReservationCreatedEvent.class));
 
         //when
         reservationService.registerReservation(reservationId, reservationRegisterRequest);
@@ -327,7 +334,7 @@ class ReservationServiceTest {
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
         given(reservationRepository.findById(any(Long.class))).willReturn(Optional.of(reservation));
-
+        doNothing().when(eventPublisher).publishEvent(any(ReservationCanceledEvent.class));
         //when
         var result = reservationService.cancelReservation(reservationId);
 
