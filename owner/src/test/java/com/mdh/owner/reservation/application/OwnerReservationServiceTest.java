@@ -1,6 +1,6 @@
 package com.mdh.owner.reservation.application;
 
-import com.mdh.common.reservation.*;
+import com.mdh.common.reservation.domain.*;
 import com.mdh.owner.DataInitializerFactory;
 import com.mdh.owner.reservation.write.application.OwnerReservationService;
 import com.mdh.owner.reservation.write.infra.persistence.OwnerReservationRepository;

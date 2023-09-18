@@ -1,6 +1,6 @@
 package com.mdh.owner.reservation.write.infra.persistence;
 
-import com.mdh.common.reservation.*;
+import com.mdh.common.reservation.domain.*;
 import com.mdh.common.reservation.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
