@@ -4,7 +4,7 @@ import com.mdh.common.menu.domain.MealType;
 import com.mdh.common.menu.domain.Menu;
 import com.mdh.common.menu.domain.MenuCategory;
 import com.mdh.common.menu.domain.MenuType;
-import com.mdh.common.reservation.*;
+import com.mdh.common.reservation.domain.*;
 import com.mdh.common.shop.domain.*;
 import com.mdh.common.user.domain.Role;
 import com.mdh.common.user.domain.User;

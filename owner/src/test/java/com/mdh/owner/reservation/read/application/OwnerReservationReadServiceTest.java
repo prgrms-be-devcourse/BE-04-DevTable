@@ -1,9 +1,8 @@
 package com.mdh.owner.reservation.read.application;
 
-import com.mdh.common.reservation.ReservationStatus;
-import com.mdh.common.reservation.SeatType;
+import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.common.reservation.domain.SeatType;
 import com.mdh.common.reservation.persistence.dto.OwnerShopReservationInfoResponse;
-import com.mdh.owner.reservation.read.application.OwnerReservationReadService;
 import com.mdh.owner.reservation.read.infra.persistence.OwnerReservationReadRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

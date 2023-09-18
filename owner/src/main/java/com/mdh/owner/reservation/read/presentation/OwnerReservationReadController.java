@@ -1,7 +1,7 @@
 package com.mdh.owner.reservation.read.presentation;
 
 import com.mdh.owner.global.ApiResponse;
-import com.mdh.common.reservation.ReservationStatus;
+import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.persistence.dto.OwnerShopReservationInfoResponse;
 import com.mdh.owner.reservation.read.application.OwnerReservationReadService;
 import lombok.RequiredArgsConstructor;

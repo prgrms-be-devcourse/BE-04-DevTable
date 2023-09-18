@@ -1,6 +1,6 @@
 package com.mdh.owner.reservation.write.infra.persistence;
 
-import com.mdh.common.reservation.*;
+import com.mdh.common.reservation.domain.*;
 
 import java.util.List;
 import java.util.Optional;

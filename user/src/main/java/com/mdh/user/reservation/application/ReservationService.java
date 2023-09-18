@@ -1,9 +1,9 @@
 package com.mdh.user.reservation.application;
 
-import com.mdh.common.reservation.Reservation;
-import com.mdh.common.reservation.ReservationStatus;
-import com.mdh.common.reservation.ShopReservation;
-import com.mdh.common.reservation.ShopReservationDateTimeSeat;
+import com.mdh.common.reservation.domain.Reservation;
+import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.common.reservation.domain.ShopReservation;
+import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
 import com.mdh.user.reservation.application.dto.ReservationResponse;
 import com.mdh.user.reservation.application.dto.ReservationResponses;
 import com.mdh.common.reservation.persistence.ReservationRepository;

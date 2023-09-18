@@ -1,6 +1,6 @@
 package com.mdh.owner.reservation.write.presentation.dto;
 
-import com.mdh.common.reservation.SeatType;
+import com.mdh.common.reservation.domain.SeatType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
