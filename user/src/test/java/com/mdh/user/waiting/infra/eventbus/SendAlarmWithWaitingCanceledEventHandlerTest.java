@@ -1,9 +1,9 @@
 package com.mdh.user.waiting.infra.eventbus;
 
 import com.mdh.common.waiting.domain.Waiting;
+import com.mdh.common.waiting.domain.event.WaitingCanceledEvent;
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
-import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +14,14 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SendAlarmWithWaitingCreatedEventHandlerTest {
+class SendAlarmWithWaitingCanceledEventHandlerTest {
+
+    @InjectMocks
+    private SendAlarmWithWaitingCanceledEventHandler eventHandler;
 
     @Mock
     private StringRedisTemplate redisTemplate;
@@ -25,18 +29,15 @@ class SendAlarmWithWaitingCreatedEventHandlerTest {
     @Mock
     private WaitingRepository waitingRepository;
 
-    @InjectMocks
-    private SendAlarmWithWaitingCreatedEventHandler eventHandler;
 
-
-    @DisplayName("웨이팅이 생성되면 사용자에게 알람이 발생한다.")
+    @DisplayName("웨이팅이 취소 사용자에게 알람이 발생한다.")
     @Test
-    void shouldSendAlarmAfterWaitingCreatedEvent() {
+    void sendAlarmAfterWaitingCanceledEvent() {
         // Given
         Long waitingId = 1L;
         var userId = 1L;
         var waiting = mock(Waiting.class);
-        var event = new WaitingCreatedEvent(waiting);
+        var event = new WaitingCanceledEvent(waiting);
 
         var alarmInfo = new WaitingAlarmInfo("test", "test", 1, 1, "01012345678", userId);
 
@@ -51,5 +52,4 @@ class SendAlarmWithWaitingCreatedEventHandlerTest {
         verify(redisTemplate, times(1)).convertAndSend(any(), any());
         verify(waitingRepository, times(1)).findWaitingAlarmInfoById(waitingId);
     }
-
 }
