@@ -3,6 +3,7 @@ package com.mdh.common.waiting.persistence;
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.common.waiting.persistence.dto.UserWaitingQueryDto;
+import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
 import com.mdh.common.waiting.persistence.dto.WaitingDetailsQueryDto;
 import com.mdh.common.waiting.persistence.dto.WaitingInfoResponseForOwner;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,4 +49,18 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
             w.waitingStatus = :waitingStatus
             """)
     List<WaitingInfoResponseForOwner> findWaitingByOwnerIdAndWaitingStatus(@Param("ownerId") Long ownerId, @Param("waitingStatus") WaitingStatus waitingStatus);
+
+    @Query("""
+            SELECT new com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo(
+            s.shopDetails.info,
+            s.name,
+            w.waitingPeople.adultCount + w.waitingPeople.childCount,
+            w.waitingNumber,
+            s.shopDetails.phoneNumber,
+            w.userId)
+            FROM Waiting w
+            JOIN Shop s ON w.shopWaiting.shopId = s.id
+            WHERE w.id = :waitingId
+            """)
+    Optional<WaitingAlarmInfo> findWaitingAlarmInfoById(@Param("waitingId") Long waitingId);
 }
