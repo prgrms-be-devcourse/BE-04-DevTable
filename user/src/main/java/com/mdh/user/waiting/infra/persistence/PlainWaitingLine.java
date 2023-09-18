@@ -37,7 +37,7 @@ public class PlainWaitingLine implements WaitingLine {
     @Override
     public int findTotalWaiting(Long shopId) {
         var waitingInfos = waitingLine.get(shopId);
-        return waitingInfos.size();
+        return waitingInfos != null ? waitingInfos.size() : 0;
     }
 
     @Override
