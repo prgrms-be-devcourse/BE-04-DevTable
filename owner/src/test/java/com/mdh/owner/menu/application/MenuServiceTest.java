@@ -1,7 +1,7 @@
 package com.mdh.owner.menu.application;
 
 import com.mdh.owner.DataInitializerFactory;
-import com.mdh.owner.menu.application.event.MenuCreatedEvent;
+import com.mdh.common.menu.domain.event.MenuCreatedEvent;
 import com.mdh.common.menu.domain.MealType;
 import com.mdh.common.menu.domain.MenuCategory;
 import com.mdh.common.menu.domain.MenuType;

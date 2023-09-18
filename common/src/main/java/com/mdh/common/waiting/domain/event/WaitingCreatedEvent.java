@@ -1,4 +1,4 @@
-package com.mdh.user.waiting.application.event;
+package com.mdh.common.waiting.domain.event;
 
 import com.mdh.common.waiting.domain.Waiting;
 

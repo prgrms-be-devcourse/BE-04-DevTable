@@ -1,4 +1,4 @@
-package com.mdh.owner.menu.application.event;
+package com.mdh.common.menu.domain.event;
 
 import com.mdh.common.menu.domain.Menu;
 

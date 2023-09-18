@@ -4,6 +4,7 @@ import com.mdh.common.shop.domain.ShopType;
 import com.mdh.common.waiting.domain.ShopWaitingStatus;
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.WaitingStatus;
+import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
 import com.mdh.common.waiting.persistence.ShopWaitingRepository;
 import com.mdh.common.waiting.persistence.WaitingLine;
 import com.mdh.common.waiting.persistence.WaitingRepository;
@@ -20,6 +21,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,6 +51,9 @@ class WaitingServiceTest {
     @Mock
     private WaitingLine waitingLine;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @Test
     @DisplayName("웨이팅을 생성한다.")
     void createWaitingTest() {
@@ -63,11 +68,13 @@ class WaitingServiceTest {
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
         var waitingRequest = new WaitingCreateRequest(userId, shopId, adultCount, childCount);
+        var waitingCreatedEvent = new WaitingCreatedEvent(waiting);
 
         given(shopWaitingRepository.findById(any(Long.class))).willReturn(Optional.of(shopWaiting));
         given(waitingServiceValidator.isExistsWaiting(userId)).willReturn(false);
         given(waitingRepository.save(any(Waiting.class))).willReturn(waiting);
         doNothing().when(waitingLine).save(shopWaiting.getShopId(), waiting.getId(), waiting.getIssuedTime());
+        doNothing().when(eventPublisher).publishEvent(waitingCreatedEvent);
 
         //when
         waitingService.createWaiting(waitingRequest);
@@ -77,6 +84,7 @@ class WaitingServiceTest {
         verify(waitingServiceValidator, times(1)).isExistsWaiting(any(Long.class));
         verify(waitingRepository, times(1)).save(any(Waiting.class));
         verify(waitingLine, times(1)).save(any(Long.class), any(), any());
+        verify(eventPublisher, times(1)).publishEvent(waitingCreatedEvent);
     }
 
     @Test

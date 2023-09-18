@@ -1,6 +1,6 @@
 package com.mdh.owner.shop.infra.eventbus;
 
-import com.mdh.owner.menu.application.event.MenuUpdatedEvent;
+import com.mdh.common.menu.domain.event.MenuUpdatedEvent;
 import com.mdh.common.shop.persistence.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
