@@ -1,5 +1,6 @@
 package com.mdh.user.waiting.application;
 
+import com.mdh.common.waiting.domain.event.WaitingCanceledEvent;
 import com.mdh.user.waiting.application.dto.UserWaitingResponse;
 import com.mdh.user.waiting.application.dto.WaitingDetailsResponse;
 import com.mdh.common.waiting.domain.Waiting;
@@ -80,8 +81,10 @@ public class WaitingService {
                 .orElseThrow(() -> new NoSuchElementException("등록된 웨이팅이 존재하지 않습니다. waitingId : " + waitingId));
 
         var shopId = waiting.getShopWaiting().getShopId();
+
         waitingLine.cancel(shopId, waitingId, waiting.getCreatedDate());
         waiting.changeWaitingStatus(WaitingStatus.CANCEL);
+        eventPublisher.publishEvent(new WaitingCanceledEvent(waiting));
     }
 
     @Transactional
