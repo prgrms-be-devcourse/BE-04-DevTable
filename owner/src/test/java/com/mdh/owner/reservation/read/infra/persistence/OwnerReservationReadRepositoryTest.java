@@ -1,21 +1,25 @@
 package com.mdh.owner.reservation.read.infra.persistence;
 
+import com.mdh.common.global.config.JpaConfig;
 import com.mdh.common.reservation.ReservationStatus;
 import com.mdh.common.reservation.persistence.*;
 import com.mdh.common.shop.persistence.RegionRepository;
 import com.mdh.common.shop.persistence.ShopRepository;
 import com.mdh.common.user.persistence.UserRepository;
 import com.mdh.owner.DataInitializerFactory;
+import com.mdh.owner.JpaTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Profile("test")
+@DataJpaTest
+@Import({JpaConfig.class, JpaTestConfig.class})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class OwnerReservationReadRepositoryTest {
 
     @Autowired

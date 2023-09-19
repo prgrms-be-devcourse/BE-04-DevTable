@@ -4,7 +4,7 @@ import com.mdh.common.shop.domain.ShopType;
 import com.mdh.common.shop.persistence.ShopRepository;
 import com.mdh.common.shop.persistence.dto.ReservationShopSearchQueryDto;
 import com.mdh.user.DataInitializerFactory;
-import com.mdh.user.shop.presentation.controller.dto.ReservationShopSearchRequest;
+import com.mdh.user.shop.presentation.dto.ReservationShopSearchRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

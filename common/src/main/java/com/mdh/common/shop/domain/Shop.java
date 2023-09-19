@@ -57,10 +57,22 @@ public class Shop extends BaseTimeEntity {
         this.description = description;
         this.shopType = shopType;
         this.shopDetails = shopDetails;
-        this.shopPrice = ShopPrice.builder().build();
+        this.shopPrice = initShopPrice();
         this.bookmarkCount = 0;
         this.shopAddress = shopAddress;
         this.region = region;
+    }
+
+    private ShopPrice initShopPrice() {
+        return ShopPrice
+                .builder()
+                .shopMinPrice(0)
+                .shopMaxPrice(0)
+                .lunchMinPrice(0)
+                .lunchMaxPrice(0)
+                .dinnerMinPrice(0)
+                .dinnerMaxPrice(0)
+                .build();
     }
 
     // 비즈니스 메서드
