@@ -55,10 +55,10 @@ class ReservationRepositoryTest {
         var seat = DataInitializerFactory.seat(shopReservation);
         em.persist(seat);
 
-        var shopReservationDateTime1 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now().plusHours(1));
-        var shopReservationDateTime2 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now().plusHours(2));
-        var shopReservationDateTime3 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now().plusHours(3));
-        var shopReservationDateTime4 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now().plusHours(3));
+        var shopReservationDateTime1 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(1), LocalTime.now());
+        var shopReservationDateTime2 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(2), LocalTime.now());
+        var shopReservationDateTime3 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(3), LocalTime.now());
+        var shopReservationDateTime4 = DataInitializerFactory.shopReservationDateTime(shopReservation, LocalDate.now().plusDays(4), LocalTime.now());
 
         em.persist(shopReservationDateTime1);
         em.persist(shopReservationDateTime2);

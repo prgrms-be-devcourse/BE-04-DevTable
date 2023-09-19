@@ -200,13 +200,6 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
-### YAML ###
-*.yaml
-application.yml
-application-dev.yml
-application-prod.yml
-application-test.yml
-
 ### SCHEMA ###
 *.sql
 
@@ -283,6 +276,12 @@ sketch
 
 # and uncomment the following lines
 # .pnp.*
+
+### config ###
+common/src/main/resources
+alarm/src/main/resources
+owner/src/main/resources
+user/src/main/resources
 
 ### ascii-doc ###
 src/main/resources/static/docs/index.html
