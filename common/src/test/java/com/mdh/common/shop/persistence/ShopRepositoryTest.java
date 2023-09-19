@@ -1,6 +1,7 @@
 package com.mdh.common.shop.persistence;
 
 import com.mdh.common.DataInitializerFactory;
+import com.mdh.common.menu.domain.MealType;
 import com.mdh.common.reservation.persistence.*;
 import com.mdh.common.user.persistence.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -120,11 +121,34 @@ class ShopRepositoryTest {
         assertThat(reservationAvailableShop.getContent()).hasSize(2);
     }
 
+    @Test
+    @DisplayName("특정 시간과 날짜에 예약 가능한 매장을 가격을 기준으로 필터 조회한다.")
+    void findAvailableReservationShopPriceFilterTest() {
+        //given
+        shopsAndShopReservations();
+
+        var pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Order.asc("createdDate")));
+
+        //when
+        var reservationAvailableShop = shopRepository.searchReservationShopByFilter(pageRequest,
+                LocalDate.of(2023, 9, 17),
+                LocalTime.of(19, 0, 0),
+                null,
+                null,
+                30000,
+                30000);
+
+        //then
+        assertThat(reservationAvailableShop.getTotalElements()).isEqualTo(1);
+        assertThat(reservationAvailableShop.getTotalPages()).isEqualTo(1);
+        assertThat(reservationAvailableShop.getContent()).hasSize(1);
+    }
+
     /**
-     * shop1 -> 2023.9.17 오후 7시 예약 가능 테이블 1개, (서울, 강남구), 인원 2-5
-     * shop2 -> 2023.9.17 오후 7시 예약 불가능, (서울, 청담), 인원 2-5
-     * shop3 -> 2023.9.17 오후 8시 예약 가능, (서울, 강남구), 인원 2-7
-     * shop4 -> 2023.9.17 오후 7시 예약 가능 테이블 2개, (서울, 청담), 인원 2-7
+     * shop1 -> 2023.9.17 오후 7시 예약 가능 테이블 1개, (서울, 강남구), 인원 2-5, 1만원
+     * shop2 -> 2023.9.17 오후 7시 예약 불가능, (서울, 청담), 인원 2-5, 1만원
+     * shop3 -> 2023.9.17 오후 8시 예약 가능, (서울, 강남구), 인원 2-7, 3만원
+     * shop4 -> 2023.9.17 오후 7시 예약 가능 테이블 2개, (서울, 청담), 인원 2-7, 3만원
      */
     private void shopsAndShopReservations() {
         var owner = DataInitializerFactory.owner();
@@ -143,6 +167,11 @@ class ShopRepositoryTest {
         var shop3 = DataInitializerFactory.shop(owner.getId(), shopDetails, region1, shopAddress);
         var shop4 = DataInitializerFactory.shop(owner.getId(), shopDetails, region2, shopAddress);
         shopRepository.saveAll(List.of(shop1, shop2, shop3, shop4));
+
+        shop1.getShopPrice().updatePrice(MealType.LUNCH, 10000);
+        shop2.getShopPrice().updatePrice(MealType.LUNCH, 10000);
+        shop3.getShopPrice().updatePrice(MealType.LUNCH, 30000);
+        shop4.getShopPrice().updatePrice(MealType.LUNCH, 30000);
 
         var shopReservation1 = DataInitializerFactory.shopReservation(shop1.getId(), 2, 5);
         var shopReservation2 = DataInitializerFactory.shopReservation(shop2.getId(), 2, 5);

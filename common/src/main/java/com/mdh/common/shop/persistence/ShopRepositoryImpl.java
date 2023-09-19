@@ -171,13 +171,11 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     }
 
     private BooleanExpression minPriceLoe(Integer minPrice) {
-        return minPrice != null ? shop.shopPrice.lunchMinPrice.loe(minPrice)
-                .or(shop.shopPrice.dinnerMinPrice.loe(minPrice)) : null;
+        return minPrice != null ? shop.shopPrice.shopMinPrice.loe(minPrice) : null;
     }
 
     private BooleanExpression maxPriceGoe(Integer maxPrice) {
-        return maxPrice != null ? shop.shopPrice.lunchMaxPrice.goe(maxPrice)
-                .or(shop.shopPrice.dinnerMaxPrice.goe(maxPrice)) : null;
+        return maxPrice != null ? shop.shopPrice.shopMaxPrice.goe(maxPrice) : null;
     }
 
     private BooleanBuilder shopQueryDynamicCond(final MultiValueMap<String, String> cond) {
