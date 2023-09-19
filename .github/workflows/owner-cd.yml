@@ -35,7 +35,7 @@ jobs:
 
       # ./gradlew build 수행
       - name: Build with Gradle
-        run: ./gradlew build:owner
+        run: ./gradlew :owner:clean :owner:build
         shell: bash
 
       # 해당 코드들을 압축
