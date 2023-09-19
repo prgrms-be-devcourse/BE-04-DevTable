@@ -930,7 +930,7 @@ Content-Length: 85
 {
   "statusCode" : 200,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:24:15"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -1039,7 +1039,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 439
+Content-Length: 437
 
 {
   "statusCode" : 400,
@@ -1047,10 +1047,10 @@ Content-Length: 439
     "type" : "about:blank",
     "title" : "HttpMessageNotReadableException",
     "status" : 400,
-    "detail" : "JSON parse error: Cannot deserialize value of type `com.mdh.devtable.waiting.domain.ShopWaitingStatus` from String \"asf\": not one of the values accepted for Enum class: [CLOSE, OPEN, BREAK_TIME]",
+    "detail" : "JSON parse error: Cannot deserialize value of type `com.mdh.common.waiting.domain.ShopWaitingStatus` from String \"asf\": not one of the values accepted for Enum class: [CLOSE, OPEN, BREAK_TIME]",
     "instance" : "/api/owner/v1/shops/1"
   },
-  "serverDateTime" : "2023-09-15T13:24:15"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -1184,7 +1184,7 @@ Content-Length: 85
 {
   "statusCode" : 200,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:24:16"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -1293,7 +1293,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 449
+Content-Length: 447
 
 {
   "statusCode" : 400,
@@ -1301,10 +1301,10 @@ Content-Length: 449
     "type" : "about:blank",
     "title" : "HttpMessageNotReadableException",
     "status" : 400,
-    "detail" : "JSON parse error: Cannot deserialize value of type `com.mdh.devtable.waiting.domain.WaitingStatus` from String \"asf\": not one of the values accepted for Enum class: [CANCEL, NO_SHOW, PROGRESS, VISITED]",
+    "detail" : "JSON parse error: Cannot deserialize value of type `com.mdh.common.waiting.domain.WaitingStatus` from String \"asf\": not one of the values accepted for Enum class: [CANCEL, NO_SHOW, PROGRESS, VISITED]",
     "instance" : "/api/owner/v1/waitings/1"
   },
-  "serverDateTime" : "2023-09-15T13:24:15"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -1502,7 +1502,7 @@ Content-Length: 148
     "waitingNumber" : 1,
     "phoneNumber" : "0101234578"
   } ],
-  "serverDateTime" : "2023-09-15T13:24:15"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -1613,7 +1613,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 550
+Content-Length: 546
 
 {
   "statusCode" : 400,
@@ -1621,10 +1621,10 @@ Content-Length: 550
     "type" : "about:blank",
     "title" : "MethodArgumentTypeMismatchException",
     "status" : 400,
-    "detail" : "Failed to convert value of type 'java.lang.String' to required type 'com.mdh.devtable.waiting.domain.WaitingStatus'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam com.mdh.devtable.waiting.domain.WaitingStatus] for value [INVALID_STATUS]",
+    "detail" : "Failed to convert value of type 'java.lang.String' to required type 'com.mdh.common.waiting.domain.WaitingStatus'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam com.mdh.common.waiting.domain.WaitingStatus] for value [INVALID_STATUS]",
     "instance" : "/api/owner/v1/waitings/1"
   },
-  "serverDateTime" : "2023-09-15T13:24:15"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -1758,7 +1758,7 @@ Content-Length: 85
 {
   "statusCode" : 200,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:24:15"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -1885,7 +1885,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2357
+Content-Length: 2348
 
 {
   "statusCode" : 400,
@@ -1893,20 +1893,20 @@ Content-Length: 2357
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [1] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.lang.Void&gt;&gt; com.mdh.devtable.waiting.presentation.controller.OwnerWaitingController.updateShopWaitingInfo(java.lang.Long,com.mdh.devtable.waiting.presentation.dto.OwnerUpdateShopWaitingInfoRequest) with 3 errors: [Field error in object 'ownerUpdateShopWaitingInfoRequest' on field 'maximumPeople': rejected value [-1]; codes [Min.ownerUpdateShopWaitingInfoRequest.maximumPeople,Min.maximumPeople,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [ownerUpdateShopWaitingInfoRequest.maximumPeople,maximumPeople]; arguments []; default message [maximumPeople],1]; default message [1이상의 값만 입력해 주세요]] [Field error in object 'ownerUpdateShopWaitingInfoRequest' on field 'minimumPeople': rejected value [-2]; codes [Min.ownerUpdateShopWaitingInfoRequest.minimumPeople,Min.minimumPeople,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [ownerUpdateShopWaitingInfoRequest.minimumPeople,minimumPeople]; arguments []; default message [minimumPeople],1]; default message [1이상의 값만 입력해 주세요]] [Field error in object 'ownerUpdateShopWaitingInfoRequest' on field 'maximumWaitingTeam': rejected value [-3]; codes [Min.ownerUpdateShopWaitingInfoRequest.maximumWaitingTeam,Min.maximumWaitingTeam,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [ownerUpdateShopWaitingInfoRequest.maximumWaitingTeam,maximumWaitingTeam]; arguments []; default message [maximumWaitingTeam],1]; default message [1이상의 값만 입력해 주세요]] ",
+    "detail" : "Validation failed for argument [1] in public org.springframework.http.ResponseEntity&lt;com.mdh.owner.global.ApiResponse&lt;java.lang.Void&gt;&gt; com.mdh.owner.waiting.presentation.controller.OwnerWaitingController.updateShopWaitingInfo(java.lang.Long,com.mdh.owner.waiting.presentation.dto.OwnerUpdateShopWaitingInfoRequest) with 3 errors: [Field error in object 'ownerUpdateShopWaitingInfoRequest' on field 'maximumWaitingTeam': rejected value [-3]; codes [Min.ownerUpdateShopWaitingInfoRequest.maximumWaitingTeam,Min.maximumWaitingTeam,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [ownerUpdateShopWaitingInfoRequest.maximumWaitingTeam,maximumWaitingTeam]; arguments []; default message [maximumWaitingTeam],1]; default message [1이상의 값만 입력해 주세요]] [Field error in object 'ownerUpdateShopWaitingInfoRequest' on field 'minimumPeople': rejected value [-2]; codes [Min.ownerUpdateShopWaitingInfoRequest.minimumPeople,Min.minimumPeople,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [ownerUpdateShopWaitingInfoRequest.minimumPeople,minimumPeople]; arguments []; default message [minimumPeople],1]; default message [1이상의 값만 입력해 주세요]] [Field error in object 'ownerUpdateShopWaitingInfoRequest' on field 'maximumPeople': rejected value [-1]; codes [Min.ownerUpdateShopWaitingInfoRequest.maximumPeople,Min.maximumPeople,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [ownerUpdateShopWaitingInfoRequest.maximumPeople,maximumPeople]; arguments []; default message [maximumPeople],1]; default message [1이상의 값만 입력해 주세요]] ",
     "instance" : "/api/owner/v1/shops/1/waiting",
     "validationError" : [ {
-      "field" : "maximumPeople",
+      "field" : "maximumWaitingTeam",
       "message" : "1이상의 값만 입력해 주세요"
     }, {
       "field" : "minimumPeople",
       "message" : "1이상의 값만 입력해 주세요"
     }, {
-      "field" : "maximumWaitingTeam",
+      "field" : "maximumPeople",
       "message" : "1이상의 값만 입력해 주세요"
     } ]
   },
-  "serverDateTime" : "2023-09-15T13:24:16"
+  "serverDateTime" : "2023-09-20T00:21:01"
 }</code></pre>
 </div>
 </div>
@@ -2072,7 +2072,7 @@ Content-Length: 85
 {
   "statusCode" : 201,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:24:11"
+  "serverDateTime" : "2023-09-20T00:20:58"
 }</code></pre>
 </div>
 </div>
@@ -2230,7 +2230,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1811
+Content-Length: 1802
 
 {
   "statusCode" : 400,
@@ -2238,7 +2238,7 @@ Content-Length: 1811
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [1] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.lang.Void&gt;&gt; com.mdh.devtable.menu.presentation.MenuController.createMenuCategory(java.lang.Long,com.mdh.devtable.menu.presentation.dto.MenuCategoryCreateRequest) with 2 errors: [Field error in object 'menuCategoryCreateRequest' on field 'description': rejected value [testDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescription]; codes [Size.menuCategoryCreateRequest.description,Size.description,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [menuCategoryCreateRequest.description,description]; arguments []; default message [description],31,0]; default message [메뉴 카테고리 설명은 31자 이내로 해주세요]] [Field error in object 'menuCategoryCreateRequest' on field 'name': rejected value []; codes [Size.menuCategoryCreateRequest.name,Size.name,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [menuCategoryCreateRequest.name,name]; arguments []; default message [name],31,1]; default message [메뉴 카테고리 이름은 1~31자 이내로 입력해 주세요]] ",
+    "detail" : "Validation failed for argument [1] in public org.springframework.http.ResponseEntity&lt;com.mdh.owner.global.ApiResponse&lt;java.lang.Void&gt;&gt; com.mdh.owner.menu.presentation.MenuController.createMenuCategory(java.lang.Long,com.mdh.owner.menu.presentation.dto.MenuCategoryCreateRequest) with 2 errors: [Field error in object 'menuCategoryCreateRequest' on field 'description': rejected value [testDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescriptiontestDescription]; codes [Size.menuCategoryCreateRequest.description,Size.description,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [menuCategoryCreateRequest.description,description]; arguments []; default message [description],31,0]; default message [메뉴 카테고리 설명은 31자 이내로 해주세요]] [Field error in object 'menuCategoryCreateRequest' on field 'name': rejected value []; codes [Size.menuCategoryCreateRequest.name,Size.name,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [menuCategoryCreateRequest.name,name]; arguments []; default message [name],31,1]; default message [메뉴 카테고리 이름은 1~31자 이내로 입력해 주세요]] ",
     "instance" : "/api/owner/v1/shops/1/categories",
     "validationError" : [ {
       "field" : "description",
@@ -2248,7 +2248,7 @@ Content-Length: 1811
       "message" : "메뉴 카테고리 이름은 1~31자 이내로 입력해 주세요"
     } ]
   },
-  "serverDateTime" : "2023-09-15T13:24:10"
+  "serverDateTime" : "2023-09-20T00:20:58"
 }</code></pre>
 </div>
 </div>
@@ -2403,7 +2403,7 @@ Content-Length: 85
 {
   "statusCode" : 201,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:24:11"
+  "serverDateTime" : "2023-09-20T00:20:58"
 }</code></pre>
 </div>
 </div>
@@ -2569,7 +2569,7 @@ Content-Length: 85
 {
   "statusCode" : 201,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:24:11"
+  "serverDateTime" : "2023-09-20T00:20:58"
 }</code></pre>
 </div>
 </div>
@@ -2719,7 +2719,7 @@ Content-Length: 288
     "detail" : "등록된 카테고리 ID가 없습니다.",
     "instance" : "/api/owner/v1/categories/-1/menus"
   },
-  "serverDateTime" : "2023-09-15T13:24:10"
+  "serverDateTime" : "2023-09-20T00:20:58"
 }</code></pre>
 </div>
 </div>
@@ -2834,7 +2834,7 @@ Content-Length: 288
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-09-13 14:14:38 +0900
+Last updated 2023-09-19 15:54:32 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

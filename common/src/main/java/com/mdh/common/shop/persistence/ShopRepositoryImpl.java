@@ -14,6 +14,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,8 +79,8 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
 
     @Override
     public Page<ReservationShopSearchQueryDto> searchReservationShopByFilter(Pageable pageable,
-                                                                             LocalDate reservationDate,
-                                                                             LocalTime reservationTime,
+                                                                             @NonNull LocalDate reservationDate,
+                                                                             @NonNull LocalTime reservationTime,
                                                                              Integer personCount,
                                                                              String regionName,
                                                                              Integer minPrice,
@@ -98,17 +99,13 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
                 .from(shopReservationDateTimeSeat)
                 .join(shopReservationDateTime)
                 .on(shopReservationDateTimeSeat.shopReservationDateTime.id.eq(shopReservationDateTime.id))
-                .where(shopReservationDateTime.reservationDate.eq(reservationDate)
-                        .and(shopReservationDateTime.reservationTime.eq(reservationTime)))
                 .join(shopReservation)
                 .on(shopReservation.shopId.eq(shopReservationDateTime.shopReservation.shopId))
-                .where(personLoeGoe(personCount))
                 .join(shop)
                 .on(shopReservation.shopId.eq(shop.id))
                 .join(region)
                 .on(shop.region.id.eq(region.id))
-                .where(regionContains(regionName))
-                .where(priceLoeGoe(minPrice, maxPrice))
+                .where(booleanBuilder(reservationDate, reservationTime, personCount, regionName, minPrice, maxPrice))
                 .groupBy(shop.id) // 아이디로 group by
                 .orderBy(getOrderSpecifiers(pageable))
                 .offset(pageable.getOffset())
@@ -120,17 +117,13 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
                 .from(shopReservationDateTimeSeat)
                 .join(shopReservationDateTime)
                 .on(shopReservationDateTimeSeat.shopReservationDateTime.id.eq(shopReservationDateTime.id))
-                .where(shopReservationDateTime.reservationDate.eq(reservationDate)
-                        .and(shopReservationDateTime.reservationTime.eq(reservationTime)))
                 .join(shopReservation)
                 .on(shopReservation.shopId.eq(shopReservationDateTime.shopReservation.shopId))
-                .where(personLoeGoe(personCount))
                 .join(shop)
                 .on(shopReservation.shopId.eq(shop.id))
                 .join(region)
                 .on(shop.region.id.eq(region.id))
-                .where(regionContains(regionName))
-                .where(priceLoeGoe(minPrice, maxPrice));
+                .where(booleanBuilder(reservationDate, reservationTime, personCount, regionName, minPrice, maxPrice));
 
         return PageableExecutionUtils.getPage(content, pageable, totalCount::fetchOne);
     }
@@ -154,6 +147,24 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
                 .when(shopReservationDateTimeSeat.seatStatus.eq(SeatStatus.AVAILABLE))
                 .then(1)
                 .otherwise(0);
+    }
+
+    private BooleanBuilder booleanBuilder(LocalDate reservationDate,
+                                          LocalTime reservationTime,
+                                          Integer personCount,
+                                          String regionName,
+                                          Integer minPrice,
+                                          Integer maxPrice) {
+        return new BooleanBuilder().and(reservationDateTimeEq(reservationDate, reservationTime))
+                .and(personLoeGoe(personCount))
+                .and(regionContains(regionName))
+                .and(priceLoeGoe(minPrice, maxPrice));
+    }
+
+    private BooleanExpression reservationDateTimeEq(LocalDate reservationDate, LocalTime reservationTime) {
+        return shopReservationDateTime.reservationDate.eq(reservationDate).and(
+                shopReservationDateTime.reservationTime.eq(reservationTime)
+        );
     }
 
     private BooleanExpression personLoeGoe(Integer personCount) {

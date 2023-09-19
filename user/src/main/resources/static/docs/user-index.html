@@ -519,7 +519,7 @@ Content-Length: 88
 {
   "statusCode" : 200,
   "data" : "hello",
-  "serverDateTime" : "2023-09-15T13:35:28"
+  "serverDateTime" : "2023-09-20T00:21:09"
 }</code></pre>
 </div>
 </div>
@@ -601,7 +601,7 @@ Content-Length: 98
 {
   "statusCode" : 201,
   "data" : "/api/v1/users/1",
-  "serverDateTime" : "2023-09-15T13:35:32"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -680,7 +680,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 815
+Content-Length: 803
 
 {
   "statusCode" : 400,
@@ -688,11 +688,11 @@ Content-Length: 815
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.devtable.user.presentation.UserController.signUp(com.mdh.devtable.user.presentation.dto.SignUpRequest): [Error in object 'signUpRequest': codes [FieldMatch.signUpRequest,FieldMatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.,]; arguments []; default message [],password,passwordCheck]; default message [비밀번호가 일치하지 않습니다.]] ",
+    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.user.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.user.user.presentation.UserController.signUp(com.mdh.user.user.presentation.dto.SignUpRequest): [Error in object 'signUpRequest': codes [FieldMatch.signUpRequest,FieldMatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.,]; arguments []; default message [],password,passwordCheck]; default message [비밀번호가 일치하지 않습니다.]] ",
     "instance" : "/api/v1/users",
     "validationError" : [ ]
   },
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -796,7 +796,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1760
+Content-Length: 1750
 
 {
   "statusCode" : 400,
@@ -804,7 +804,7 @@ Content-Length: 1760
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.devtable.user.presentation.UserController.signUp(com.mdh.devtable.user.presentation.dto.SignUpRequest) with 2 errors: [Field error in object 'signUpRequest' on field 'email': rejected value [tesexample.com]; codes [Pattern.signUpRequest.email,Pattern.email,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.email,email]; arguments []; default message [email],[Ljakarta.validation.constraints.Pattern$Flag;@45980d,[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?]; default message [이메일 형식에 맞게 입력해 주세요.]] [Field error in object 'signUpRequest' on field 'email': rejected value [tesexample.com]; codes [Email.signUpRequest.email,Email.email,Email.java.lang.String,Email]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.email,email]; arguments []; default message [email],[Ljakarta.validation.constraints.Pattern$Flag;@189738f4,.*]; default message [이메일 형식에 맞게 입력해 주세요.]] ",
+    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.user.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.user.user.presentation.UserController.signUp(com.mdh.user.user.presentation.dto.SignUpRequest) with 2 errors: [Field error in object 'signUpRequest' on field 'email': rejected value [tesexample.com]; codes [Pattern.signUpRequest.email,Pattern.email,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.email,email]; arguments []; default message [email],[Ljakarta.validation.constraints.Pattern$Flag;@195cc8bb,[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?]; default message [이메일 형식에 맞게 입력해 주세요.]] [Field error in object 'signUpRequest' on field 'email': rejected value [tesexample.com]; codes [Email.signUpRequest.email,Email.email,Email.java.lang.String,Email]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.email,email]; arguments []; default message [email],[Ljakarta.validation.constraints.Pattern$Flag;@7b00f659,.*]; default message [이메일 형식에 맞게 입력해 주세요.]] ",
     "instance" : "/api/v1/users",
     "validationError" : [ {
       "field" : "email",
@@ -814,7 +814,7 @@ Content-Length: 1760
       "message" : "이메일 형식에 맞게 입력해 주세요."
     } ]
   },
-  "serverDateTime" : "2023-09-15T13:35:32"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -923,7 +923,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1256
+Content-Length: 1246
 
 {
   "statusCode" : 400,
@@ -931,14 +931,14 @@ Content-Length: 1256
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.devtable.user.presentation.UserController.signUp(com.mdh.devtable.user.presentation.dto.SignUpRequest): [Field error in object 'signUpRequest' on field 'password': rejected value [invalid]; codes [Pattern.signUpRequest.password,Pattern.password,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.password,password]; arguments []; default message [password],[Ljakarta.validation.constraints.Pattern$Flag;@45980d,^(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$).{8,}$]; default message [비밀번호는 최소 8글자의 최소 1개 이상의 문자, 1개 이상의 숫자가 포함 되어야 합니다.]] ",
+    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.user.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.user.user.presentation.UserController.signUp(com.mdh.user.user.presentation.dto.SignUpRequest): [Field error in object 'signUpRequest' on field 'password': rejected value [invalid]; codes [Pattern.signUpRequest.password,Pattern.password,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.password,password]; arguments []; default message [password],[Ljakarta.validation.constraints.Pattern$Flag;@195cc8bb,^(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$).{8,}$]; default message [비밀번호는 최소 8글자의 최소 1개 이상의 문자, 1개 이상의 숫자가 포함 되어야 합니다.]] ",
     "instance" : "/api/v1/users",
     "validationError" : [ {
       "field" : "password",
       "message" : "비밀번호는 최소 8글자의 최소 1개 이상의 문자, 1개 이상의 숫자가 포함 되어야 합니다."
     } ]
   },
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1047,7 +1047,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1180
+Content-Length: 1170
 
 {
   "statusCode" : 400,
@@ -1055,14 +1055,14 @@ Content-Length: 1180
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.devtable.user.presentation.UserController.signUp(com.mdh.devtable.user.presentation.dto.SignUpRequest): [Field error in object 'signUpRequest' on field 'phoneNumber': rejected value [0101236578910]; codes [Pattern.signUpRequest.phoneNumber,Pattern.phoneNumber,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.phoneNumber,phoneNumber]; arguments []; default message [phoneNumber],[Ljakarta.validation.constraints.Pattern$Flag;@45980d,^01([0|1|6|7|8|9]{1})[0-9]{3,4}[0-9]{4}$]; default message [핸드폰 번호는 10~11자리의 숫자만 입력해 주세요.]] ",
+    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.user.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.user.user.presentation.UserController.signUp(com.mdh.user.user.presentation.dto.SignUpRequest): [Field error in object 'signUpRequest' on field 'phoneNumber': rejected value [0101236578910]; codes [Pattern.signUpRequest.phoneNumber,Pattern.phoneNumber,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpRequest.phoneNumber,phoneNumber]; arguments []; default message [phoneNumber],[Ljakarta.validation.constraints.Pattern$Flag;@195cc8bb,^01([0|1|6|7|8|9]{1})[0-9]{3,4}[0-9]{4}$]; default message [핸드폰 번호는 10~11자리의 숫자만 입력해 주세요.]] ",
     "instance" : "/api/v1/users",
     "validationError" : [ {
       "field" : "phoneNumber",
       "message" : "핸드폰 번호는 10~11자리의 숫자만 입력해 주세요."
     } ]
   },
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1181,12 +1181,12 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
 Content-Type: application/json;charset=UTF-8
-Content-Length: 109
+Content-Length: 110
 
 {
   "statusCode" : 201,
-  "data" : "/api/customer/v1/waitings1",
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "data" : "/api/customer/v1/waitings/1",
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1265,7 +1265,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1065
+Content-Length: 1053
 
 {
   "statusCode" : 400,
@@ -1273,14 +1273,14 @@ Content-Length: 1065
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.devtable.waiting.presentation.UserWaitingController.createWaiting(com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest): [Field error in object 'waitingCreateRequest' on field 'childCount': rejected value [31]; codes [Max.waitingCreateRequest.childCount,Max.childCount,Max.int,Max]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [waitingCreateRequest.childCount,childCount]; arguments []; default message [childCount],30]; default message [유아 인원은 30 초과일 수 없습니다.]] ",
+    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.user.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.user.waiting.presentation.UserWaitingController.createWaiting(com.mdh.user.waiting.presentation.dto.WaitingCreateRequest): [Field error in object 'waitingCreateRequest' on field 'childCount': rejected value [31]; codes [Max.waitingCreateRequest.childCount,Max.childCount,Max.int,Max]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [waitingCreateRequest.childCount,childCount]; arguments []; default message [childCount],30]; default message [유아 인원은 30 초과일 수 없습니다.]] ",
     "instance" : "/api/customer/v1/waitings",
     "validationError" : [ {
       "field" : "childCount",
       "message" : "유아 인원은 30 초과일 수 없습니다."
     } ]
   },
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1389,7 +1389,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1059
+Content-Length: 1047
 
 {
   "statusCode" : 400,
@@ -1397,14 +1397,14 @@ Content-Length: 1059
     "type" : "about:blank",
     "title" : "MethodArgumentNotValidException",
     "status" : 400,
-    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.devtable.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.devtable.waiting.presentation.UserWaitingController.createWaiting(com.mdh.devtable.waiting.presentation.dto.WaitingCreateRequest): [Field error in object 'waitingCreateRequest' on field 'shopId': rejected value [null]; codes [NotNull.waitingCreateRequest.shopId,NotNull.shopId,NotNull.java.lang.Long,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [waitingCreateRequest.shopId,shopId]; arguments []; default message [shopId]]; default message [매장 아이디는 null일 수 없습니다.]] ",
+    "detail" : "Validation failed for argument [0] in public org.springframework.http.ResponseEntity&lt;com.mdh.user.global.ApiResponse&lt;java.net.URI&gt;&gt; com.mdh.user.waiting.presentation.UserWaitingController.createWaiting(com.mdh.user.waiting.presentation.dto.WaitingCreateRequest): [Field error in object 'waitingCreateRequest' on field 'shopId': rejected value [null]; codes [NotNull.waitingCreateRequest.shopId,NotNull.shopId,NotNull.java.lang.Long,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [waitingCreateRequest.shopId,shopId]; arguments []; default message [shopId]]; default message [매장 아이디는 null일 수 없습니다.]] ",
     "instance" : "/api/customer/v1/waitings",
     "validationError" : [ {
       "field" : "shopId",
       "message" : "매장 아이디는 null일 수 없습니다."
     } ]
   },
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1510,7 +1510,7 @@ Content-Length: 85
 {
   "statusCode" : 204,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1592,7 +1592,7 @@ Content-Length: 287
     "waitingNumber" : 1,
     "waitingCount" : 3
   } ],
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1701,7 +1701,7 @@ Content-Length: 85
 {
   "statusCode" : 200,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1775,7 +1775,7 @@ Content-Length: 300
     "detail" : "미루기를 수행 할 수 없는 웨이팅 입니다. 2",
     "instance" : "/api/customer/v1/waitings/2/postpone"
   },
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -1885,10 +1885,10 @@ Content-Length: 778
       "adultCount" : 2,
       "childCount" : 0
     },
-    "createdDate" : "2023-09-15T13:35:33",
-    "modifiedDate" : "2023-09-15T13:35:33"
+    "createdDate" : "2023-09-20T00:21:11",
+    "modifiedDate" : "2023-09-20T00:21:11"
   },
-  "serverDateTime" : "2023-09-15T13:35:33"
+  "serverDateTime" : "2023-09-20T00:21:11"
 }</code></pre>
 </div>
 </div>
@@ -2044,7 +2044,7 @@ Content-Length: 778
 <h4 id="_매장의_웨이팅_상태_변경_http_request"><a class="link" href="#_매장의_웨이팅_상태_변경_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/customer/v1/reservations/4ab4b807-2078-4cc4-a917-f9cc1e610280/register HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/customer/v1/reservations/354fb6a5-68cc-47dc-87a6-c6838aced08b/register HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 89
 Host: localhost:8080
@@ -2069,7 +2069,7 @@ Content-Length: 85
 {
   "statusCode" : 201,
   "data" : null,
-  "serverDateTime" : "2023-09-15T13:35:32"
+  "serverDateTime" : "2023-09-20T00:21:10"
 }</code></pre>
 </div>
 </div>
@@ -2629,7 +2629,7 @@ Content-Length: 85
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-09-13 14:14:38 +0900
+Last updated 2023-09-19 15:54:32 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
