@@ -202,7 +202,10 @@ gradle-app.setting
 
 ### YAML ###
 *.yaml
-*.yml
+application.yml
+application-dev.yml
+application-prod.yml
+application-test.yml
 
 ### SCHEMA ###
 *.sql
