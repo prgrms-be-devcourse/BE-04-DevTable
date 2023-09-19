@@ -65,6 +65,15 @@ public final class DataInitializerFactory {
                 .build();
     }
 
+    public static ShopPrice shopPrice() {
+        return ShopPrice.builder()
+                .lunchMinPrice(10000)
+                .lunchMaxPrice(50000)
+                .dinnerMinPrice(30000)
+                .dinnerMaxPrice(80000)
+                .build();
+    }
+
     public static Shop shop(
             Long userId,
             ShopDetails shopDetails,

@@ -2,6 +2,7 @@ package com.mdh.user.shop.application;
 
 import com.mdh.common.shop.persistence.ShopRepository;
 import com.mdh.common.waiting.persistence.WaitingLine;
+import com.mdh.user.shop.application.dto.ReservationShopSearchResponse;
 import com.mdh.user.shop.application.dto.ShopDetailInfoResponse;
 import com.mdh.user.shop.application.dto.ShopResponse;
 import com.mdh.user.shop.application.dto.ShopResponses;
@@ -42,4 +43,21 @@ public class ShopService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 매장입니다: " + shopId));
     }
 
+    @Transactional(readOnly = true)
+    public ReservationShopSearchResponse searchReservationShop(Pageable pageable, ReservationShopSearchRequest reservationShopSearchRequest) {
+        var reservationDate = reservationShopSearchRequest.reservationDate();
+        var reservationTime = reservationShopSearchRequest.reservationTime();
+        var personCount = reservationShopSearchRequest.personCount();
+        var region = reservationShopSearchRequest.region();
+        var minPrice = reservationShopSearchRequest.minPrice();
+        var maxPrice = reservationShopSearchRequest.maxPrice();
+        var shopSearchQueryDtos = shopRepository.searchReservationShopByFilter(pageable,
+                reservationDate,
+                reservationTime,
+                personCount,
+                region,
+                minPrice,
+                maxPrice);
+        return ReservationShopSearchResponse.of(shopSearchQueryDtos);
+    }
 }
