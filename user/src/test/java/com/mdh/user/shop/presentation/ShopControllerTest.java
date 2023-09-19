@@ -4,20 +4,30 @@ import com.mdh.common.shop.domain.ShopType;
 import com.mdh.user.RestDocsSupport;
 import com.mdh.user.shop.application.ShopService;
 import com.mdh.user.shop.application.dto.ShopDetailInfoResponse;
+import com.mdh.user.shop.application.dto.ShopResponse;
+import com.mdh.user.shop.application.dto.ShopResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -126,7 +136,90 @@ public class ShopControllerTest extends RestDocsSupport {
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
                         )
                 ));
+    }
+
+
+    @Test
+    @DisplayName("조건에 따라 대기 중인 상점을 조회할 수 있다.")
+    void findByConditionWithWaitingTest() throws Exception {
+        // Given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("name", "Test Shop");
+        params.add("shopType", "ASIAN");
+        params.add("region", "Test City");
+        params.add("minPrice", "10");
+        params.add("maxPrice", "50");
+        params.add("sort", "priceAsc");
+        var shopResponsesList = Arrays.asList(
+                new ShopResponse(1L, "Shop1", ShopType.ASIAN, 10, 20, "City1", "District1", 5)
+        );
+        Page<ShopResponse> mockPage = new PageImpl<>(shopResponsesList, PageRequest.of(0, 10), shopResponsesList.size());
+                ShopResponses shopResponses = new ShopResponses(mockPage);
+
+        given(shopService.findByConditionWithWaiting(any(), any()))
+                .willReturn(shopResponses);
+
+        // When & Then
+        mockMvc.perform(get("/api/customer/v1/shops/waitings")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .params(params)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").exists())
+                // ... (이전 코드 생략)
+
+                .andDo(document("find-shops-by-condition-with-waiting",
+                        queryParameters(
+                                parameterWithName("page").description("페이지"),
+                                parameterWithName("size").description("데이터 크기"),
+                                parameterWithName("name").description("상점 이름").optional(),
+                                parameterWithName("shopType").description("상점 유형").optional(),
+                                parameterWithName("region").description("지역").optional(),
+                                parameterWithName("minPrice").description("최소 가격").optional(),
+                                parameterWithName("maxPrice").description("최대 가격").optional(),
+                                parameterWithName("sort").description("정렬 방식").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data.shopResponses.content[].shopId").type(JsonFieldType.NUMBER).description("상점 ID"),
+                                fieldWithPath("data.shopResponses.content[].shopName").type(JsonFieldType.STRING).description("상점 이름"),
+                                fieldWithPath("data.shopResponses.content[].shopType").type(JsonFieldType.STRING).description("상점 유형"),
+                                fieldWithPath("data.shopResponses.content[].minPrice").type(JsonFieldType.NUMBER).description("최소 가격"),
+                                fieldWithPath("data.shopResponses.content[].maxPrice").type(JsonFieldType.NUMBER).description("최대 가격"),
+                                fieldWithPath("data.shopResponses.content[].city").type(JsonFieldType.STRING).description("도시"),
+                                fieldWithPath("data.shopResponses.content[].district").type(JsonFieldType.STRING).description("지역"),
+                                fieldWithPath("data.shopResponses.content[].totalWaitingCount").type(JsonFieldType.NUMBER).description("총 대기 수"),
+                                fieldWithPath("data.shopResponses.pageable").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("data.shopResponses.pageable.pageNumber").type(JsonFieldType.NUMBER).description("페이지 번호"),
+                                fieldWithPath("data.shopResponses.pageable.pageSize").type(JsonFieldType.NUMBER).description("페이지 크기"),
+                                fieldWithPath("data.shopResponses.pageable.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
+                                fieldWithPath("data.shopResponses.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                fieldWithPath("data.shopResponses.pageable.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬된 여부"),
+                                fieldWithPath("data.shopResponses.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN).description("미정렬 여부"),
+                                fieldWithPath("data.shopResponses.pageable.offset").type(JsonFieldType.NUMBER).description("오프셋"),
+                                fieldWithPath("data.shopResponses.pageable.paged").type(JsonFieldType.BOOLEAN).description("페이징 여부"),
+                                fieldWithPath("data.shopResponses.pageable.unpaged").type(JsonFieldType.BOOLEAN).description("페이징 미적용 여부"),
+                                fieldWithPath("data.shopResponses.totalElements").type(JsonFieldType.NUMBER).description("총 요소 수"),
+                                fieldWithPath("data.shopResponses.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
+                                fieldWithPath("data.shopResponses.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지 여부"),
+                                fieldWithPath("data.shopResponses.size").type(JsonFieldType.NUMBER).description("페이지 크기"),
+                                fieldWithPath("data.shopResponses.number").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
+                                fieldWithPath("data.shopResponses.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
+                                fieldWithPath("data.shopResponses.sort.empty").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                fieldWithPath("data.shopResponses.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬된 여부"),
+                                fieldWithPath("data.shopResponses.sort.unsorted").type(JsonFieldType.BOOLEAN).description("미정렬 여부"),
+                                fieldWithPath("data.shopResponses.numberOfElements").type(JsonFieldType.NUMBER).description("현재 페이지의 요소 수"),
+                                fieldWithPath("data.shopResponses.first").type(JsonFieldType.BOOLEAN).description("첫 페이지 여부"),
+                                fieldWithPath("data.shopResponses.empty").type(JsonFieldType.BOOLEAN).description("빈 페이지 여부"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                        )
+
+                ));
 
     }
+
 
 }
