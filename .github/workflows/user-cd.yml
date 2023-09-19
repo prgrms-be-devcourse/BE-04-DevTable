@@ -2,17 +2,14 @@
 name: github-action-user-cd
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거 지정
+# workflow 수동 실행
 on:
-  push:
-    branches: [ develop ] # develop branch로 push 될 때 실행
-
-  # workflow 수동 실행
   workflow_dispatch:
     inputs:
       name:
-        description: 'Person to greet'
+        description: 'CD를 수행하기 위하여 승인을 해주세요.'
         required: true
-        default: 'Mona the Octocat'
+        default: 'CD를 수행하기 위한 Github Action 입니다.'
 
 # 해당 yml 내에서 사용할 key - value
 env:
