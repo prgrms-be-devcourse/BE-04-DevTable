@@ -8,6 +8,11 @@ on:
 
   # workflow 수동 실행
   workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'Mona the Octocat'
 
 # 해당 yml 내에서 사용할 key - value
 env:
