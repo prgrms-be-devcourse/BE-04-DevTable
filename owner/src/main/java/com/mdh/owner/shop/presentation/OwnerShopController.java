@@ -1,6 +1,8 @@
 package com.mdh.owner.shop.presentation;
 
 import com.mdh.owner.global.ApiResponse;
+import com.mdh.owner.global.security.CurrentUser;
+import com.mdh.owner.global.security.UserInfo;
 import com.mdh.owner.shop.application.OwnerShopService;
 import com.mdh.owner.shop.presentation.dto.OwnerShopCreateRequest;
 import jakarta.validation.Valid;
@@ -20,9 +22,9 @@ public class OwnerShopController {
     private final OwnerShopService ownerShopService;
 
     @PostMapping("/api/owner/v1/shops/{ownerId}")
-    public ResponseEntity<ApiResponse<Void>> createShop(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody OwnerShopCreateRequest request) {
-        var shopId = ownerShopService.createShop(ownerId, request);
-        var uri = URI.create(String.format("/api/owner/v1/shops/%d/%d", ownerId, shopId));
+    public ResponseEntity<ApiResponse<Void>> createShop(@CurrentUser UserInfo userInfo, @Valid @RequestBody OwnerShopCreateRequest request) {
+        var shopId = ownerShopService.createShop(userInfo.userId(), request);
+        var uri = URI.create(String.format("/api/owner/v1/shops/%d/%d", userInfo.userId(), shopId));
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
     }
