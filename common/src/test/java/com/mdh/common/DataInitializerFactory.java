@@ -45,6 +45,13 @@ public final class DataInitializerFactory {
                 .build();
     }
 
+    public static Region region(String city, String district) {
+        return Region.builder()
+                .city(city)
+                .district(district)
+                .build();
+    }
+
     public static ShopDetails shopDetails() {
         return ShopDetails.builder()
                 .url("https://www.example.com")
@@ -62,6 +69,15 @@ public final class DataInitializerFactory {
                 .zipcode("12345")
                 .latitude("37.123456")
                 .longitude("128.124233")
+                .build();
+    }
+
+    public static ShopPrice shopPrice() {
+        return ShopPrice.builder()
+                .lunchMinPrice(10000)
+                .lunchMaxPrice(50000)
+                .dinnerMinPrice(30000)
+                .dinnerMaxPrice(80000)
                 .build();
     }
 
