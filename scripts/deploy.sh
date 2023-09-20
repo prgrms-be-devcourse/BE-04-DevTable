@@ -1,20 +1,19 @@
 if [ "$DEPLOYMENT_GROUP_NAME" == "devtable-user" ]
 then
   REPOSITORY=/home/dev-table/user
+  APP_NAME=dev-table/user
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
 then
   REPOSITORY=/home/dev-table/owner
+  APP_NAME=dev-table/owner
 else
   echo "Unknown DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GROUP_NAME"
   exit 1
 fi
 
-cd "$REPOSITORY" || exit 1
-
 echo "현재 이동 된 REPOSITORY :  $REPOSITORY"
 
-APP_NAME=dev-table
-JAR_NAME=$(ls build/libs/*.jar | grep '.jar' | tail -n 1)
+JAR_NAME=$(ls $REPOSITORY/build/libs/*.jar | grep '.jar' | tail -n 1)
 JAR_PATH=/$JAR_NAME
 
 CURRENT_PID=$(pgrep -f "$APP_NAME")
@@ -29,6 +28,9 @@ else
 fi
 
 echo "JAR_NAME : > $JAR_NAME"
+echo "> $JAR_PATH에 실행권한 추가"
+chmod +x $JAR_PATH
+
 echo "> $JAR_PATH 배포"
 
 nohup java -jar \
