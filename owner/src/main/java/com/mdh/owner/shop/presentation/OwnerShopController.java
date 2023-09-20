@@ -1,14 +1,13 @@
 package com.mdh.owner.shop.presentation;
 
 import com.mdh.owner.global.ApiResponse;
-import com.mdh.owner.global.security.CurrentUser;
-import com.mdh.owner.global.security.UserInfo;
+import com.mdh.owner.global.security.session.CurrentUser;
+import com.mdh.owner.global.security.session.UserInfo;
 import com.mdh.owner.shop.application.OwnerShopService;
 import com.mdh.owner.shop.presentation.dto.OwnerShopCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

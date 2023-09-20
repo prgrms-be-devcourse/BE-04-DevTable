@@ -1,4 +1,4 @@
-package com.mdh.owner.global.security;
+package com.mdh.owner.global.security.session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
