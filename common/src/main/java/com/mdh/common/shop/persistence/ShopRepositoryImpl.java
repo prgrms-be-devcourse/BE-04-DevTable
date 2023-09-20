@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.mdh.common.reservation.QShopReservation.shopReservation;
-import static com.mdh.common.reservation.QShopReservationDateTime.shopReservationDateTime;
-import static com.mdh.common.reservation.QShopReservationDateTimeSeat.shopReservationDateTimeSeat;
+import static com.mdh.common.reservation.domain.QShopReservation.shopReservation;
+import static com.mdh.common.reservation.domain.QShopReservationDateTime.shopReservationDateTime;
+import static com.mdh.common.reservation.domain.QShopReservationDateTimeSeat.shopReservationDateTimeSeat;
 import static com.mdh.common.shop.domain.QRegion.region;
 import static com.mdh.common.shop.domain.QShop.shop;
 import static com.mdh.common.shop.persistence.dto.ShopSearchCondParam.*;
