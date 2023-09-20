@@ -412,11 +412,10 @@ class ReservationControllerTest extends RestDocsSupport {
     @DisplayName("유저가 이전에 예약했던 정보들을 상태별로 조회 시 상태가 잘못 입력되면 예외가 반환된다.")
     void findAllReservationsUserIdAndStatusInvalidValueTest() throws Exception {
         //given
-        var userId = 1L;
         var reservationStatusName = "invalidReservationStatus";
 
         //when & then
-        mockMvc.perform(get("/api/customer/v1/reservations/me/{userId}", userId)
+        mockMvc.perform(get("/api/customer/v1/reservations/me")
                         .param("status", reservationStatusName)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -424,9 +423,6 @@ class ReservationControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.title").value("MethodArgumentTypeMismatchException"))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("find-all-reservations-userId-invalidValue",
-                        pathParameters(
-                                parameterWithName("userId").description("유저 ID")
-                        ),
                         queryParameters(
                                 parameterWithName("status").description("예약 상태")
                         ),
