@@ -14,7 +14,6 @@ fi
 echo "현재 이동 된 REPOSITORY :  $REPOSITORY"
 
 JAR_NAME=$(ls $REPOSITORY/build/libs/*.jar | grep '.jar' | tail -n 1)
-JAR_PATH=/$JAR_NAME
 
 CURRENT_PID=$(pgrep -f "$APP_NAME")
 
@@ -29,10 +28,10 @@ fi
 
 echo "JAR_NAME : > $JAR_NAME"
 echo "> $JAR_PATH에 실행권한 추가"
-chmod +x $JAR_PATH
+chmod +x $JAR_NAME
 
-echo "> $JAR_PATH 배포"
+echo "> $JAR_NAME 배포"
 
 nohup java -jar \
         -Dspring.profiles.active=dev \
-        "$JAR_PATH" > nohup.out 2>&1 &
+        "$JAR_NAME" > nohup.out 2>&1 &
