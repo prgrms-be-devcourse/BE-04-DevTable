@@ -282,6 +282,7 @@ sketch
 # .pnp.*
 
 ### ascii-doc ###
-src/main/resources/static/docs/index.html
+owner/src/main/resources/static/docs/owner-index.html
+user/src/main/resources/static/docs/user-index.html
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,java,gradle
