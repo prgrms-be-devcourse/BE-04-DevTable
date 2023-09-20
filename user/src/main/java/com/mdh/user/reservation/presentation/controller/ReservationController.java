@@ -2,6 +2,8 @@ package com.mdh.user.reservation.presentation.controller;
 
 import com.mdh.user.global.ApiResponse;
 import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.user.global.security.session.CurrentUser;
+import com.mdh.user.global.security.session.UserInfo;
 import com.mdh.user.reservation.application.ReservationService;
 import com.mdh.user.reservation.application.dto.ReservationResponses;
 import com.mdh.user.reservation.presentation.dto.ReservationCancelRequest;
@@ -25,8 +27,8 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping("/preemption")
-    public ResponseEntity<ApiResponse<UUID>> preemptReservation(@RequestBody @Valid ReservationPreemptiveRequest reservationPreemptiveRequest) {
-        UUID reservationId = reservationService.preemtiveReservation(reservationPreemptiveRequest);
+    public ResponseEntity<ApiResponse<UUID>> preemptReservation(@RequestBody @Valid ReservationPreemptiveRequest reservationPreemptiveRequest, @CurrentUser UserInfo userInfo) {
+        UUID reservationId = reservationService.preemtiveReservation(userInfo. userId(),reservationPreemptiveRequest);
         return ResponseEntity.ok(ApiResponse.ok(reservationId));
     }
 
@@ -61,12 +63,12 @@ public class ReservationController {
         return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
     }
 
-    @GetMapping("/me/{userId}")
+    @GetMapping("/me")
     public ResponseEntity<ApiResponse<ReservationResponses>> findReservations(
-            @PathVariable Long userId,
+            @CurrentUser UserInfo userInfo,
             @RequestParam("status") ReservationStatus status
     ) {
-        var reservationResponses = reservationService.findAllReservations(userId, status);
+        var reservationResponses = reservationService.findAllReservations(userInfo.userId(), status);
         return new ResponseEntity<>(ApiResponse.ok(reservationResponses), HttpStatus.OK);
     }
 }

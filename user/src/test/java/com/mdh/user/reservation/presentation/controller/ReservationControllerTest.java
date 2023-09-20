@@ -55,8 +55,9 @@ class ReservationControllerTest extends RestDocsSupport {
     void preemptReservation() throws Exception {
         //given
         var reservationId = UUID.randomUUID();
-        var request = new ReservationPreemptiveRequest(1L, List.of(1L, 2L), "요구사항 입니다.", 4);
-        when(reservationService.preemtiveReservation(request)).thenReturn(reservationId);
+        var request = new ReservationPreemptiveRequest(List.of(3L, 4L), "요구사항 입니다", 4);
+        var userId = 1L;
+        given(reservationService.preemtiveReservation(any(), any(ReservationPreemptiveRequest.class))).willReturn(reservationId);
 
         //when & then
         mockMvc.perform(post("/api/customer/v1/reservations/preemption")
@@ -68,7 +69,6 @@ class ReservationControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("s",
                         requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
                                 fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점하려는 좌석들"),
                                 fieldWithPath("requirement").type(JsonFieldType.STRING).description("요구사항"),
                                 fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원")
@@ -332,7 +332,6 @@ class ReservationControllerTest extends RestDocsSupport {
     void findAllReservationsUserIdAndStatusTest() throws Exception {
         //given
         var shopId = 1L;
-        var userId = 1L;
         var name = "shopName";
         var shopType = ShopType.ASIAN;
         var city = "city";
@@ -360,11 +359,10 @@ class ReservationControllerTest extends RestDocsSupport {
         var reservationResponse = new ReservationResponse(reservationQueryDto);
         var reservationResponses = new ReservationResponses(List.of(reservationResponse));
 
-        when(reservationService.findAllReservations(any(Long.class), any(ReservationStatus.class)))
-                .thenReturn(reservationResponses);
+        given(reservationService.findAllReservations(any(), any(ReservationStatus.class))).willReturn(reservationResponses);
 
         //when & then
-        mockMvc.perform(get("/api/customer/v1/reservations/me/{userId}", userId)
+        mockMvc.perform(get("/api/customer/v1/reservations/me")
                         .param("status", reservationStatus.name())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -380,9 +378,6 @@ class ReservationControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.reservations[0].reservation.reservationStatus").value(reservationStatus.name()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("find-all-reservations-userId",
-                        pathParameters(
-                                parameterWithName("userId").description("고객 ID")
-                        ),
                         queryParameters(
                                 parameterWithName("status").description("예약 상태")
                         ),
