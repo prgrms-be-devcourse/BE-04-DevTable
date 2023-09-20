@@ -32,8 +32,6 @@ chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 배포"
 
-chmod 755 deploy.sh
-
 nohup java -jar \
         -Dspring.profiles.active=dev \
         "$JAR_NAME" > nohup.out 2>&1 &
