@@ -11,6 +11,10 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
   h2:
     console:
