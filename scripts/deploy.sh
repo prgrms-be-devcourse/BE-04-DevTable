@@ -34,4 +34,8 @@ echo "> $JAR_NAME 배포"
 
 nohup java -jar \
         -Dspring.profiles.active=dev \
-        "$JAR_NAME" > nohup.out 2>&1 &
+        "$JAR_NAME"
+
+#nohup java -jar \
+#        -Dspring.profiles.active=dev \
+#        "$JAR_NAME" > nohup.out 2>&1 &
