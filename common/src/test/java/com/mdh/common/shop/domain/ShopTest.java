@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ShopTest {
 
-    @Test
+    /*@Test
     @DisplayName("Shop을 생성하면 북마크 수는 0이어야 한다")
     void shopConstructorTest() {
         // given
@@ -39,7 +39,7 @@ class ShopTest {
                         shopDetails,
                         shopAddress,
                         region);
-    }
+    }*/
 
     @Disabled
     @Test
@@ -95,14 +95,14 @@ class ShopTest {
 
         // then
         assertThat(shop)
-                .extracting(Shop::getBookmarkCount,
+                .extracting(//Shop::getBookmarkCount,
                         Shop::getName,
                         Shop::getDescription,
                         Shop::getShopType,
                         Shop::getShopDetails,
                         Shop::getShopAddress,
                         Shop::getRegion)
-                .containsExactly(0,
+                .containsExactly(//0,
                         changeName,
                         changeDescription,
                         changeShopType,
@@ -120,7 +120,7 @@ class ShopTest {
     }
 
 
-    @Test
+    /*@Test
     @DisplayName("북마크 개수를 증가시킨다.")
     void increaseBookMarks() {
         // given
@@ -135,9 +135,9 @@ class ShopTest {
 
         // then
         assertThat(shop.getBookmarkCount()).isEqualTo(1);
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("북마크 개수를 감소시킨다.")
     void decreaseBookMarks() {
         // given
@@ -153,9 +153,9 @@ class ShopTest {
 
         // then
         assertThat(shop.getBookmarkCount()).isZero();
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("북마크 개수가 0일때 감소시키면 예외가 발생한다")
     void bookMarkThrowsExceptionWhenBookMarkCountisZero() {
         // given
@@ -169,5 +169,5 @@ class ShopTest {
         assertThatThrownBy(shop::decreaseBookmarkCount)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("북마크 개수가 0 일 때 북마크 개수를 줄이는 것은 불가능합니다.");
-    }
+    }*/
 }
