@@ -146,7 +146,7 @@ public final class DataInitializerFactory {
 
     public static ShopReservationDateTime shopReservationDateTime(
             ShopReservation shopReservation) {
-        return new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.of(12, 0));
+        return new ShopReservationDateTime(shopReservation, LocalDate.now(), LocalTime.now().withNano(0));
     }
 
 
