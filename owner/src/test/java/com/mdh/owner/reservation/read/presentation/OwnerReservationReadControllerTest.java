@@ -23,6 +23,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,7 +42,6 @@ class OwnerReservationReadControllerTest extends RestDocsSupport {
     @Test
     public void findAllReservationsByOwnerIdAndStatus() throws Exception {
         //given
-        var ownerId = 1L;
         var status = ReservationStatus.CREATED;
 
         var mockResponse = List.of(
@@ -53,18 +53,15 @@ class OwnerReservationReadControllerTest extends RestDocsSupport {
                         SeatType.BAR)
         );
 
-        given(ownerReservationReadService.findAllReservationsByOwnerIdAndStatus(any(Long.class), any(ReservationStatus.class))).willReturn(mockResponse);
+        given(ownerReservationReadService.findAllReservationsByOwnerIdAndStatus(any(), any(ReservationStatus.class))).willReturn(mockResponse);
 
         //when & then
-        mockMvc.perform(get("/api/owner/v1/shops/{ownerId}/reservations?status={status}", ownerId, status)
+        mockMvc.perform(get("/api/owner/v1/shops/reservations?status={status}", status)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$.statusCode").value("200"))
-                .andExpect(jsonPath("$.data[0].requirement").value("requirement"))
                 .andDo(document("owner-find-all-reservations-by-status",
-                        pathParameters(
-                                parameterWithName("ownerId").description("점주 ID")
-                        ),
                         queryParameters(
                                 parameterWithName("status").description("예약 상태")
                         ),

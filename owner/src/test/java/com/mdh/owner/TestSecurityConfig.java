@@ -1,4 +1,4 @@
-package com.mdh.owner.global.security.config;
+package com.mdh.owner;
 
 import com.mdh.owner.global.security.LoginService;
 import org.springframework.context.annotation.Bean;
