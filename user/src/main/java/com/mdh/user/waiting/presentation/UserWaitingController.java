@@ -1,6 +1,9 @@
 package com.mdh.user.waiting.presentation;
 
+import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.user.global.ApiResponse;
+import com.mdh.user.global.security.session.CurrentUser;
+import com.mdh.user.global.security.session.UserInfo;
 import com.mdh.user.waiting.application.WaitingService;
 import com.mdh.user.waiting.application.dto.UserWaitingResponse;
 import com.mdh.user.waiting.application.dto.WaitingDetailsResponse;
@@ -22,15 +25,15 @@ public class UserWaitingController {
 
     private final WaitingService waitingService;
 
-    @GetMapping("/me/{userId}")
-    public ResponseEntity<ApiResponse<List<UserWaitingResponse>>> findWaitingsByUserIdAndStatus(@RequestBody @Valid MyWaitingsRequest request) {
-        var findUserWaitings = waitingService.findAllByUserIdAndStatus(request);
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<List<UserWaitingResponse>>> findWaitingsByUserIdAndStatus(@RequestParam("status") WaitingStatus status, @CurrentUser UserInfo userInfo) {
+        var findUserWaitings = waitingService.findAllByUserIdAndStatus(userInfo.userId(), status);
         return ResponseEntity.ok(ApiResponse.ok(findUserWaitings));
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<URI>> createWaiting(@RequestBody @Valid WaitingCreateRequest waitingCreateRequest) {
-        Long waitingId = waitingService.createWaiting(waitingCreateRequest);
+    @PostMapping("/shops/{shopId}")
+    public ResponseEntity<ApiResponse<URI>> createWaiting(@RequestBody @Valid WaitingCreateRequest waitingCreateRequest, @CurrentUser UserInfo userInfo, @PathVariable("shopId") Long shopId) {
+        Long waitingId = waitingService.createWaiting(userInfo.userId(), shopId, waitingCreateRequest);
         var createdResponse = ApiResponse.created(URI.create("/api/customer/v1/waitings/" + waitingId));
         return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
     }

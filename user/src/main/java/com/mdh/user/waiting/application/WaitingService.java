@@ -46,12 +46,9 @@ public class WaitingService {
     }
 
     @Transactional
-    public Long createWaiting(WaitingCreateRequest waitingCreateRequest) {
-        var shopId = waitingCreateRequest.shopId();
+    public Long createWaiting(Long userId, Long shopId, WaitingCreateRequest waitingCreateRequest) {
         var shopWaiting = shopWaitingRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalStateException("해당 매장에 웨이팅 정보가 존재하지 않습니다. shopId : " + shopId));
-
-        var userId = waitingCreateRequest.userId();
 
         if (waitingServiceValidator.isExistsWaiting(userId)) {
             throw new IllegalStateException("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
@@ -103,9 +100,9 @@ public class WaitingService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserWaitingResponse> findAllByUserIdAndStatus(MyWaitingsRequest request) {
+    public List<UserWaitingResponse> findAllByUserIdAndStatus(Long userId, WaitingStatus waitingStatus) {
 
-        return waitingRepository.findAllByUserIdAndWaitingStatus(request.userId(), request.waitingStatus())
+        return waitingRepository.findAllByUserIdAndWaitingStatus(userId, waitingStatus)
                 .stream()
                 .map(UserWaitingResponse::new)
                 .toList();
