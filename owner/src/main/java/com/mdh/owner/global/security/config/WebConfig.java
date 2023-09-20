@@ -1,6 +1,6 @@
 package com.mdh.owner.global.security.config;
 
-import com.mdh.owner.global.security.CurrentUserHandlerMethodArgumentResolver;
+import com.mdh.owner.global.security.session.CurrentUserHandlerMethodArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

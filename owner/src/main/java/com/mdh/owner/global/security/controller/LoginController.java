@@ -1,9 +1,9 @@
 package com.mdh.owner.global.security.controller;
 
 import com.mdh.owner.global.ApiResponse;
-import com.mdh.owner.global.security.CurrentUser;
+import com.mdh.owner.global.security.session.CurrentUser;
 import com.mdh.owner.global.security.LoginService;
-import com.mdh.owner.global.security.UserInfo;
+import com.mdh.owner.global.security.session.UserInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
