@@ -15,7 +15,7 @@ echo "현재 이동 된 REPOSITORY :  $REPOSITORY"
 
 APP_NAME=dev-table
 JAR_NAME=$(ls build/libs/*.jar | grep '.jar' | tail -n 1)
-JAR_PATH=build/libs/$JAR_NAME
+JAR_PATH=/$JAR_NAME
 
 CURRENT_PID=$(pgrep -f "$APP_NAME")
 
@@ -28,6 +28,7 @@ else
   sleep 5
 fi
 
+echo "JAR_NAME : > $JAR_NAME"
 echo "> $JAR_PATH 배포"
 
 nohup java -jar \
