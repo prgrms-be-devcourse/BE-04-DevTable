@@ -9,7 +9,6 @@ import com.mdh.common.user.persistence.UserRepository;
 import com.mdh.common.waiting.domain.ShopWaitingStatus;
 import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
+
 
 import java.time.temporal.ChronoUnit;
 

@@ -1,16 +1,14 @@
 package com.mdh.user;
 
 import com.mdh.user.global.security.session.CurrentUserHandlerMethodArgumentResolver;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
-@Profile("test")
-@Configuration
+@TestConfiguration
 @EnableWebMvc
 public class TestWebConfig implements WebMvcConfigurer {
 
