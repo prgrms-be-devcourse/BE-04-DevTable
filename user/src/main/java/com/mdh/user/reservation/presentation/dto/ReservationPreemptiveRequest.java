@@ -9,9 +9,6 @@ import java.util.List;
 
 public record ReservationPreemptiveRequest(
 
-        @NotNull(message = "유저 아이디는 null이면 안됩니다.")
-        Long userId,
-
         @NotNull(message = "선점하려는 좌석이 null이면 안됩니다.")
         @Size(min = 1, message = "선점하려는 좌석은 1개 이상이어야 합니다.")
         List<Long> shopReservationDateTimeSeatIds,

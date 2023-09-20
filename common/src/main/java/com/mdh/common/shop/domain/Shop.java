@@ -37,8 +37,8 @@ public class Shop extends BaseTimeEntity {
     @Embedded
     private ShopPrice shopPrice;
 
-    @Column(name = "bookmark_count", nullable = false)
-    private int bookmarkCount;
+//    @Column(name = "bookmark_count", nullable = false)
+//    private int bookmarkCount;
 
     @Embedded
     private ShopAddress shopAddress;
@@ -58,7 +58,7 @@ public class Shop extends BaseTimeEntity {
         this.shopType = shopType;
         this.shopDetails = shopDetails;
         this.shopPrice = initShopPrice();
-        this.bookmarkCount = 0;
+//        this.bookmarkCount = 0;
         this.shopAddress = shopAddress;
         this.region = region;
     }
@@ -92,14 +92,14 @@ public class Shop extends BaseTimeEntity {
         this.region = region;
     }
 
-    public void increaseBookmarkCount() {
-        this.bookmarkCount++;
-    }
-
-    public void decreaseBookmarkCount() {
-        if (this.bookmarkCount == 0) {
-            throw new IllegalStateException("북마크 개수가 0 일 때 북마크 개수를 줄이는 것은 불가능합니다.");
-        }
-        this.bookmarkCount--;
-    }
+//    public void increaseBookmarkCount() {
+//        this.bookmarkCount++;
+//    }
+//
+//    public void decreaseBookmarkCount() {
+//        if (this.bookmarkCount == 0) {
+//            throw new IllegalStateException("북마크 개수가 0 일 때 북마크 개수를 줄이는 것은 불가능합니다.");
+//        }
+//        this.bookmarkCount--;
+//    }
 }
