@@ -64,7 +64,7 @@ class ReservationServiceTest {
         var shopReservationDateTimeSeatIds = List.of(1L, 2L, 3L);
         var requirement = "요구사항입니다.";
         var personCount = 3;
-        var reservationPreemptiveRequest = new ReservationPreemptiveRequest(userId,
+        var reservationPreemptiveRequest = new ReservationPreemptiveRequest(
                 shopReservationDateTimeSeatIds,
                 requirement,
                 personCount);
@@ -76,7 +76,7 @@ class ReservationServiceTest {
 
 
         //when
-        UUID reservationId = reservationService.preemtiveReservation(reservationPreemptiveRequest);
+        UUID reservationId = reservationService.preemtiveReservation(userId, reservationPreemptiveRequest);
 
         //then
         verify(preemtiveShopReservationDateTimeSeats, times(3)).contains(any(Long.class));
@@ -94,16 +94,15 @@ class ReservationServiceTest {
         var shopReservationDateTimeSeatIds = List.of(1L, 2L, 3L);
         var requirement = "요구사항입니다.";
         var personCount = 3;
-        var reservationPreemptiveRequest = new ReservationPreemptiveRequest(userId,
+        var reservationPreemptiveRequest = new ReservationPreemptiveRequest(
                 shopReservationDateTimeSeatIds,
                 requirement,
                 personCount);
-        var reservation = DataInitializerFactory.preemptiveReservation(userId, personCount);
 
         given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(true);
 
         //when
-        assertThatThrownBy(() -> reservationService.preemtiveReservation(reservationPreemptiveRequest))
+        assertThatThrownBy(() -> reservationService.preemtiveReservation(userId, reservationPreemptiveRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 선점된 좌석이므로 선점할 수 없습니다.");
     }

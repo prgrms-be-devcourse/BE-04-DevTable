@@ -36,7 +36,7 @@ public class ReservationService {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    public UUID preemtiveReservation(ReservationPreemptiveRequest reservationPreemptiveRequest) {
+    public UUID preemtiveReservation(Long userId, ReservationPreemptiveRequest reservationPreemptiveRequest) {
         // 선점된 좌석인지 확인한다.
         var shopReservationDateTimeSeatIds = reservationPreemptiveRequest.shopReservationDateTimeSeatIds();
         validPreemtiveShopReservationDateTimeSeats(shopReservationDateTimeSeatIds);
@@ -45,7 +45,7 @@ public class ReservationService {
         preemptiveShopReservationDateTimeSeats.addAll(reservationPreemptiveRequest.shopReservationDateTimeSeatIds());
 
         // 예약을 만듦
-        var reservation = createReservation(reservationPreemptiveRequest);
+        var reservation = createReservation(userId, reservationPreemptiveRequest);
 
         // 만든 예약을 캐시에 저장
         preemptiveReservations.put(reservation.getReservationId(), reservation);
@@ -53,6 +53,10 @@ public class ReservationService {
         var createdReservation = preemptiveReservations.get(reservation.getReservationId());
 
         return createdReservation.getReservationId();
+    }
+
+    private Reservation createReservation(Long userId, ReservationPreemptiveRequest reservationPreemptiveRequest) {
+        return new Reservation(userId, reservationPreemptiveRequest.requirement(), reservationPreemptiveRequest.personCount());
     }
 
     @Transactional
@@ -84,6 +88,14 @@ public class ReservationService {
 
         eventPublisher.publishEvent(new ReservationCreatedEvent(savedReservation));
         return savedReservation.getId();
+    }
+
+    private List<ShopReservationDateTimeSeat> findShopReservationDateTimeSeats(List<Long> shopReservationDateTimeSeatIds) {
+        var shopReservationDateTimeSeats = shopReservationDateTimeSeatRepository.findAllById(shopReservationDateTimeSeatIds);
+        if (shopReservationDateTimeSeats.size() < shopReservationDateTimeSeatIds.size()) {
+            throw new NoSuchElementException("예약 좌석 정보들 중 일부가 없습니다.");
+        }
+        return shopReservationDateTimeSeats;
     }
 
     public String cancelPreemptiveReservation(UUID reservationId, ReservationCancelRequest reservationCancelRequest) {
@@ -120,21 +132,9 @@ public class ReservationService {
         reservation.updateReservation(shopReservationDateTimeSeats);
     }
 
-    private Reservation createReservation(ReservationPreemptiveRequest reservationPreemptiveRequest) {
-        return new Reservation(reservationPreemptiveRequest.userId(), reservationPreemptiveRequest.requirement(), reservationPreemptiveRequest.personCount());
-    }
-
     private ShopReservation findShopReservation(Long shopId) {
         return shopReservationRepository.findById(shopId)
                 .orElseThrow(() -> new NoSuchElementException("매장의 예약 정보가 없습니다. shopId " + shopId));
-    }
-
-    private List<ShopReservationDateTimeSeat> findShopReservationDateTimeSeats(List<Long> shopReservationDateTimeSeatIds) {
-        var shopReservationDateTimeSeats = shopReservationDateTimeSeatRepository.findAllById(shopReservationDateTimeSeatIds);
-        if (shopReservationDateTimeSeats.size() < shopReservationDateTimeSeatIds.size()) {
-            throw new NoSuchElementException("예약 좌석 정보들 중 일부가 없습니다.");
-        }
-        return shopReservationDateTimeSeats;
     }
 
     public ReservationResponses findAllReservations(Long userId, ReservationStatus reservationStatus) {
