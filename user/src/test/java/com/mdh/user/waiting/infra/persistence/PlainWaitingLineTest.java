@@ -1,6 +1,5 @@
-package com.mdh.user.waiting.infra;
+package com.mdh.user.waiting.infra.persistence;
 
-import com.mdh.user.waiting.infra.persistence.PlainWaitingLine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +8,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class WaitingLineTest {
+class PlainWaitingLineTest {
 
     @Test
     @DisplayName("매장의 웨이팅에서 몇 번째 순위인지 확인한다.")
@@ -94,8 +93,8 @@ class WaitingLineTest {
         var waitingLine = new PlainWaitingLine();
         //when & then
         assertThatThrownBy(() -> waitingLine.cancel(shopId, waitingId, waitingTime))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("현재 매장에 등록 된 웨이팅이 아닙니다. shopId : " + shopId + "waitingId : " + waitingId);
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("현재 매장에 등록 된 웨이팅이 아닙니다. shopId : " + shopId + "waitingId : " + waitingId);
     }
 
     @Test
@@ -140,10 +139,32 @@ class WaitingLineTest {
         waitingLine.save(shopId, waitingId2, waitingId2Time);
         waitingLine.save(shopId, waitingId3, waitingId3Time);
 
-        //when
-        var isPostpone = waitingLine.isPostpone(shopId, waitingId3, waitingId3Time);
+        //when & then
+        assertThatThrownBy(() -> waitingLine.postpone(shopId, waitingId3, waitingId3Time, LocalDateTime.now()))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId3);
+    }
 
-        //then
-        assertThat(isPostpone).isEqualTo(false);
+    @Test
+    @DisplayName("맨 뒤에 있는 웨이팅은 미룰 수 없다.")
+    void postponeFailTest() {
+        //given
+        var shopId = 1L;
+        var waitingId1 = 1L;
+        var waitingId1Time = LocalDateTime.now();
+        var waitingId2 = 2L;
+        var waitingId2Time = waitingId1Time.plusMinutes(1);
+        var waitingId3 = 3L;
+        var waitingId3Time = waitingId2Time.plusMinutes(2);
+
+        var waitingLine = new PlainWaitingLine();
+        waitingLine.save(shopId, waitingId1, waitingId1Time);
+        waitingLine.save(shopId, waitingId2, waitingId2Time);
+        waitingLine.save(shopId, waitingId3, waitingId3Time);
+
+        //when & then
+        assertThatThrownBy(() -> waitingLine.postpone(shopId, waitingId3, waitingId3Time, LocalDateTime.now()))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId3);
     }
 }

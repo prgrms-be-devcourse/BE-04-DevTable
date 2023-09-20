@@ -19,7 +19,7 @@ public class PlainWaitingLine implements WaitingLine {
     @Override
     public void save(Long shopId, Long waitingId, LocalDateTime issuedTime) {
         waitingLine.putIfAbsent(shopId,
-                new TreeSet<>(Comparator.comparing(WaitingInfo::waitingStartTime)));
+            new TreeSet<>(Comparator.comparing(WaitingInfo::waitingStartTime)));
 
         var waitingInfo = new WaitingInfo(waitingId, issuedTime);
         var waitingInfos = waitingLine.get(shopId);
@@ -27,7 +27,7 @@ public class PlainWaitingLine implements WaitingLine {
     }
 
     @Override
-    public int findRank(Long shopId, Long waitingId, LocalDateTime issuedTime) {
+    public long findRank(Long shopId, Long waitingId, LocalDateTime issuedTime) {
         var waitingInfo = new WaitingInfo(waitingId, issuedTime);
         var waitingInfos = waitingLine.get(shopId);
 
@@ -35,7 +35,7 @@ public class PlainWaitingLine implements WaitingLine {
     }
 
     @Override
-    public int findTotalWaiting(Long shopId) {
+    public long findTotalWaiting(Long shopId) {
         var waitingInfos = waitingLine.get(shopId);
         return waitingInfos != null ? waitingInfos.size() : 0;
     }
@@ -53,12 +53,12 @@ public class PlainWaitingLine implements WaitingLine {
     private void validExistWaiting(Long shopId, WaitingInfo waitingInfo) {
         if (!waitingLine.containsKey(shopId)) {
             throw new IllegalStateException("현재 매장에 등록 된 웨이팅이 아닙니다. shopId : " + shopId +
-                    "waitingId : " + waitingInfo.waitingId());
+                "waitingId : " + waitingInfo.waitingId());
         }
 
         if (!waitingLine.get(shopId).contains(waitingInfo)) {
             throw new IllegalStateException("현재 매장에 등록 된 웨이팅이 아닙니다. shopId : " + shopId +
-                    "waitingId : " + waitingInfo.waitingId());
+                "waitingId : " + waitingInfo.waitingId());
         }
     }
 
@@ -66,14 +66,16 @@ public class PlainWaitingLine implements WaitingLine {
     public void postpone(Long shopId, Long waitingId, LocalDateTime preIssuedTime, LocalDateTime issuedTime) {
         var waitingInfo = new WaitingInfo(waitingId, preIssuedTime);
         validExistWaiting(shopId, waitingInfo);
+        validPosponed(shopId, waitingId, preIssuedTime);
 
         var waitingInfos = waitingLine.get(shopId);
         waitingInfos.remove(waitingInfo);
         waitingInfos.add(new WaitingInfo(waitingId, issuedTime));
     }
 
-    @Override
-    public boolean isPostpone(Long shopId, Long waitingId, LocalDateTime issuedTime) {
-        return findRank(shopId, waitingId, issuedTime) != findTotalWaiting(shopId);
+    private void validPosponed(Long shopId, Long waitingId, LocalDateTime issuedTime) {
+        if (findRank(shopId, waitingId, issuedTime) == findTotalWaiting(shopId)) {
+            throw new IllegalStateException("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId);
+        }
     }
 }

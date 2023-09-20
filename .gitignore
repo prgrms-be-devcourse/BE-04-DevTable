@@ -277,11 +277,18 @@ sketch
 # and uncomment the following lines
 # .pnp.*
 
+<<<<<<< HEAD
 ### resources ###
 common/src/main/resources
 alarm/src/main/resources/*.yml
 owner/src/main/resources/*.yml
 user/src/main/resources/*.yml
+
+### config ###
+common/src/main/resources
+alarm/src/main/resources
+owner/src/main/resources
+user/src/main/resources
 
 ### ascii-doc ###
 owner/src/main/resources/static/docs/owner-index.html

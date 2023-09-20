@@ -12,7 +12,7 @@ public record WaitingDetailsResponse(
 
         int waitingNumber,
 
-        Integer waitingRank,
+        Long waitingRank,
 
         WaitingStatus waitingStatus,
 
@@ -25,7 +25,7 @@ public record WaitingDetailsResponse(
         LocalDateTime modifiedDate
 ) {
 
-    public WaitingDetailsResponse(WaitingDetailsQueryDto waitingDetailsQueryDto, Integer waitingRank) {
+    public WaitingDetailsResponse(WaitingDetailsQueryDto waitingDetailsQueryDto, Long waitingRank) {
         this(new ShopWaitingResponse(waitingDetailsQueryDto),
                 waitingDetailsQueryDto.waitingNumber(),
                 waitingRank,

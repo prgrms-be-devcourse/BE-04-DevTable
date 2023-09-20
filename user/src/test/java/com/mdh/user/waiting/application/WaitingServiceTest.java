@@ -10,9 +10,7 @@ import com.mdh.common.waiting.persistence.WaitingLine;
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.common.waiting.persistence.dto.UserWaitingQueryDto;
 import com.mdh.user.DataInitializerFactory;
-import com.mdh.user.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.user.waiting.presentation.dto.WaitingCreateRequest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,8 +127,8 @@ class WaitingServiceTest {
 
         //when & then
         assertThatThrownBy(() -> waitingService.createWaiting(userId, shopId, waitingRequest))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
     }
 
     @ParameterizedTest
@@ -141,17 +139,17 @@ class WaitingServiceTest {
         var userId = 1L;
 
         given(waitingRepository.findAllByUserIdAndWaitingStatus(userId, requestWaitingStatus))
-                .willReturn(List.of(new UserWaitingQueryDto(
-                        1L,
-                        2L,
-                        "ShopName",
-                        ShopType.ASIAN,
-                        "City",
-                        "District",
-                        1,
-                        2,
-                        3
-                )));
+            .willReturn(List.of(new UserWaitingQueryDto(
+                1L,
+                2L,
+                "ShopName",
+                ShopType.ASIAN,
+                "City",
+                "District",
+                1,
+                2,
+                3
+            )));
 
         //when
         var result = waitingService.findAllByUserIdAndStatus(userId, requestWaitingStatus);
@@ -172,7 +170,7 @@ class WaitingServiceTest {
         var waitingStatus = WaitingStatus.PROGRESS;
         var waitingDetails = DataInitializerFactory.waitingDetails(shopDetails, waitingStatus, waitingPeople);
 
-        var waitingRank = 5;
+        var waitingRank = 5L;
 
         given(waitingRepository.findByWaitingDetails(any(Long.class))).willReturn(Optional.ofNullable(waitingDetails));
         given(waitingLine.findRank(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(waitingRank);
@@ -183,8 +181,8 @@ class WaitingServiceTest {
         //then
         verify(waitingRepository, times(1)).findByWaitingDetails(any(Long.class));
         verify(waitingLine, times(1)).findRank(any(Long.class),
-                any(Long.class),
-                any(LocalDateTime.class));
+            any(Long.class),
+            any(LocalDateTime.class));
         assertThat(waitingDetailsResponse.shop().shopName()).isEqualTo(waitingDetails.shopName());
         assertThat(waitingDetailsResponse.shop().shopType()).isEqualTo(waitingDetails.shopType());
         assertThat(waitingDetailsResponse.shop().region()).isEqualTo(waitingDetails.region());
@@ -216,8 +214,8 @@ class WaitingServiceTest {
         //then
         verify(waitingRepository, times(1)).findByWaitingDetails(any(Long.class));
         verify(waitingLine, never()).findRank(any(Long.class),
-                any(Long.class),
-                any(LocalDateTime.class));
+            any(Long.class),
+            any(LocalDateTime.class));
 
         assertThat(waitingDetailsResponse.shop().shopName()).isEqualTo(waitingDetails.shopName());
         assertThat(waitingDetailsResponse.shop().shopType()).isEqualTo(waitingDetails.shopType());
@@ -244,7 +242,6 @@ class WaitingServiceTest {
         var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
         var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
         given(waitingRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(waiting));
-        given(waitingLine.isPostpone(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(true);
 
         //when
         waitingService.postPoneWaiting(waitingId);
@@ -252,31 +249,10 @@ class WaitingServiceTest {
         //then
         verify(waitingRepository, times(1)).findById(any(Long.class));
         verify(waitingLine, times(1)).postpone(
-                any(Long.class),
-                any(Long.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)
+            any(Long.class),
+            any(Long.class),
+            any(LocalDateTime.class),
+            any(LocalDateTime.class)
         );
-    }
-
-    @Test
-    @DisplayName("미루고자 하는 웨이팅이 마지막 웨이팅이라면 미룰 수 없다.")
-    void postponeWaitingFailTest() {
-        //given
-        var waitingId = 1L;
-        var shopId = 1L;
-        var userId = 1L;
-        var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 30, 8, 2);
-
-        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
-        var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
-        var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
-        given(waitingRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(waiting));
-        given(waitingLine.isPostpone(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(false);
-
-        //when & then
-        Assertions.assertThatThrownBy(() -> waitingService.postPoneWaiting(waitingId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId);
     }
 }
