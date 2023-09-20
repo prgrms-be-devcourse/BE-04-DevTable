@@ -67,7 +67,7 @@ class WaitingServiceTest {
         shopWaiting.updateChildEnabled(true);
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
         var waiting = DataInitializerFactory.waiting(userId, shopWaiting, waitingPeople);
-        var waitingRequest = new WaitingCreateRequest(userId, shopId, adultCount, childCount);
+        var waitingRequest = new WaitingCreateRequest(adultCount, childCount);
         var waitingCreatedEvent = new WaitingCreatedEvent(waiting);
 
         given(shopWaitingRepository.findById(any(Long.class))).willReturn(Optional.of(shopWaiting));
@@ -77,7 +77,7 @@ class WaitingServiceTest {
         doNothing().when(eventPublisher).publishEvent(waitingCreatedEvent);
 
         //when
-        waitingService.createWaiting(waitingRequest);
+        waitingService.createWaiting(userId, shopId, waitingRequest);
 
         //then
         verify(shopWaitingRepository, times(1)).findById(any(Long.class));
@@ -122,13 +122,13 @@ class WaitingServiceTest {
         var shopWaiting = DataInitializerFactory.shopWaiting(shopId, 2, 3, 1);
         shopWaiting.updateChildEnabled(true);
         shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
-        var waitingRequest = new WaitingCreateRequest(userId, shopId, adultCount, childCount);
+        var waitingRequest = new WaitingCreateRequest(adultCount, childCount);
 
         given(shopWaitingRepository.findById(any(Long.class))).willReturn(Optional.of(shopWaiting));
         given(waitingServiceValidator.isExistsWaiting(userId)).willReturn(true);
 
         //when & then
-        assertThatThrownBy(() -> waitingService.createWaiting(waitingRequest))
+        assertThatThrownBy(() -> waitingService.createWaiting(userId, shopId, waitingRequest))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("해당 매장에 이미 웨이팅이 등록되어있다면 웨이팅을 추가로 등록 할 수 없다. userId : " + userId);
     }
@@ -139,10 +139,8 @@ class WaitingServiceTest {
     void findAllByUserIdAndStatusTest(WaitingStatus requestWaitingStatus) {
         //given
         var userId = 1L;
-        var waitingStatus = requestWaitingStatus;
-        var myWaitingsRequest = new MyWaitingsRequest(userId, waitingStatus);
 
-        given(waitingRepository.findAllByUserIdAndWaitingStatus(myWaitingsRequest.userId(), myWaitingsRequest.waitingStatus()))
+        given(waitingRepository.findAllByUserIdAndWaitingStatus(userId, requestWaitingStatus))
                 .willReturn(List.of(new UserWaitingQueryDto(
                         1L,
                         2L,
@@ -156,7 +154,7 @@ class WaitingServiceTest {
                 )));
 
         //when
-        var result = waitingService.findAllByUserIdAndStatus(myWaitingsRequest);
+        var result = waitingService.findAllByUserIdAndStatus(userId, requestWaitingStatus);
 
         //then
         verify(waitingRepository, times(1)).findAllByUserIdAndWaitingStatus(any(Long.class), any(WaitingStatus.class));
