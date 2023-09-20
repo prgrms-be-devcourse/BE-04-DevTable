@@ -9,6 +9,7 @@ import com.mdh.common.user.persistence.UserRepository;
 import com.mdh.common.waiting.domain.ShopWaitingStatus;
 import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
