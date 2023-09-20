@@ -14,19 +14,8 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@Configuration
+@Configuration(value = "alarmRedisConfig")
 public class RedisConfig {
-
-    @Value("${spring.data.redis.host}")
-    private String host;
-
-    @Value("${spring.data.redis.port}")
-    private int port;
-
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(host, port);
-    }
 
     /*
      * RedisTemplate는 커넥션 위에서 레디스 커맨드를 도와준다.
@@ -37,9 +26,9 @@ public class RedisConfig {
      */
 
     @Bean(name = "redisTemplate")
-    public StringRedisTemplate stringRedisTemplate() {
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         var stringRedisTemplate = new StringRedisTemplate();
-        stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
+        stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
         stringRedisTemplate.setKeySerializer(new StringRedisSerializer());
         stringRedisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         return stringRedisTemplate;

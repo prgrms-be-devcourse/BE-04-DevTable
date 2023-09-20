@@ -75,7 +75,6 @@ public class ReservationService {
         // 연결함
         reservation.addShopReservation(shopReservation);
         reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
-        reservation.addShopReservationDateTimeSeats(shopReservationDateTimeSeats);
 
         // reservation 저장
         var savedReservation = reservationRepository.save(reservation);

@@ -19,14 +19,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SendAlarmWithWaitingCreatedEventHandlerTest {
 
+    @InjectMocks
+    private SendAlarmWithWaitingCreatedEventHandler eventHandler;
+
     @Mock
     private StringRedisTemplate redisTemplate;
 
     @Mock
     private WaitingRepository waitingRepository;
-
-    @InjectMocks
-    private SendAlarmWithWaitingCreatedEventHandler eventHandler;
 
 
     @DisplayName("웨이팅이 생성되면 사용자에게 알람이 발생한다.")

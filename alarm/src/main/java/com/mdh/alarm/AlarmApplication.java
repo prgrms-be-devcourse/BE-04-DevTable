@@ -2,10 +2,8 @@ package com.mdh.alarm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignClients
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.mdh.common", "com.mdh.alarm"})
 public class AlarmApplication {
 
     public static void main(String[] args) {
