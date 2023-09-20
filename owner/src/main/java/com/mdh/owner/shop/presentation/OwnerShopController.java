@@ -20,10 +20,12 @@ public class OwnerShopController {
 
     private final OwnerShopService ownerShopService;
 
-    @PostMapping("/api/owner/v1/shops/{ownerId}")
+    @PostMapping("/api/owner/v1/shops")
     public ResponseEntity<ApiResponse<Void>> createShop(@CurrentUser UserInfo userInfo, @Valid @RequestBody OwnerShopCreateRequest request) {
         var shopId = ownerShopService.createShop(userInfo.userId(), request);
-        var uri = URI.create(String.format("/api/owner/v1/shops/%d/%d", userInfo.userId(), shopId));
+        System.out.println(userInfo.userId() + "asdfasfdasfd");
+        System.out.println(String.format("/api/owner/v1/shops/%d", shopId) + "dsafasdfasdfasdfsadf");
+        var uri = URI.create(String.format("/api/owner/v1/shops/%d", shopId));
         return ResponseEntity.created(uri)
                 .body(ApiResponse.created(null));
     }

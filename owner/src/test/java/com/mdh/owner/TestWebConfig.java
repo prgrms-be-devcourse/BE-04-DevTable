@@ -1,4 +1,4 @@
-package com.mdh.owner.global.security.config;
+package com.mdh.owner;
 
 import com.mdh.owner.global.security.session.CurrentUserHandlerMethodArgumentResolver;
 import org.springframework.context.annotation.Configuration;
@@ -10,11 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
-@Profile("!test")
+@Profile("test")
 @Configuration
 @EnableWebMvc
-@EnableRedisHttpSession
-public class WebConfig implements WebMvcConfigurer {
+public class TestWebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

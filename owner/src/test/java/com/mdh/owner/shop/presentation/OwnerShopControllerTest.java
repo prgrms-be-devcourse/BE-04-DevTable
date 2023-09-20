@@ -1,6 +1,8 @@
 package com.mdh.owner.shop.presentation;
 
 import com.mdh.owner.RestDocsSupport;
+import com.mdh.owner.global.security.session.CustomUser;
+import com.mdh.owner.global.security.session.UserInfo;
 import com.mdh.owner.shop.application.OwnerShopService;
 import com.mdh.common.shop.domain.ShopType;
 import com.mdh.owner.shop.presentation.dto.OwnerShopCreateRequest;
@@ -13,6 +15,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -41,7 +46,6 @@ class OwnerShopControllerTest extends RestDocsSupport {
     @Test
     void createShop() throws Exception {
         // Given
-        var ownerId = 1L;
         var shopId = 1L;
         var request = new OwnerShopCreateRequest(
                 "ShopName",
@@ -66,22 +70,19 @@ class OwnerShopControllerTest extends RestDocsSupport {
                         "District"
                 )
         );
-        given(ownerShopService.createShop(any(Long.class), any(OwnerShopCreateRequest.class))).willReturn(shopId);
+        given(ownerShopService.createShop(any(), any(OwnerShopCreateRequest.class))).willReturn(shopId);
 
         // When & Then
-        mockMvc.perform(post("/api/owner/v1/shops/{ownerId}", ownerId)
+        mockMvc.perform(post("/api/owner/v1/shops")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d/%d", ownerId, shopId)))
+                .andExpect(header().string("Location", String.format("/api/owner/v1/shops/%d", shopId)))
                 .andExpect(jsonPath("$.statusCode").value("201"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("owner-shop-create",
-                        pathParameters(
-                                parameterWithName("ownerId").description("점주 id")
-                        ),
                         requestFields(
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("매장 이름"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("매장 설명"),
@@ -115,7 +116,6 @@ class OwnerShopControllerTest extends RestDocsSupport {
     @DisplayName("점주는 상점을 생성할 때 잘못된 값을 입력할 수 없다.")
     @Test
     void createShopThrowException() throws Exception {
-        var ownerId = 1L;
         var request = new OwnerShopCreateRequest(
                 "", // 빈 이름
                 "상점 설명",
@@ -125,7 +125,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 new RegionRequest("도시", "지역")
         );
 
-        mockMvc.perform(post("/api/owner/v1/shops/{ownerId}", ownerId)
+        mockMvc.perform(post("/api/owner/v1/shops")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -133,9 +133,6 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
                 .andDo(print())
                 .andDo(document("owner-shop-create-invalid",
-                        pathParameters(
-                                parameterWithName("ownerId").description("점주 ID")
-                        ),
                         requestFields(
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("매장 이름"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("매장 설명"),
