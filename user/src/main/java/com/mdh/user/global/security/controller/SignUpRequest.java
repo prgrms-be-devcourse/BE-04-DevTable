@@ -1,4 +1,4 @@
-package com.mdh.user.user.presentation.dto;
+package com.mdh.user.global.security.controller;
 
 import com.mdh.common.global.util.RegularExpression;
 import com.mdh.common.user.domain.Role;
@@ -6,8 +6,8 @@ import com.mdh.common.user.domain.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@FieldMatch(first = "password", second = "passwordCheck", message = "비밀번호가 일치하지 않습니다.")
 public record SignUpRequest(
 
         @Pattern(regexp = RegularExpression.EMAIL, message = "이메일 형식에 맞게 입력해 주세요.")
@@ -24,10 +24,10 @@ public record SignUpRequest(
         @Pattern(regexp = RegularExpression.PHONE_NUMBER, message = "핸드폰 번호는 10~11자리의 숫자만 입력해 주세요.")
         String phoneNumber
 ) {
-    public User toEntity() {
+    public User toEntity(PasswordEncoder passwordEncoder) {
         return User.builder()
                 .email(email)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .role(Role.GUEST)
                 .phoneNumber(phoneNumber)
                 .build();
