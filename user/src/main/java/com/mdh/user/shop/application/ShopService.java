@@ -6,6 +6,7 @@ import com.mdh.user.shop.application.dto.ReservationShopSearchResponse;
 import com.mdh.user.shop.application.dto.ShopDetailInfoResponse;
 import com.mdh.user.shop.application.dto.ShopResponse;
 import com.mdh.user.shop.application.dto.ShopResponses;
+import com.mdh.user.shop.presentation.dto.ReservationShopSearchRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;

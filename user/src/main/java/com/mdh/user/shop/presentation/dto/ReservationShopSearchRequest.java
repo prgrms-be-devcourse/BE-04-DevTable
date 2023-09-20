@@ -1,4 +1,4 @@
-package com.mdh.user.shop.presentation.controller.dto;
+package com.mdh.user.shop.presentation.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
