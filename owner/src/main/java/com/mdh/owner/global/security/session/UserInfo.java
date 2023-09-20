@@ -1,4 +1,4 @@
-package com.mdh.owner.global.security;
+package com.mdh.owner.global.security.session;
 
 public record UserInfo(
         String email,
