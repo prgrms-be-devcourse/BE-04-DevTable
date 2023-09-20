@@ -215,7 +215,7 @@ class UserWaitingControllerTest extends RestDocsSupport {
         var waitingPeople = DataInitializerFactory.waitingPeople(2, 0);
         var waitingDetails = DataInitializerFactory.waitingDetails(shopDetails, WaitingStatus.PROGRESS, waitingPeople);
         // TODO LocalDate
-        var waitingDetailsResponse = new WaitingDetailsResponse(waitingDetails, 5);
+        var waitingDetailsResponse = new WaitingDetailsResponse(waitingDetails, 5L);
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         var formattedCreateDate = waitingDetailsResponse.createdDate().format(formatter);
         var formattedModifiedDate = waitingDetailsResponse.modifiedDate().format(formatter);

@@ -4,25 +4,25 @@ import com.mdh.common.shop.domain.ShopType;
 import com.mdh.common.shop.persistence.dto.ShopQueryDto;
 
 public record ShopResponse(
-        Long shopId,
-        String shopName,
-        ShopType shopType,
-        int minPrice,
-        int maxPrice,
-        String city,
-        String district,
-        int totalWaitingCount
+    Long shopId,
+    String shopName,
+    ShopType shopType,
+    int minPrice,
+    int maxPrice,
+    String city,
+    String district,
+    long totalWaitingCount
 ) {
-    public ShopResponse(ShopQueryDto shopQueryDto, int totalWaitingCount) {
+    public ShopResponse(ShopQueryDto shopQueryDto, long totalWaitingCount) {
         this(
-                shopQueryDto.shopId(),
-                shopQueryDto.shopName(),
-                shopQueryDto.shopType(),
-                getMinPrice(shopQueryDto),
-                getMaxPrice(shopQueryDto),
-                shopQueryDto.city(),
-                shopQueryDto.district(),
-                totalWaitingCount);
+            shopQueryDto.shopId(),
+            shopQueryDto.shopName(),
+            shopQueryDto.shopType(),
+            getMinPrice(shopQueryDto),
+            getMaxPrice(shopQueryDto),
+            shopQueryDto.city(),
+            shopQueryDto.district(),
+            totalWaitingCount);
     }
 
     private static int getMinPrice(ShopQueryDto shopQueryDto) {
