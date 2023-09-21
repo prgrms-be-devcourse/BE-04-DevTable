@@ -3,6 +3,7 @@ package com.mdh.user.reservation.infra.eventbus;
 import com.mdh.common.reservation.domain.event.ReservationCreatedEvent;
 import com.mdh.common.reservation.persistence.ReservationRepository;
 import com.mdh.user.global.message.AlarmMessage;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -24,6 +25,7 @@ public class SendAlarmWithReservationCreatedEventHandler {
     private final StringRedisTemplate redisTemplate;
     private final ReservationRepository reservationRepository;
 
+    @Counted("alarm.user.reservation.register")
     @Async
     @Transactional(readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -36,7 +38,7 @@ public class SendAlarmWithReservationCreatedEventHandler {
 
         redisTemplate.convertAndSend(topic,
                 new AlarmMessage(String.valueOf(reservationAlarmInfo.userId()),
-                reservationAlarmInfo.shopName(),
-                reservationAlarmInfo.toString()));
+                        reservationAlarmInfo.shopName(),
+                        reservationAlarmInfo.toString()));
     }
 }
