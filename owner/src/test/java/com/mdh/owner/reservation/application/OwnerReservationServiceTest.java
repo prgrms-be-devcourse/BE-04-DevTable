@@ -1,6 +1,9 @@
 package com.mdh.owner.reservation.application;
 
 import com.mdh.common.reservation.domain.*;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsCancelEvent;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsNoShowEvent;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsVisitedEvent;
 import com.mdh.owner.DataInitializerFactory;
 import com.mdh.owner.reservation.write.application.OwnerReservationService;
 import com.mdh.owner.reservation.write.infra.persistence.OwnerReservationRepository;
@@ -13,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,6 +36,8 @@ class OwnerReservationServiceTest {
     @Mock
     private OwnerReservationRepository ownerReservationRepository;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @DisplayName("매장의 예약 정보를 생성할 수 있다.")
     @Test
@@ -105,7 +111,7 @@ class OwnerReservationServiceTest {
         var reservationId = 1L;
         var reservation = mock(Reservation.class); // Assuming Reservation is the class you're using
         when(ownerReservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
-
+        doNothing().when(eventPublisher).publishEvent(any(ReservationChangedAsCancelEvent.class));
         // when
         ownerReservationService.cancelReservationByOwner(reservationId);
 
@@ -122,7 +128,7 @@ class OwnerReservationServiceTest {
         var mockReservation = mock(Reservation.class);
         when(ownerReservationRepository.findReservationById(reservationId))
                 .thenReturn(Optional.of(mockReservation));
-
+        doNothing().when(eventPublisher).publishEvent(any(ReservationChangedAsVisitedEvent.class));
         // when
         ownerReservationService.markReservationAsVisitedByOwner(reservationId);
 
@@ -139,7 +145,7 @@ class OwnerReservationServiceTest {
 
         given(ownerReservationRepository.findReservationById(any(Long.class)))
                 .willReturn(Optional.of(reservation));
-
+        doNothing().when(eventPublisher).publishEvent(any(ReservationChangedAsNoShowEvent.class));
         // when
         ownerReservationService.markReservationAsNoShowByOwner(reservationId);
 

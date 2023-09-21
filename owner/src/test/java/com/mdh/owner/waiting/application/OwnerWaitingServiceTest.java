@@ -1,5 +1,8 @@
 package com.mdh.owner.waiting.application;
 
+import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsCanceledEvent;
+import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsNoShowEvent;
+import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsVisitedEvent;
 import com.mdh.owner.DataInitializerFactory;
 import com.mdh.common.waiting.domain.ShopWaitingStatus;
 import com.mdh.common.waiting.domain.WaitingStatus;
@@ -17,23 +20,26 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
 class OwnerWaitingServiceTest {
 
+    @InjectMocks
+    private OwnerWaitingService ownerWaitingService;
+
     @Mock
     private OwnerWaitingRepository ownerWaitingRepository;
 
-    @InjectMocks
-    private OwnerWaitingService ownerWaitingService;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @DisplayName("점주는 매장 웨이팅 상태를 변경할 수 있다.")
     @ParameterizedTest
@@ -55,26 +61,6 @@ class OwnerWaitingServiceTest {
 
     @DisplayName("점주는 손님의 웨이팅 상태를 취소로 변경할 수 있다.")
     @Test
-    void changeWaitingStatus(String status) {
-        //given
-        var shopWaiting = DataInitializerFactory.shopWaiting(1L, 2, 1, 1);
-        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
-        var waitingId = 1L;
-        var waitingPeople = DataInitializerFactory.waitingPeople(1, 0);
-        var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
-
-        given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
-
-        // when
-        ownerWaitingService.markWaitingStatusAsCancel(waitingId);
-
-        // then
-        verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
-        Assertions.assertThat(WaitingStatus.valueOf(status)).isEqualTo(waiting.getWaitingStatus());
-    }
-
-    @DisplayName("점주는 손님의 웨이팅 상태를 취소로 변경할 수 있다.")
-    @Test
     void changeWaitingStatusAsCancel() {
         //given
         var shopWaiting = DataInitializerFactory.shopWaiting(1L, 2, 1, 1);
@@ -84,7 +70,7 @@ class OwnerWaitingServiceTest {
         var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
 
         given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
-
+        doNothing().when(eventPublisher).publishEvent(any(WaitingStatusChangedAsCanceledEvent.class));
         // when
         ownerWaitingService.markWaitingStatusAsCancel(waitingId);
 
@@ -92,6 +78,7 @@ class OwnerWaitingServiceTest {
         verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
         Assertions.assertThat(WaitingStatus.CANCEL).isEqualTo(waiting.getWaitingStatus());
     }
+
 
     @DisplayName("점주는 손님의 웨이팅 상태를 방문으로 변경할 수 있다.")
     @Test
@@ -104,6 +91,7 @@ class OwnerWaitingServiceTest {
         var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
 
         given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
+        doNothing().when(eventPublisher).publishEvent(any(WaitingStatusChangedAsVisitedEvent.class));
 
         // when
         ownerWaitingService.markWaitingStatusAsVisited(waitingId);
@@ -124,7 +112,7 @@ class OwnerWaitingServiceTest {
         var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
 
         given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
-
+        doNothing().when(eventPublisher).publishEvent(any(WaitingStatusChangedAsNoShowEvent.class));
         // when
         ownerWaitingService.markWaitingStatusAsNoShow(waitingId);
 

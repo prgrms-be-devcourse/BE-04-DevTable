@@ -15,6 +15,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+      topic:
+        alarm: alarm-topic
 
   h2:
     console:
