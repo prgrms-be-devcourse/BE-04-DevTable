@@ -201,7 +201,7 @@ gradle-app.setting
 *.hprof
 
 ### SCHEMA ###
-*.sql
+data.sql
 
 ### Front-end ###
 
@@ -277,11 +277,11 @@ sketch
 # and uncomment the following lines
 # .pnp.*
 
-### config ###
+### resources ###
 common/src/main/resources
-alarm/src/main/resources
-owner/src/main/resources
-user/src/main/resources
+alarm/src/main/resources/*.yml
+owner/src/main/resources/*.yml
+user/src/main/resources/*.yml
 
 ### ascii-doc ###
 owner/src/main/resources/static/docs/owner-index.html
