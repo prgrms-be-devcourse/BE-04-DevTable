@@ -13,7 +13,22 @@ fi
 
 echo "현재 이동 된 REPOSITORY :  $REPOSITORY"
 
-JAR_NAME=$(ls $REPOSITORY/build/libs/*.jar | grep '.jar' | tail -n 1)
+if [ "$DEPLOYMENT_GROUP_NAME" == "devtable-user" ]
+then
+  JAR_NAME=$(ls *.jar | grep 'user-' | tail - n 1)
+  APP_NAME=dev-table_user
+elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
+then
+  JAR_NAME=$(ls *.jar | grep 'owner-' | tail - n 1)
+  APP_NAME=dev-table_owner
+elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-alarm" ]
+then
+  JAR_NAME=$(ls *.jar | grep 'alarm-' | tail -n 1)
+  APP_NAME=dev-table_alarm
+else
+  echo "Unknown DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GROUP_NAME"
+  exit 1
+fi
 
 CURRENT_PID=$(pgrep -f "$APP_NAME")
 
@@ -32,9 +47,33 @@ chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 배포"
 
-nohup java -jar \
-        -Dspring.profiles.active=dev \
-        "$JAR_NAME"
+if [ "$DEPLOYMENT_GROUP_NAME" == "devtable-user" ]
+then
+  nohup java -jar \
+          -Dspring.profiles.active=dev \
+          -Dspring.config.location=/home/yml/user/application.yml,/home/yml/user/application-dev.yml
+          "$JAR_NAME"
+elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
+then
+  nohup java -jar \
+            -Dspring.profiles.active=dev \
+            -Dspring.config.location=/home/yml/owner/application.yml,/home/yml/owner/application-dev.yml
+            "$JAR_NAME"
+elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-alarm" ]
+then
+  nohup java -jar \
+              -Dspring.profiles.active=dev \
+              -Dspring.config.location=/home/yml/alarm/application.yml
+              "$JAR_NAME"
+else
+  echo "Unknown DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GROUP_NAME"
+  exit 1
+fi
+
+#nohup java -jar \
+#        -Dspring.profiles.active=dev \
+#        -Dspring.config.location=/home/yml/user/application.yml,/home/yml/user/application-dev.yml
+#        "$JAR_NAME"
 
 #nohup java -jar \
 #        -Dspring.profiles.active=dev \
