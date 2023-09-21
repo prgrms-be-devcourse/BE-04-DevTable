@@ -3,6 +3,7 @@ package com.mdh.user.waiting.infra.eventbus;
 import com.mdh.common.waiting.domain.event.WaitingCanceledEvent;
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.user.global.message.AlarmMessage;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,6 +27,7 @@ public class SendAlarmWithWaitingCanceledEventHandler {
     private final StringRedisTemplate redisTemplate;
     private final WaitingRepository waitingRepository;
 
+    @Counted("alarm.user.waiting.register")
     @Async
     @Transactional(readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
