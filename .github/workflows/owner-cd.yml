@@ -18,7 +18,7 @@ env:
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.
 jobs:
   build:
-    name: github-action-user-cd
+    name: github-action-owner-cd
     runs-on: ubuntu-latest
 
     steps:
@@ -40,9 +40,14 @@ jobs:
         run: ./gradlew :owner:clean :owner:build
         shell: bash
 
-      # 해당 코드들을 압축
+      # user의 jar 파일과 appspec을압축
       - name: Make zip file
-        run: zip -r ./$GITHUB_SHA.zip .
+        run: |
+          files_to_compress="owner/build/libs/* appspec.yml scripts/deploy.sh"
+          archive_name="$GITHUB_SHA.zip"
+          
+          zip -r "$archive_name" $files_to_compress
+
         shell: bash
 
       - name: Configure AWS credentials
