@@ -32,7 +32,7 @@ class SendAlarmAfterChangedReservationStatusAsNoShowHandlerTest {
     @Mock
     private ReservationRepository reservationRepository;
 
-    @DisplayName("점주에 의해 예약이 노쇼 처리된 이후 취소 알람이 발송된다.")
+    @DisplayName("점주에 의해 예약이 노쇼 처리된 이후 알람이 발송된다.")
     @Test
     void sendAlarmAfterReservationCanceled() {
 
