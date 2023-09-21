@@ -43,12 +43,11 @@ jobs:
       # user의 jar 파일과 appspec을압축
       - name: Make zip file
         run: |
-          files_to_compress="/user/build/libs/* appspec.yml"
+          files_to_compress="user/build/libs/* appspec.yml"
           archive_name="$GITHUB_SHA.zip"
           
           zip -r "$archive_name" $files_to_compress
-          
-          mv "$archive_name" /
+        #          mv "$archive_name" /
         shell: bash
 
       - name: Configure AWS credentials
