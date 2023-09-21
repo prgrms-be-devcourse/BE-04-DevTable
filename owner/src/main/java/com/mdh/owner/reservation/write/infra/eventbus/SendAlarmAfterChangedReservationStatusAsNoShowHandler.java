@@ -1,6 +1,6 @@
 package com.mdh.owner.reservation.write.infra.eventbus;
 
-import com.mdh.common.reservation.domain.event.ReservationChangedAsCancelEvent;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsNoShowEvent;
 import com.mdh.common.reservation.persistence.ReservationRepository;
 import com.mdh.owner.global.message.AlarmMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Component
-public class SendAlarmAfterChangedReservationStatusAsCanceledHandler {
+public class SendAlarmAfterChangedReservationStatusAsNoShowHandler {
 
     @Value("${spring.data.redis.topic.alarm}")
     private String topic;
@@ -27,7 +27,7 @@ public class SendAlarmAfterChangedReservationStatusAsCanceledHandler {
     @Async
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handle(ReservationChangedAsCancelEvent event) {
+    public void handle(ReservationChangedAsNoShowEvent event) {
         var reservation = event.reservation();
 
         var reservationAlarmInfo = reservationRepository
