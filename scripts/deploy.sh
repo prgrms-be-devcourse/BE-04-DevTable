@@ -27,8 +27,10 @@ CURRENT_PID=$(pgrep -f "$APP_NAME")
 
 if [ -z "$CURRENT_PID" ]
 then
+  echo "> CURRENT_PID : $CURRENT_PID"
   echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
 else
+  echo "> CURRENT_PID : $CURRENT_PID"
   echo "> kill -15 $CURRENT_PID"
   sudo kill -15 "$CURRENT_PID"
   sleep 5
@@ -44,19 +46,19 @@ then
   nohup java -jar \
           -Dspring.profiles.active=dev \
           -Dspring.config.location=/home/yml/user/application.yml,/home/yml/user/application-dev.yml \
-          "$JAR_NAME"
+          "$JAR_NAME" > /dev/null 2> /dev/null < /dev/null &
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
 then
   nohup java -jar \
             -Dspring.profiles.active=dev \
             -Dspring.config.location=/home/yml/owner/application.yml,/home/yml/owner/application-dev.yml \
-            "$JAR_NAME"
+            "$JAR_NAME" > /dev/null 2> /dev/null < /dev/null &
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-alarm" ]
 then
   nohup java -jar \
               -Dspring.profiles.active=dev \
               -Dspring.config.location=/home/yml/alarm/application.yml \
-              "$JAR_NAME"
+              "$JAR_NAME" > /dev/null 2> /dev/null < /dev/null &
 else
   echo "Unknown DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GROUP_NAME"
   exit 1
