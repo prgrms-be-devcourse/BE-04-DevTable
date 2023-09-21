@@ -1,18 +1,19 @@
 package com.mdh.user.waiting.application;
 
-import com.mdh.common.waiting.domain.event.WaitingCanceledEvent;
-import com.mdh.user.waiting.application.dto.UserWaitingResponse;
-import com.mdh.user.waiting.application.dto.WaitingDetailsResponse;
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.WaitingPeople;
 import com.mdh.common.waiting.domain.WaitingStatus;
+import com.mdh.common.waiting.domain.event.WaitingCanceledEvent;
+import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
 import com.mdh.common.waiting.persistence.ShopWaitingRepository;
 import com.mdh.common.waiting.persistence.WaitingLine;
 import com.mdh.common.waiting.persistence.WaitingRepository;
-import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
-import com.mdh.user.waiting.presentation.dto.MyWaitingsRequest;
+import com.mdh.user.waiting.application.dto.UserWaitingResponse;
+import com.mdh.user.waiting.application.dto.WaitingDetailsResponse;
 import com.mdh.user.waiting.presentation.dto.WaitingCreateRequest;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WaitingService {
@@ -45,6 +47,7 @@ public class WaitingService {
         return new WaitingDetailsResponse(waitingDetails);
     }
 
+    @Counted("user.waiting.register")
     @Transactional
     public Long createWaiting(Long userId, Long shopId, WaitingCreateRequest waitingCreateRequest) {
         var shopWaiting = shopWaitingRepository.findById(shopId)
@@ -67,11 +70,13 @@ public class WaitingService {
         var savedWaiting = waitingRepository.save(waiting); // 저장
         saveWaitingLine(shopId, savedWaiting);
 
+        log.info("매장에 웨이팅이 등록되었습니다. {}", shopId);
         eventPublisher.publishEvent(new WaitingCreatedEvent(savedWaiting));
 
         return savedWaiting.getId();
     }
 
+    @Counted("user.waiting.cancel")
     @Transactional
     public void cancelWaiting(Long waitingId) {
         var waiting = waitingRepository.findById(waitingId)
@@ -81,9 +86,12 @@ public class WaitingService {
 
         waitingLine.cancel(shopId, waitingId, waiting.getIssuedTime());
         waiting.changeWaitingStatus(WaitingStatus.CANCEL);
+
+        log.info("웨이팅이 취소되었습니다. {}", waitingId);
         eventPublisher.publishEvent(new WaitingCanceledEvent(waiting));
     }
 
+    @Counted("user.waiting.postpone")
     @Transactional
     public void postPoneWaiting(Long waitingId) {
         var waiting = waitingRepository.findById(waitingId)
@@ -97,6 +105,7 @@ public class WaitingService {
 
         waiting.addPostponedCount();
         waitingLine.postpone(shopId, waitingId, preIssuedTime, waiting.getIssuedTime());
+        log.info("웨이팅이 미루어졌습니다. {}", waitingId);
     }
 
     @Transactional(readOnly = true)
