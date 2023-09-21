@@ -39,9 +39,10 @@ public class SecurityConfig {
         auth.userDetailsService(loginService);
 
         return http
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(antMatcher("/api/v1/owner"))
+                        .requestMatchers(antMatcher("/api/v1/owner"), antMatcher("/hello"), antMatcher("/restdocs"))
                         .permitAll()
                         .anyRequest()
                         .hasRole("OWNER"))

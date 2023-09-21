@@ -41,7 +41,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(antMatcher("/hello "),
+                        .requestMatchers(antMatcher("/hello"),
                                 antMatcher("/restdocs"),
                                 antMatcher("/api/customer/v1/shops"),
                                 antMatcher("/api/v1/customers"))
