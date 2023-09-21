@@ -6,6 +6,7 @@ import com.mdh.user.shop.application.dto.ReservationShopSearchResponse;
 import com.mdh.user.shop.application.dto.ShopDetailInfoResponse;
 import com.mdh.user.shop.application.dto.ShopResponses;
 import com.mdh.user.shop.presentation.dto.ReservationShopSearchRequest;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,6 +25,7 @@ public class ShopController {
 
     private final ShopService shopService;
 
+    @Timed("user.shop.waiting.findByDynamicCond")
     @GetMapping("/waitings")
     public ResponseEntity<ApiResponse<ShopResponses>> findByConditionWithWaiting(
             @RequestParam MultiValueMap<String, String> multiParams,
@@ -33,6 +35,7 @@ public class ShopController {
         return new ResponseEntity<>(ApiResponse.ok(result), HttpStatus.OK);
     }
 
+    @Timed("user.shop.reservation.findByDynamicCond")
     @GetMapping("/reservations")
     public ResponseEntity<ApiResponse<ReservationShopSearchResponse>> searchReservationShops(
             @PageableDefault(sort = "createdDate", direction = Sort.Direction.ASC) Pageable pageable,
