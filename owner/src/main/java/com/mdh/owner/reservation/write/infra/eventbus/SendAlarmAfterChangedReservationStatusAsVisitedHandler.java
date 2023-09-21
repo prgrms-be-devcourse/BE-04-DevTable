@@ -1,6 +1,6 @@
 package com.mdh.owner.reservation.write.infra.eventbus;
 
-import com.mdh.common.reservation.domain.event.ReservationChangedAsNoShowEvent;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsVisitedEvent;
 import com.mdh.common.reservation.persistence.ReservationRepository;
 import com.mdh.owner.global.message.AlarmMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Component
-public class SendAlarmAfterChangedReservationStatusAsNoShowHandler {
+public class SendAlarmAfterChangedReservationStatusAsVisitedHandler {
 
     @Value("${spring.data.redis.topic.alarm}")
     private String topic;
@@ -27,7 +27,7 @@ public class SendAlarmAfterChangedReservationStatusAsNoShowHandler {
     @Async
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handle(ReservationChangedAsNoShowEvent event) {
+    public void handle(ReservationChangedAsVisitedEvent event) {
         var reservation = event.reservation();
 
         var reservationAlarmInfo = reservationRepository
@@ -37,7 +37,7 @@ public class SendAlarmAfterChangedReservationStatusAsNoShowHandler {
         redisTemplate.convertAndSend(topic,
                 new AlarmMessage(String.valueOf(reservationAlarmInfo.userId()),
                         reservationAlarmInfo.shopName(),
-                        "점주에 의해 예약이 노쇼 처리 됐습니다."));
+                        "점주에 의해 예약이 방문처리 됐습니다."));
     }
 
 }
