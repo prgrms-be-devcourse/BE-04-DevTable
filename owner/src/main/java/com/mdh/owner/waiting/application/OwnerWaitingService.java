@@ -2,6 +2,7 @@ package com.mdh.owner.waiting.application;
 
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.WaitingStatus;
+import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsCanceledEvent;
 import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsVisitedEvent;
 import com.mdh.owner.waiting.infra.persistence.OwnerWaitingRepository;
 import com.mdh.common.waiting.persistence.dto.WaitingInfoResponseForOwner;
@@ -37,6 +38,7 @@ public class OwnerWaitingService {
     public void markWaitingStatusAsCancel(Long waitingId) {
         var waiting = findWaitingByWaitingId(waitingId);
         waiting.changeWaitingStatus(WaitingStatus.CANCEL);
+        eventPublisher.publishEvent(new WaitingStatusChangedAsCanceledEvent(waiting));
     }
 
     @Counted("owner.waiting.noShow")
