@@ -2,14 +2,15 @@ package com.mdh.owner.waiting.application;
 
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.WaitingStatus;
-import com.mdh.common.waiting.persistence.dto.WaitingInfoResponseForOwner;
+import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsVisitedEvent;
 import com.mdh.owner.waiting.infra.persistence.OwnerWaitingRepository;
+import com.mdh.common.waiting.persistence.dto.WaitingInfoResponseForOwner;
 import com.mdh.owner.waiting.presentation.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.owner.waiting.presentation.dto.OwnerUpdateShopWaitingInfoRequest;
-import com.mdh.owner.waiting.presentation.dto.OwnerWaitingStatusChangeRequest;
 import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.NoSuchElementException;
 public class OwnerWaitingService {
 
     private final OwnerWaitingRepository ownerWaitingRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void changeShopWaitingStatus(Long shopId, OwnerShopWaitingStatusChangeRequest request) {
@@ -49,6 +51,7 @@ public class OwnerWaitingService {
     public void markWaitingStatusAsVisited(Long waitingId) {
         var waiting = findWaitingByWaitingId(waitingId);
         waiting.changeWaitingStatus(WaitingStatus.VISITED);
+        eventPublisher.publishEvent(new WaitingStatusChangedAsVisitedEvent(waiting));
     }
 
     private Waiting findWaitingByWaitingId(Long waitingId) {
