@@ -1,30 +1,18 @@
 if [ "$DEPLOYMENT_GROUP_NAME" == "devtable-user" ]
 then
-  REPOSITORY=/home/dev-table/user
-  APP_NAME=dev-table/user
-elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
-then
-  REPOSITORY=/home/dev-table/owner
-  APP_NAME=dev-table/owner
-else
-  echo "Unknown DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GROUP_NAME"
-  exit 1
-fi
-
-echo "현재 이동 된 REPOSITORY :  $REPOSITORY"
-
-if [ "$DEPLOYMENT_GROUP_NAME" == "devtable-user" ]
-then
-  JAR_NAME=$(ls *.jar | grep 'user-' | tail - n 1)
+  JAR_NAME=$(ls /home/dev-table/*.jar | grep 'user-' | tail - n 1)
   APP_NAME=dev-table_user
+  echo "발견한 jar 이름 > $JAR_NAME"
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
 then
-  JAR_NAME=$(ls *.jar | grep 'owner-' | tail - n 1)
+  JAR_NAME=$(ls /home/dev-table/*.jar | grep 'owner-' | tail - n 1)
   APP_NAME=dev-table_owner
+  echo "발견한 jar 이름 > $JAR_NAME"
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-alarm" ]
 then
-  JAR_NAME=$(ls *.jar | grep 'alarm-' | tail -n 1)
+  JAR_NAME=$(ls /home/dev-table/*.jar | grep 'alarm-' | tail -n 1)
   APP_NAME=dev-table_alarm
+  echo "발견한 jar 이름 > $JAR_NAME"
 else
   echo "Unknown DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GROUP_NAME"
   exit 1
@@ -42,7 +30,6 @@ else
 fi
 
 echo "JAR_NAME : > $JAR_NAME"
-echo "> $JAR_PATH에 실행권한 추가"
 chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 배포"
