@@ -4,12 +4,14 @@ import com.mdh.common.reservation.domain.ReservationStatus;
 import com.mdh.common.reservation.domain.Seat;
 import com.mdh.common.reservation.domain.ShopReservationDateTime;
 import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsCancelEvent;
 import com.mdh.owner.reservation.write.infra.persistence.OwnerReservationRepository;
 import com.mdh.owner.reservation.write.presentation.dto.SeatCreateRequest;
 import com.mdh.owner.reservation.write.presentation.dto.ShopReservationCreateRequest;
 import com.mdh.owner.reservation.write.presentation.dto.ShopReservationDateTimeCreateRequest;
 import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import java.util.NoSuchElementException;
 public class OwnerReservationService {
 
     private final OwnerReservationRepository ownerReservationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long createShopReservation(Long shopId, ShopReservationCreateRequest shopReservationCreateRequest) {
@@ -55,6 +58,7 @@ public class OwnerReservationService {
     public void cancelReservationByOwner(Long reservationId) {
         var reservation = ownerReservationRepository.findReservationById(reservationId).orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
         reservation.updateReservationStatus(ReservationStatus.CANCEL);
+        eventPublisher.publishEvent(new ReservationChangedAsCancelEvent(reservation));
     }
 
     @Counted("owner.reservation.visit")

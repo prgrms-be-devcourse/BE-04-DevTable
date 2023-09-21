@@ -4,15 +4,10 @@ DROP TABLE IF EXISTS `shop_reservations`;
 DROP TABLE IF EXISTS `shop_reservation_datetimes`;
 DROP TABLE IF EXISTS `reservations`;
 DROP TABLE IF EXISTS `waitings`;
-DROP TABLE IF EXISTS `shop_checklists`;
 DROP TABLE IF EXISTS `seats`;
 DROP TABLE IF EXISTS `menus`;
 DROP TABLE IF EXISTS `categories`;
-DROP TABLE IF EXISTS `bookmarks`;
-DROP TABLE IF EXISTS `alarms`;
 DROP TABLE IF EXISTS `shop_waitings`;
-DROP TABLE IF EXISTS `shop_conveniences`;
-DROP TABLE IF EXISTS `conveniences`;
 
 -- Then, drop tables that are being referenced
 DROP TABLE IF EXISTS `shops`;
@@ -25,11 +20,13 @@ CREATE TABLE `users`
     `id`           bigint      NOT NULL AUTO_INCREMENT,
     `email`        varchar(63) NOT NULL,
     `role`         varchar(15) NOT NULL,
-    `password`     varchar(20) NOT NULL,
+    `password`     varchar(255) NOT NULL,
     `phone_number` varchar(15) NOT NULL,
     `created_at`   datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`   datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`email`),
+    UNIQUE KEY (`phone_number`)
 );
 
 CREATE TABLE `regions`
@@ -58,7 +55,6 @@ CREATE TABLE `shops`
     `lunch_max_price`  int          NOT NULL,
     `dinner_min_price` int          NOT NULL,
     `dinner_max_price` int          NOT NULL,
-    `bookmark_count`   int          NOT NULL,
     `holiday`          varchar(127) NULL,
     `address`          varchar(127) NOT NULL,
     `zipcode`          varchar(7)   NOT NULL,
@@ -69,29 +65,6 @@ CREATE TABLE `shops`
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
     FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`)
-);
-
-CREATE TABLE `alarms`
-(
-    `id`         bigint   NOT NULL AUTO_INCREMENT,
-    `user_id`    bigint   NOT NULL,
-    `content`    text     NOT NULL,
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-);
-
-CREATE TABLE `bookmarks`
-(
-    `id`         bigint   NOT NULL AUTO_INCREMENT,
-    `user_id`    bigint   NOT NULL,
-    `shop_id`    bigint   NOT NULL,
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-    FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`)
 );
 
 CREATE TABLE `categories`
@@ -141,29 +114,6 @@ CREATE TABLE `menus`
     FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE
 );
 
-CREATE TABLE `conveniences`
-(
-    `id`         VARCHAR(255) NOT NULL,
-    `type`       varchar(31)  NOT NULL,
-    `created_at` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `shop_conveniences`
-(
-    `id`             bigint       NOT NULL AUTO_INCREMENT,
-    `shop_id`        bigint       NOT NULL,
-    `convenience_id` VARCHAR(255) NOT NULL,
-    `content`        varchar(255) NOT NULL,
-    `created_at`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`convenience_id`) REFERENCES `conveniences` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
 CREATE TABLE `seats`
 (
     `id`         bigint      NOT NULL AUTO_INCREMENT,
@@ -192,15 +142,6 @@ CREATE TABLE `waitings`
     PRIMARY KEY (`id`),
     FOREIGN KEY (`shop_id`) REFERENCES `shop_waitings` (`shop_id`),
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-);
-
-CREATE TABLE `shop_checklists`
-(
-    `shop_id`    bigint       NOT NULL,
-    `content`    varchar(255) NOT NULL,
-    `created_at` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `reservations`
