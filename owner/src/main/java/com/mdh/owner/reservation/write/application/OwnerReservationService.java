@@ -8,6 +8,7 @@ import com.mdh.owner.reservation.write.infra.persistence.OwnerReservationReposit
 import com.mdh.owner.reservation.write.presentation.dto.SeatCreateRequest;
 import com.mdh.owner.reservation.write.presentation.dto.ShopReservationCreateRequest;
 import com.mdh.owner.reservation.write.presentation.dto.ShopReservationDateTimeCreateRequest;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,7 @@ public class OwnerReservationService {
         return shopReservationDateTimeId;
     }
 
+    @Counted("owner.reservation.cancel")
     @Transactional
     public void cancelReservationByOwner(Long reservationId) {
         var reservation = ownerReservationRepository.findReservationById(reservationId).orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
@@ -61,6 +63,7 @@ public class OwnerReservationService {
         reservation.updateReservationStatus(ReservationStatus.VISITED);
     }
 
+    @Counted("owner.reservation.noShow")
     @Transactional
     public void markReservationAsNoShowByOwner(Long reservationId) {
         var reservation = ownerReservationRepository.findReservationById(reservationId).orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
