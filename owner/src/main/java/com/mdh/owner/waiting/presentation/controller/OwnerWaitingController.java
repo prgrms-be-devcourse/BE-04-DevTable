@@ -29,9 +29,21 @@ public class OwnerWaitingController {
         return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
     }
 
-    @PatchMapping("/waitings/{waitingId}")
-    public ResponseEntity<ApiResponse<Void>> changeWaitingStatus(@RequestBody OwnerWaitingStatusChangeRequest request, @PathVariable("waitingId") Long waitingId) {
-        ownerWaitingService.changeWaitingStatus(waitingId, request);
+    @PatchMapping("/waitings/{waitingId}/visit")
+    public ResponseEntity<ApiResponse<Void>> markWaitingStatusAsVisited(@PathVariable("waitingId") Long waitingId) {
+        ownerWaitingService.markWaitingStatusAsVisited(waitingId);
+        return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
+    }
+
+    @PatchMapping("/waitings/{waitingId}/cancel")
+    public ResponseEntity<ApiResponse<Void>> markWaitingStatusAsCancel(@PathVariable("waitingId") Long waitingId) {
+        ownerWaitingService.markWaitingStatusAsCancel(waitingId);
+        return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
+    }
+
+    @PatchMapping("/waitings/{waitingId}/no-show")
+    public ResponseEntity<ApiResponse<Void>> markWaitingStatusAsNoShow(@PathVariable("waitingId") Long waitingId) {
+        ownerWaitingService.markWaitingStatusAsNoShow(waitingId);
         return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
     }
 

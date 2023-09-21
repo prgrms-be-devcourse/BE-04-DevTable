@@ -53,9 +53,8 @@ class OwnerWaitingServiceTest {
         Assertions.assertThat(ShopWaitingStatus.valueOf(status)).isEqualTo(shopWaiting.getShopWaitingStatus());
     }
 
-    @DisplayName("점주는 손님의 웨이팅 상태를 변경할 수 있다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"PROGRESS", "CANCEL", "NO_SHOW", "VISITED"})
+    @DisplayName("점주는 손님의 웨이팅 상태를 취소로 변경할 수 있다.")
+    @Test
     void changeWaitingStatus(String status) {
         //given
         var shopWaiting = DataInitializerFactory.shopWaiting(1L, 2, 1, 1);
@@ -64,15 +63,74 @@ class OwnerWaitingServiceTest {
         var waitingPeople = DataInitializerFactory.waitingPeople(1, 0);
         var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
 
-        var request = new OwnerWaitingStatusChangeRequest(WaitingStatus.valueOf(status));
         given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
 
         // when
-        ownerWaitingService.changeWaitingStatus(waitingId, request);
+        ownerWaitingService.markWaitingStatusAsCancel(waitingId);
 
         // then
         verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
         Assertions.assertThat(WaitingStatus.valueOf(status)).isEqualTo(waiting.getWaitingStatus());
+    }
+
+    @DisplayName("점주는 손님의 웨이팅 상태를 취소로 변경할 수 있다.")
+    @Test
+    void changeWaitingStatusAsCancel() {
+        //given
+        var shopWaiting = DataInitializerFactory.shopWaiting(1L, 2, 1, 1);
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        var waitingId = 1L;
+        var waitingPeople = DataInitializerFactory.waitingPeople(1, 0);
+        var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
+
+        given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
+
+        // when
+        ownerWaitingService.markWaitingStatusAsCancel(waitingId);
+
+        // then
+        verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
+        Assertions.assertThat(WaitingStatus.CANCEL).isEqualTo(waiting.getWaitingStatus());
+    }
+
+    @DisplayName("점주는 손님의 웨이팅 상태를 방문으로 변경할 수 있다.")
+    @Test
+    void changeWaitingStatusAsVisit() {
+        //given
+        var shopWaiting = DataInitializerFactory.shopWaiting(1L, 2, 1, 1);
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        var waitingId = 1L;
+        var waitingPeople = DataInitializerFactory.waitingPeople(1, 0);
+        var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
+
+        given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
+
+        // when
+        ownerWaitingService.markWaitingStatusAsVisited(waitingId);
+
+        // then
+        verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
+        Assertions.assertThat(WaitingStatus.VISITED).isEqualTo(waiting.getWaitingStatus());
+    }
+
+    @DisplayName("점주는 손님의 웨이팅 상태를 노쇼로 변경할 수 있다.")
+    @Test
+    void changeWaitingStatusAsNoShow() {
+        //given
+        var shopWaiting = DataInitializerFactory.shopWaiting(1L, 2, 1, 1);
+        shopWaiting.changeShopWaitingStatus(ShopWaitingStatus.OPEN);
+        var waitingId = 1L;
+        var waitingPeople = DataInitializerFactory.waitingPeople(1, 0);
+        var waiting = DataInitializerFactory.waiting(1L, shopWaiting, waitingPeople);
+
+        given(ownerWaitingRepository.findWaitingByWaitingId(waitingId)).willReturn(Optional.of(waiting));
+
+        // when
+        ownerWaitingService.markWaitingStatusAsNoShow(waitingId);
+
+        // then
+        verify(ownerWaitingRepository, times(1)).findWaitingByWaitingId(waitingId);
+        Assertions.assertThat(WaitingStatus.NO_SHOW).isEqualTo(waiting.getWaitingStatus());
     }
 
     @DisplayName("점주는 점주 id, 웨이팅 상태로 웨이팅을 조회할 수 있다.")
