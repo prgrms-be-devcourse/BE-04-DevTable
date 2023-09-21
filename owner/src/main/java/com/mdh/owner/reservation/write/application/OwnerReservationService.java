@@ -5,6 +5,8 @@ import com.mdh.common.reservation.domain.Seat;
 import com.mdh.common.reservation.domain.ShopReservationDateTime;
 import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
 import com.mdh.common.reservation.domain.event.ReservationChangedAsCancelEvent;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsNoShowEvent;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsVisitedEvent;
 import com.mdh.owner.reservation.write.infra.persistence.OwnerReservationRepository;
 import com.mdh.owner.reservation.write.presentation.dto.SeatCreateRequest;
 import com.mdh.owner.reservation.write.presentation.dto.ShopReservationCreateRequest;
@@ -66,6 +68,7 @@ public class OwnerReservationService {
     public void markReservationAsVisitedByOwner(Long reservationId) {
         var reservation = ownerReservationRepository.findReservationById(reservationId).orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
         reservation.updateReservationStatus(ReservationStatus.VISITED);
+        eventPublisher.publishEvent(new ReservationChangedAsVisitedEvent(reservation));
     }
 
     @Counted("owner.reservation.noShow")
@@ -73,5 +76,6 @@ public class OwnerReservationService {
     public void markReservationAsNoShowByOwner(Long reservationId) {
         var reservation = ownerReservationRepository.findReservationById(reservationId).orElseThrow(() -> new NoSuchElementException("해당 ID의 예약 정보가 없습니다.: " + reservationId));
         reservation.updateReservationStatus(ReservationStatus.NO_SHOW);
+        eventPublisher.publishEvent(new ReservationChangedAsNoShowEvent(reservation));
     }
 }

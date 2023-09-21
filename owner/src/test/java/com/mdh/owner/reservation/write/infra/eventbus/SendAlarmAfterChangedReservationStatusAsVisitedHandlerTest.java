@@ -1,8 +1,8 @@
 package com.mdh.owner.reservation.write.infra.eventbus;
 
 import com.mdh.common.reservation.domain.Reservation;
-import com.mdh.common.reservation.domain.event.ReservationChangedAsCancelEvent;
 import com.mdh.common.reservation.domain.event.ReservationChangedAsNoShowEvent;
+import com.mdh.common.reservation.domain.event.ReservationChangedAsVisitedEvent;
 import com.mdh.common.reservation.persistence.ReservationRepository;
 import com.mdh.common.reservation.persistence.dto.ReservationAlarmInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -17,14 +17,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class SendAlarmAfterChangedReservationStatusAsNoShowHandlerTest {
+class SendAlarmAfterChangedReservationStatusAsVisitedHandlerTest {
 
     @InjectMocks
-    private SendAlarmAfterChangedReservationStatusAsNoShowHandler eventHandler;
+    private SendAlarmAfterChangedReservationStatusAsVisitedHandler eventHandler;
 
     @Mock
     private StringRedisTemplate redisTemplate;
@@ -39,7 +41,7 @@ class SendAlarmAfterChangedReservationStatusAsNoShowHandlerTest {
         // Given
         var reservationId = 1L;
         var reservation = mock(Reservation.class);
-        var event = new ReservationChangedAsNoShowEvent(reservation);
+        var event = new ReservationChangedAsVisitedEvent(reservation);
 
         var alarmInfo = new ReservationAlarmInfo(1L, "test", LocalDate.now(), LocalTime.now(), 1, "test", "test");
 
