@@ -106,28 +106,24 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 변경할 수 있다.")
+    @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 방문 상태로 변경할 수 있다.")
     @Test
     void changeWaitingStatus() throws Exception {
         //given
         var waitingId = 1L;
-        var request = new OwnerWaitingStatusChangeRequest(WaitingStatus.VISITED);
-        doNothing().when(ownerWaitingService).changeWaitingStatus(waitingId, request);
+        doNothing().when(ownerWaitingService).markWaitingStatusAsVisited(waitingId);
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/waitings/{waitingId}", waitingId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(patch("/api/owner/v1/waitings/{waitingId}/visit", waitingId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$.statusCode").value("200"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("change-waiting-status",
                         pathParameters(
                                 parameterWithName("waitingId").description("웨이팅 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
                         ),
                         responseFields(fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
                                 fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
@@ -136,35 +132,51 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 잘못된 형태로 변경할 수 없다.")
+    @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 노쇼 상태로 변경할 수 있다.")
     @Test
-    void changWaitingStatusThrowException() throws Exception {
+    void changeWaitingStatusAsNoShow() throws Exception {
         //given
         var waitingId = 1L;
-        var request = new HashMap<String, String>();
-        request.put("waitingStatus", "asf");
+        doNothing().when(ownerWaitingService).markWaitingStatusAsNoShow(waitingId);
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/waitings/{waitingId}", waitingId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.statusCode").value("400"))
-                .andExpect(jsonPath("$.data.title").value("HttpMessageNotReadableException"))
-                .andDo(document("change-waiting-status-invalid",
+        mockMvc.perform(patch("/api/owner/v1/waitings/{waitingId}/no-show", waitingId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("change-waiting-status",
                         pathParameters(
                                 parameterWithName("waitingId").description("웨이팅 id")
                         ),
-                        requestFields(
-                                fieldWithPath("waitingStatus").type(JsonFieldType.STRING).description("웨이팅 상태")
+                        responseFields(fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("매장이 갖고 있는 손님의 웨이팅 상태를 취소 상태로 변경할 수 있다.")
+    @Test
+    void changeWaitingStatusAsCancel() throws Exception {
+        //given
+        var waitingId = 1L;
+        doNothing().when(ownerWaitingService).markWaitingStatusAsCancel(waitingId);
+
+        //when & then
+        mockMvc.perform(patch("/api/owner/v1/waitings/{waitingId}/cancel", waitingId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("change-waiting-status",
+                        pathParameters(
+                                parameterWithName("waitingId").description("웨이팅 id")
                         ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                        responseFields(fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
                         )
                 ));

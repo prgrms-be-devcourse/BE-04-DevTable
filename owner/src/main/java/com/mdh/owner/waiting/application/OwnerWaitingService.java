@@ -1,5 +1,6 @@
 package com.mdh.owner.waiting.application;
 
+import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.common.waiting.persistence.dto.WaitingInfoResponseForOwner;
 import com.mdh.owner.waiting.infra.persistence.OwnerWaitingRepository;
@@ -29,14 +30,30 @@ public class OwnerWaitingService {
         shopWaiting.changeShopWaitingStatus(request.shopWaitingStatus());
     }
 
-    @Counted("owner.waiting.change")
+    @Counted("owner.waiting.cancel")
     @Transactional
-    public void changeWaitingStatus(Long waitingId, OwnerWaitingStatusChangeRequest request) {
-        var waiting = ownerWaitingRepository.findWaitingByWaitingId(waitingId)
-                .orElseThrow(() -> new NoSuchElementException("웨이팅 조회 결과가 없습니다."));
+    public void markWaitingStatusAsCancel(Long waitingId) {
+        var waiting = findWaitingByWaitingId(waitingId);
+        waiting.changeWaitingStatus(WaitingStatus.CANCEL);
+    }
 
-        waiting.changeWaitingStatus(request.waitingStatus());
-        log.info("웨이팅의 상태를 {}로 변경하였습니다.", request.waitingStatus().name());
+    @Counted("owner.waiting.noShow")
+    @Transactional
+    public void markWaitingStatusAsNoShow(Long waitingId) {
+        var waiting = findWaitingByWaitingId(waitingId);
+        waiting.changeWaitingStatus(WaitingStatus.NO_SHOW);
+    }
+
+    @Counted("owner.waiting.visit")
+    @Transactional
+    public void markWaitingStatusAsVisited(Long waitingId) {
+        var waiting = findWaitingByWaitingId(waitingId);
+        waiting.changeWaitingStatus(WaitingStatus.VISITED);
+    }
+
+    private Waiting findWaitingByWaitingId(Long waitingId) {
+        return ownerWaitingRepository.findWaitingByWaitingId(waitingId)
+                .orElseThrow(() -> new NoSuchElementException("웨이팅 조회 결과가 없습니다. " + waitingId));
     }
 
     @Transactional(readOnly = true)
