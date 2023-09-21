@@ -51,19 +51,19 @@ if [ "$DEPLOYMENT_GROUP_NAME" == "devtable-user" ]
 then
   nohup java -jar \
           -Dspring.profiles.active=dev \
-          -Dspring.config.location=/home/yml/user/application.yml,/home/yml/user/application-dev.yml
+          -Dspring.config.location=/home/yml/user/application.yml,/home/yml/user/application-dev.yml \
           "$JAR_NAME"
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
 then
   nohup java -jar \
             -Dspring.profiles.active=dev \
-            -Dspring.config.location=/home/yml/owner/application.yml,/home/yml/owner/application-dev.yml
+            -Dspring.config.location=/home/yml/owner/application.yml,/home/yml/owner/application-dev.yml \
             "$JAR_NAME"
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-alarm" ]
 then
   nohup java -jar \
               -Dspring.profiles.active=dev \
-              -Dspring.config.location=/home/yml/alarm/application.yml
+              -Dspring.config.location=/home/yml/alarm/application.yml \
               "$JAR_NAME"
 else
   echo "Unknown DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GROUP_NAME"
