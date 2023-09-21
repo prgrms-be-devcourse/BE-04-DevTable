@@ -1,13 +1,13 @@
 package com.mdh.user.reservation.application;
 
-import com.mdh.common.reservation.domain.event.ReservationCanceledEvent;
-import com.mdh.common.reservation.domain.event.ReservationCreatedEvent;
-import com.mdh.user.DataInitializerFactory;
 import com.mdh.common.reservation.domain.Reservation;
 import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.common.reservation.domain.event.ReservationCanceledEvent;
+import com.mdh.common.reservation.domain.event.ReservationCreatedEvent;
 import com.mdh.common.reservation.persistence.ReservationRepository;
 import com.mdh.common.reservation.persistence.ShopReservationDateTimeSeatRepository;
 import com.mdh.common.reservation.persistence.ShopReservationRepository;
+import com.mdh.user.DataInitializerFactory;
 import com.mdh.user.reservation.presentation.dto.ReservationCancelRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationPreemptiveRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationRegisterRequest;
@@ -76,7 +76,7 @@ class ReservationServiceTest {
 
 
         //when
-        UUID reservationId = reservationService.preemtiveReservation(userId, reservationPreemptiveRequest);
+        UUID reservationId = reservationService.preemptiveReservation(userId, reservationPreemptiveRequest);
 
         //then
         verify(preemtiveShopReservationDateTimeSeats, times(3)).contains(any(Long.class));
@@ -102,7 +102,7 @@ class ReservationServiceTest {
         given(preemtiveShopReservationDateTimeSeats.contains(any(Long.class))).willReturn(true);
 
         //when
-        assertThatThrownBy(() -> reservationService.preemtiveReservation(userId, reservationPreemptiveRequest))
+        assertThatThrownBy(() -> reservationService.preemptiveReservation(userId, reservationPreemptiveRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 선점된 좌석이므로 선점할 수 없습니다.");
     }
