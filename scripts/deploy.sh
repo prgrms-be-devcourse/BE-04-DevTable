@@ -46,7 +46,7 @@ then
   nohup java -jar \
           -Dspring.profiles.active=dev \
           -Dspring.config.location=/home/yml/user/application.yml,/home/yml/user/application-dev.yml \
-          "$JAR_NAME" &
+          "$JAR_NAME" > /home/log/user/nohup_log.out 2>&1 &
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
 then
   nohup java -jar \
