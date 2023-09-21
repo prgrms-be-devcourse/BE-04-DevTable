@@ -6,15 +6,16 @@ import com.mdh.common.reservation.domain.ShopReservation;
 import com.mdh.common.reservation.domain.ShopReservationDateTimeSeat;
 import com.mdh.common.reservation.domain.event.ReservationCanceledEvent;
 import com.mdh.common.reservation.domain.event.ReservationCreatedEvent;
-import com.mdh.user.reservation.application.dto.ReservationResponse;
-import com.mdh.user.reservation.application.dto.ReservationResponses;
 import com.mdh.common.reservation.persistence.ReservationRepository;
 import com.mdh.common.reservation.persistence.ShopReservationDateTimeSeatRepository;
 import com.mdh.common.reservation.persistence.ShopReservationRepository;
+import com.mdh.user.reservation.application.dto.ReservationResponse;
+import com.mdh.user.reservation.application.dto.ReservationResponses;
 import com.mdh.user.reservation.presentation.dto.ReservationCancelRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationPreemptiveRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationUpdateRequest;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,7 @@ public class ReservationService {
         return new Reservation(userId, reservationPreemptiveRequest.requirement(), reservationPreemptiveRequest.personCount());
     }
 
+    @Counted("user.reservation.register")
     @Transactional
     public Long registerReservation(UUID reservationId, ReservationRegisterRequest reservationRegisterRequest) {
         // 선점한 예약인지 확인
@@ -108,6 +110,7 @@ public class ReservationService {
         return "성공적으로 선점된 예약을 취소했습니다.";
     }
 
+    @Counted("user.reservation.cancel")
     @Transactional
     public String cancelReservation(Long reservationId) {
         var reservation = reservationRepository.findById(reservationId)
@@ -146,7 +149,7 @@ public class ReservationService {
         return new ReservationResponses(reservationResponses);
     }
 
-    private void validPreemtiveShopReservationDateTimeSeats(List<Long> shopReservationDateTimeSeatIds) {
+    private void validPreemptiveShopReservationDateTimeSeats(List<Long> shopReservationDateTimeSeatIds) {
         // 선점된 좌석인지 확인
         shopReservationDateTimeSeatIds.forEach(shopReservationDateTimeSeatId -> {
             if (preemptiveShopReservationDateTimeSeats.contains(shopReservationDateTimeSeatId)) {
