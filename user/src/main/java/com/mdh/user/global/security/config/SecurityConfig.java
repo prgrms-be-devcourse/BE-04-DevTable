@@ -39,6 +39,7 @@ public class SecurityConfig {
         auth.userDetailsService(loginService);
 
         return http
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(antMatcher("/hello"),
