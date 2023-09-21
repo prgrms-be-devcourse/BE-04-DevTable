@@ -4,18 +4,18 @@ then
   do
     echo "$file"
   done
-  
-  JAR_NAME=$(ls /home/dev-table/*.jar | grep 'user-' | tail -n 1)
+
+  JAR_NAME=$(ls /home/dev-table/user/build/*.jar | grep 'user-' | tail -n 1)
   APP_NAME=dev-table_user
   echo "발견한 jar 이름 > $JAR_NAME"
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-owner" ]
 then
-  JAR_NAME=$(ls /home/dev-table/*.jar | grep 'owner-' | tail -n 1)
+  JAR_NAME=$(ls /home/dev-table/owner/build/*.jar | grep 'owner-' | tail -n 1)
   APP_NAME=dev-table_owner
   echo "발견한 jar 이름 > $JAR_NAME"
 elif [ "$DEPLOYMENT_GROUP_NAME" == "devtable-alarm" ]
 then
-  JAR_NAME=$(ls /home/dev-table/*.jar | grep 'alarm-' | tail -n 1)
+  JAR_NAME=$(ls /home/dev-table/alarm/build/*.jar | grep 'alarm-' | tail -n 1)
   APP_NAME=dev-table_alarm
   echo "발견한 jar 이름 > $JAR_NAME"
 else
