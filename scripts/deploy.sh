@@ -1,5 +1,10 @@
 if [ "$DEPLOYMENT_GROUP_NAME" == "devtable-user" ]
 then
+  for file in /home/dev-table/*
+  do
+    echo "$file"
+  done
+  
   JAR_NAME=$(ls /home/dev-table/*.jar | grep 'user-' | tail -n 1)
   APP_NAME=dev-table_user
   echo "발견한 jar 이름 > $JAR_NAME"
