@@ -36,7 +36,7 @@ public class SendAlarmWithWaitingCreatedEventHandler {
 
         var message = new AlarmMessage(String.valueOf(alarmInfo.userId()),
                 alarmInfo.shopName(),
-                alarmInfo.toString());
+                alarmInfo.toString() + "웨이팅이 시작됐습니다.");
         redisTemplate.convertAndSend(topic, message);
     }
 
