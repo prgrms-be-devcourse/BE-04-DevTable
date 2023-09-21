@@ -7,8 +7,8 @@ import com.mdh.user.global.security.session.UserInfo;
 import com.mdh.user.waiting.application.WaitingService;
 import com.mdh.user.waiting.application.dto.UserWaitingResponse;
 import com.mdh.user.waiting.application.dto.WaitingDetailsResponse;
-import com.mdh.user.waiting.presentation.dto.MyWaitingsRequest;
 import com.mdh.user.waiting.presentation.dto.WaitingCreateRequest;
+import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +25,7 @@ public class UserWaitingController {
 
     private final WaitingService waitingService;
 
+    @Timed("user.waiting.findAllByStatus")
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<UserWaitingResponse>>> findWaitingsByUserIdAndStatus(@RequestParam("status") WaitingStatus status, @CurrentUser UserInfo userInfo) {
         var findUserWaitings = waitingService.findAllByUserIdAndStatus(userInfo.userId(), status);
