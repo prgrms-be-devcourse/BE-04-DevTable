@@ -1,16 +1,16 @@
 package com.mdh.user.reservation.presentation.controller;
 
-import com.mdh.user.RestDocsSupport;
 import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.common.reservation.persistence.dto.ReservationQueryDto;
+import com.mdh.common.shop.domain.ShopType;
+import com.mdh.user.RestDocsSupport;
 import com.mdh.user.reservation.application.ReservationService;
 import com.mdh.user.reservation.application.dto.ReservationResponse;
 import com.mdh.user.reservation.application.dto.ReservationResponses;
-import com.mdh.common.reservation.persistence.dto.ReservationQueryDto;
 import com.mdh.user.reservation.presentation.dto.ReservationCancelRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationPreemptiveRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationUpdateRequest;
-import com.mdh.common.shop.domain.ShopType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,7 +57,7 @@ class ReservationControllerTest extends RestDocsSupport {
         var reservationId = UUID.randomUUID();
         var request = new ReservationPreemptiveRequest(List.of(3L, 4L), "요구사항 입니다", 4);
         var userId = 1L;
-        given(reservationService.preemtiveReservation(any(), any(ReservationPreemptiveRequest.class))).willReturn(reservationId);
+        given(reservationService.preemptiveReservation(any(), any(ReservationPreemptiveRequest.class))).willReturn(reservationId);
 
         //when & then
         mockMvc.perform(post("/api/customer/v1/reservations/preemption")
