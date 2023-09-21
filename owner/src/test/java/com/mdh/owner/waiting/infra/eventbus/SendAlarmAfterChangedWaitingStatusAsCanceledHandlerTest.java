@@ -1,7 +1,7 @@
 package com.mdh.owner.waiting.infra.eventbus;
 
 import com.mdh.common.waiting.domain.Waiting;
-import com.mdh.common.waiting.domain.event.WaitingCreatedEvent;
+import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsCanceledEvent;
 import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsVisitedEvent;
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
@@ -21,10 +21,10 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class SendAlarmAfterChangedWaitingStatusAsVisitedHandlerTest {
+class SendAlarmAfterChangedWaitingStatusAsCanceledHandlerTest {
 
     @InjectMocks
-    private SendAlarmAfterChangedWaitingStatusAsVisitedHandler eventHandler;
+    private SendAlarmAfterChangedWaitingStatusAsCanceledHandler eventHandler;
 
     @Mock
     private StringRedisTemplate redisTemplate;
@@ -32,15 +32,14 @@ class SendAlarmAfterChangedWaitingStatusAsVisitedHandlerTest {
     @Mock
     private WaitingRepository waitingRepository;
 
-
-    @DisplayName("웨이팅이 방문처리 되면 손님에게 알람이 발생한다.")
+    @DisplayName("점주가 웨이팅 상태를 취소로 변경하면 손님에게 알람이 간다.")
     @Test
-    void shouldSendAlarmAfterWaitingStatusChangedAsVisitEvent() {
+    void handle() {
         // Given
         Long waitingId = 1L;
         var userId = 1L;
         var waiting = mock(Waiting.class);
-        var event = new WaitingStatusChangedAsVisitedEvent(waiting);
+        var event = new WaitingStatusChangedAsCanceledEvent(waiting);
 
         var alarmInfo = new WaitingAlarmInfo("test", "test", 1, 1, "01012345678", userId);
 
@@ -55,5 +54,4 @@ class SendAlarmAfterChangedWaitingStatusAsVisitedHandlerTest {
         verify(redisTemplate, times(1)).convertAndSend(any(), any());
         verify(waitingRepository, times(1)).findWaitingAlarmInfoById(waitingId);
     }
-
 }
