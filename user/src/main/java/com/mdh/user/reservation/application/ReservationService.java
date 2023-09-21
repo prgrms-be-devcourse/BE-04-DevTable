@@ -37,10 +37,10 @@ public class ReservationService {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    public UUID preemtiveReservation(Long userId, ReservationPreemptiveRequest reservationPreemptiveRequest) {
+    public UUID preemptiveReservation(Long userId, ReservationPreemptiveRequest reservationPreemptiveRequest) {
         // 선점된 좌석인지 확인한다.
         var shopReservationDateTimeSeatIds = reservationPreemptiveRequest.shopReservationDateTimeSeatIds();
-        validPreemtiveShopReservationDateTimeSeats(shopReservationDateTimeSeatIds);
+        validPreemptiveShopReservationDateTimeSeats(shopReservationDateTimeSeatIds);
 
         // 모든 좌석을 선점함
         preemptiveShopReservationDateTimeSeats.addAll(reservationPreemptiveRequest.shopReservationDateTimeSeatIds());

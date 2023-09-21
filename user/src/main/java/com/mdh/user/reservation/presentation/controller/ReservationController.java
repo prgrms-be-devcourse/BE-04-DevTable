@@ -1,7 +1,7 @@
 package com.mdh.user.reservation.presentation.controller;
 
-import com.mdh.user.global.ApiResponse;
 import com.mdh.common.reservation.domain.ReservationStatus;
+import com.mdh.user.global.ApiResponse;
 import com.mdh.user.global.security.session.CurrentUser;
 import com.mdh.user.global.security.session.UserInfo;
 import com.mdh.user.reservation.application.ReservationService;
@@ -28,7 +28,7 @@ public class ReservationController {
 
     @PostMapping("/preemption")
     public ResponseEntity<ApiResponse<UUID>> preemptReservation(@RequestBody @Valid ReservationPreemptiveRequest reservationPreemptiveRequest, @CurrentUser UserInfo userInfo) {
-        UUID reservationId = reservationService.preemtiveReservation(userInfo. userId(),reservationPreemptiveRequest);
+        UUID reservationId = reservationService.preemptiveReservation(userInfo.userId(), reservationPreemptiveRequest);
         return ResponseEntity.ok(ApiResponse.ok(reservationId));
     }
 
