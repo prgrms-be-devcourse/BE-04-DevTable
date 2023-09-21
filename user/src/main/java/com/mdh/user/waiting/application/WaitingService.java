@@ -1,5 +1,9 @@
 package com.mdh.user.waiting.application;
 
+import com.mdh.common.waiting.domain.event.WaitingCanceledEvent;
+import com.mdh.common.waiting.domain.event.WaitingPostponedEvent;
+import com.mdh.user.waiting.application.dto.UserWaitingResponse;
+import com.mdh.user.waiting.application.dto.WaitingDetailsResponse;
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.WaitingPeople;
 import com.mdh.common.waiting.domain.WaitingStatus;
@@ -99,6 +103,7 @@ public class WaitingService {
 
         log.info("웨이팅이 미루어졌습니다. {}", waitingId);
         waiting.addPostponedCount();
+        eventPublisher.publishEvent(new WaitingPostponedEvent(waiting));
     }
 
     @Transactional(readOnly = true)
