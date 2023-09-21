@@ -43,7 +43,7 @@ jobs:
       # user의 jar 파일과 appspec을압축
       - name: Make zip file
         run: |
-          files_to_compress="$(find user/build/libs/ -mindepth 1 -type f) appspec.yml scripts/deploy.sh"
+          files_to_compress="$(find user/build/libs/ -type f -path 'user/build/libs/*') appspec.yml scripts/deploy.sh"
           archive_name="$GITHUB_SHA.zip"
           
           zip -r "$archive_name" $files_to_compress
