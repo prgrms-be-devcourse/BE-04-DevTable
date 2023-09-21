@@ -10,6 +10,7 @@ import com.mdh.user.reservation.presentation.dto.ReservationCancelRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationPreemptiveRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationRegisterRequest;
 import com.mdh.user.reservation.presentation.dto.ReservationUpdateRequest;
+import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,7 @@ public class ReservationController {
         return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
     }
 
+    @Timed("user.reservation.findAll")
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<ReservationResponses>> findReservations(
             @CurrentUser UserInfo userInfo,
