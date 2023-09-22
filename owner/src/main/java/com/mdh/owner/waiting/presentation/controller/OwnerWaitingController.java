@@ -1,9 +1,9 @@
 package com.mdh.owner.waiting.presentation.controller;
 
-import com.mdh.owner.global.ApiResponse;
-import com.mdh.owner.waiting.application.OwnerWaitingService;
 import com.mdh.common.waiting.domain.WaitingStatus;
 import com.mdh.common.waiting.persistence.dto.WaitingInfoResponseForOwner;
+import com.mdh.owner.global.ApiResponse;
+import com.mdh.owner.waiting.application.OwnerWaitingService;
 import com.mdh.owner.waiting.presentation.dto.OwnerShopWaitingStatusChangeRequest;
 import com.mdh.owner.waiting.presentation.dto.OwnerUpdateShopWaitingInfoRequest;
 import com.mdh.owner.waiting.presentation.dto.OwnerWaitingStatusChangeRequest;
@@ -22,6 +22,7 @@ public class OwnerWaitingController {
 
     private final OwnerWaitingService ownerWaitingService;
 
+    // TODO Method 명 변경
     @PatchMapping("/shops/{shopId}")
     public ResponseEntity<ApiResponse<Void>> changShopWaitingStatus(@RequestBody OwnerShopWaitingStatusChangeRequest request, @PathVariable("shopId") Long shopId) {
         ownerWaitingService.changeShopWaitingStatus(shopId, request);

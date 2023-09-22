@@ -32,6 +32,7 @@ public class UserWaitingController {
         return ResponseEntity.ok(ApiResponse.ok(findUserWaitings));
     }
 
+    //TODO Location Header 로 변경
     @PostMapping("/shops/{shopId}")
     public ResponseEntity<ApiResponse<URI>> createWaiting(@RequestBody @Valid WaitingCreateRequest waitingCreateRequest, @CurrentUser UserInfo userInfo, @PathVariable("shopId") Long shopId) {
         Long waitingId = waitingService.createWaiting(userInfo.userId(), shopId, waitingCreateRequest);
