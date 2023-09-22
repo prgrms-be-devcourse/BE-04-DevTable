@@ -42,7 +42,11 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(antMatcher("/api/v1/owner"), antMatcher("/hello"), antMatcher("/restdocs"))
+                        .requestMatchers(
+                                antMatcher("/api/v1/owner"),
+                                antMatcher("/hello"),
+                                antMatcher("/restdocs"),
+                                antMatcher("/actuator/**"))
                         .permitAll()
                         .anyRequest()
                         .hasRole("OWNER"))

@@ -25,7 +25,7 @@ public class SendAlarmWithWaitingCreatedEventHandler {
     private final StringRedisTemplate redisTemplate;
     private final WaitingRepository waitingRepository;
 
-    @Counted("alarm.user.waiting.cancel")
+    @Counted("alarm.user.waiting.register")
     @Async
     @Transactional(readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
