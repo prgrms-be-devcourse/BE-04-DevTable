@@ -186,15 +186,14 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
     @Test
     void findWaitingByOwnerIdAndWaitingStatus() throws Exception {
         //given
-        var ownerId = 1L;
         var waitingNumber = 1;
         var phoneNumber = "0101234578";
         var status = WaitingStatus.PROGRESS;
         var response = Collections.singletonList(new WaitingInfoResponseForOwner(waitingNumber, phoneNumber));
-        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(Long.class), any(WaitingStatus.class))).thenReturn(response);
+        when(ownerWaitingService.findWaitingOwnerIdAndWaitingStatus(any(), any(WaitingStatus.class))).thenReturn(response);
 
         //when & then
-        mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
+        mockMvc.perform(get("/api/owner/v1/waitings")
                         .param("status", status.name())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -206,9 +205,6 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andDo(document("owners-shop-waiting-info",
                         queryParameters(
                                 parameterWithName("status").description("예약 상태")
-                        ),
-                        pathParameters(
-                                parameterWithName("ownerId").description("매장 주인의 id")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
