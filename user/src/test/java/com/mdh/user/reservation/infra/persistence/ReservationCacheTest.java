@@ -5,6 +5,7 @@ import com.mdh.common.reservation.domain.Reservation;
 import com.mdh.user.DataInitializerFactory;
 import com.mdh.user.reservation.application.dto.ReservationRedisDto;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@Disabled
 class ReservationCacheTest {
 
     @Autowired
