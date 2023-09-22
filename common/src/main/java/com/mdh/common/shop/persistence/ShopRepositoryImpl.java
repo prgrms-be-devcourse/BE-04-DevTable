@@ -250,7 +250,8 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     }
 
     private OrderSpecifier<?> getOrderSpecifier(List<String> sorts) {
-        if (sorts.get(0).equals(PRICE_ASC.getSortParam())) {
+
+        if (!sorts.isEmpty() && sorts.get(0).equals(PRICE_ASC.getSortParam())) {
             return shop.shopPrice.shopMinPrice.asc();
         }
 
