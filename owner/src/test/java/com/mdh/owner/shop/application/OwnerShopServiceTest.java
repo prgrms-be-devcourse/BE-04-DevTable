@@ -3,6 +3,7 @@ package com.mdh.owner.shop.application;
 import com.mdh.owner.DataInitializerFactory;
 import com.mdh.common.shop.domain.Shop;
 import com.mdh.common.shop.domain.ShopType;
+import com.mdh.owner.shop.application.dto.ShopDetailInfoResponse;
 import com.mdh.owner.shop.infra.persistence.OwnerShopRepository;
 import com.mdh.owner.shop.presentation.dto.OwnerShopCreateRequest;
 import com.mdh.owner.shop.presentation.dto.RegionRequest;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,10 +37,6 @@ public class OwnerShopServiceTest {
     void createShop() {
         // Given
         var userId = 1L;
-        var shopDetails = DataInitializerFactory.shopDetails();
-        var region = DataInitializerFactory.region();
-        var shopAddress = DataInitializerFactory.shopAddress();
-        var shop = DataInitializerFactory.shop(userId, shopDetails, region, shopAddress);
         var ownerShopCreateRequest = new OwnerShopCreateRequest(
                 "test",
                 "Test Shop",
@@ -54,4 +53,26 @@ public class OwnerShopServiceTest {
         // Then
         assertThat(savedShopId).isNotNull();
     }
+
+    @DisplayName("점주의 ID로 매장을 찾을 수 있다.")
+    @Test
+    void findShopByOwner() {
+        // Given
+        var ownerId = 1L;
+        var shopDetails = DataInitializerFactory.shopDetails();
+        var region = DataInitializerFactory.region();
+        var shopAddress = DataInitializerFactory.shopAddress();
+        var shop = DataInitializerFactory.shop(ownerId, shopDetails, region, shopAddress);
+        var expectedResponse = ShopDetailInfoResponse.from(shop);
+
+        given(ownerShopRepository.findShopById(ownerId)).willReturn(Optional.of(shop));
+
+        // When
+        var actualResponse = ownerShopService.findShopByOwner(ownerId);
+
+        // Then
+        assertThat(actualResponse).isNotNull();
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+    }
+
 }
