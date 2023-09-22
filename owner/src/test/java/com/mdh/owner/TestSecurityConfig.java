@@ -1,6 +1,6 @@
 package com.mdh.owner;
 
-import com.mdh.owner.global.security.LoginService;
+import com.mdh.owner.login.application.LoginService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

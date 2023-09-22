@@ -220,11 +220,10 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
     @Test
     void findWaitingByShopIdAndWaitingStatusThrowsException() throws Exception {
         //given
-        var ownerId = 1L;
         var invalidStatus = "INVALID_STATUS";
 
         //when & then
-        mockMvc.perform(get("/api/owner/v1/waitings/{ownerId}", ownerId)
+        mockMvc.perform(get("/api/owner/v1/waitings")
                         .param("status", invalidStatus)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -235,9 +234,6 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
                 .andDo(document("owners-shop-waiting-info-invalid",
                         queryParameters(
                                 parameterWithName("status").description("예약 상태")
-                        ),
-                        pathParameters(
-                                parameterWithName("ownerId").description("매장 주인의 id")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),

@@ -1,17 +1,16 @@
 package com.mdh.owner.global.security.controller;
 
 import com.mdh.owner.RestDocsSupport;
-import com.mdh.owner.global.security.LoginService;
+import com.mdh.owner.login.application.LoginService;
+import com.mdh.owner.login.presentation.LoginController;
+import com.mdh.owner.login.presentation.SignUpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;

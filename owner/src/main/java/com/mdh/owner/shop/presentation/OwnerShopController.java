@@ -15,7 +15,7 @@ import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/owner/v1/shop")
+@RequestMapping("/api/owner/v1/shops")
 public class OwnerShopController {
 
     private final OwnerShopService ownerShopService;
