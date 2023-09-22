@@ -45,7 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher("/hello"),
                                 antMatcher("/restdocs"),
                                 antMatcher("/api/customer/v1/shops"),
-                                antMatcher("/api/v1/customers"))
+                                antMatcher("/api/v1/customers"),
+                                antMatcher("/actuator/**"))
                         .permitAll()
                         .anyRequest()
                         .hasRole("GUEST"))
