@@ -67,7 +67,7 @@ class UserWaitingControllerTest extends RestDocsSupport {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.statusCode").value("201"))
-                .andExpect(jsonPath("$.data").value("/api/customer/v1/waitings/" + waitingId))
+                .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("waiting-create",
                         pathParameters(
@@ -79,7 +79,7 @@ class UserWaitingControllerTest extends RestDocsSupport {
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("생성된 URI + id"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description(""),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
                         )
                 ));
