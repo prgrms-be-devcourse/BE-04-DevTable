@@ -24,68 +24,48 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleValidation(MethodArgumentNotValidException e, HttpServletRequest request) {
-        var uri = request.getRequestURI();
-        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setInstance(URI.create(uri));
-        problemDetail.setTitle("MethodArgumentNotValidException");
+        var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "MethodArgumentNotValidException");
+        log.warn("잘못된 request body {}", e.getMessage(), e);
         problemDetail.setProperty("validationError", e.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(ValidationError::of)
                 .toList());
-
-        return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(),
-                problemDetail), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleMessageNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
-        var uri = request.getRequestURI();
-        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setInstance(URI.create(uri));
-        problemDetail.setTitle("HttpMessageNotReadableException");
-
+        var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "HttpMessageNotReadableException");
+        log.warn("잘못된 request body(enum) {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(OptimisticLockingFailureException.class)
-    public ResponseEntity<ApiResponse<ProblemDetail>> handleMessageNotReadable(OptimisticLockingFailureException e, HttpServletRequest request) {
-        var uri = request.getRequestURI();
-        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setInstance(URI.create(uri));
-        problemDetail.setTitle("OptimisticLockingFailureException");
-
+    public ResponseEntity<ApiResponse<ProblemDetail>> handleOptimisticLockingFailure(OptimisticLockingFailureException e, HttpServletRequest request) {
+        var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "OptimisticLockingFailureException");
+        log.warn("동시 요청 오류 발생 {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
-        var uri = request.getRequestURI();
-        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setInstance(URI.create(uri));
-        problemDetail.setTitle("RuntimeException");
-
+        var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "RuntimeException");
         log.warn("런타임 예외가 발생했습니다. {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
-        var uri = request.getRequestURI();
-        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setInstance(URI.create(uri));
-        problemDetail.setTitle("MethodArgumentTypeMismatchException");
-
+        var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "MethodArgumentTypeMismatchException");
+        log.warn("잘못된 request body {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleNoSuchElementException(NoSuchElementException e, HttpServletRequest request) {
-        var uri = request.getRequestURI();
-        var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setInstance(URI.create(uri));
-        problemDetail.setTitle("NoSuchElementException");
-
+        var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "NoSuchElementException");
+        log.warn("엔티티 객체 조회 실패 {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 }
