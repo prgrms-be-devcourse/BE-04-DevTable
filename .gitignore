@@ -277,7 +277,6 @@ sketch
 # and uncomment the following lines
 # .pnp.*
 
-<<<<<<< HEAD
 ### resources ###
 common/src/main/resources
 alarm/src/main/resources/*.yml
