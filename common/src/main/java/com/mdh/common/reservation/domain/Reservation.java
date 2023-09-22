@@ -1,7 +1,19 @@
 package com.mdh.common.reservation.domain;
 
 import com.mdh.common.global.BaseTimeEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,10 +60,10 @@ public class Reservation extends BaseTimeEntity {
 
     @Builder
     public Reservation(
-            Long userId,
-            ShopReservation shopReservation,
-            String requirement,
-            int personCount
+        Long userId,
+        ShopReservation shopReservation,
+        String requirement,
+        int personCount
     ) {
         shopReservation.validPersonCount(personCount);
         this.userId = userId;
@@ -63,14 +75,15 @@ public class Reservation extends BaseTimeEntity {
     }
 
     public Reservation(
-            Long userId,
-            String requirement,
-            int personCount
+        UUID reservationId,
+        Long userId,
+        String requirement,
+        int personCount
     ) {
+        this.reservationId = reservationId;
         this.userId = userId;
         this.requirement = requirement;
         this.personCount = personCount;
-        this.reservationId = UUID.randomUUID();
         this.reservationStatus = ReservationStatus.CREATED;
     }
 
@@ -81,12 +94,12 @@ public class Reservation extends BaseTimeEntity {
 
     public void addShopReservationDateTimeSeats(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {
         shopReservationDateTimeSeats.stream()
-                .filter((shopReservationDateTimeSeat) -> !this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat))
-                .forEach((shopReservationDateTimeSeat -> {
-                            this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
-                            shopReservationDateTimeSeat.registerReservation(this);
-                        })
-                );
+            .filter((shopReservationDateTimeSeat) -> !this.shopReservationDateTimeSeats.contains(shopReservationDateTimeSeat))
+            .forEach((shopReservationDateTimeSeat -> {
+                    this.shopReservationDateTimeSeats.add(shopReservationDateTimeSeat);
+                    shopReservationDateTimeSeat.registerReservation(this);
+                })
+            );
     }
 
     public boolean isCancelShopReservation() {
@@ -125,10 +138,10 @@ public class Reservation extends BaseTimeEntity {
 
     private LocalDateTime getYesterdayLocalDateTime() {
         return this.shopReservationDateTimeSeats
-                .get(0)
-                .getShopReservationDateTime()
-                .getReservationDateTime()
-                .minusDays(1);
+            .get(0)
+            .getShopReservationDateTime()
+            .getReservationDateTime()
+            .minusDays(1);
     }
 
     public void updateReservation(List<ShopReservationDateTimeSeat> shopReservationDateTimeSeats) {

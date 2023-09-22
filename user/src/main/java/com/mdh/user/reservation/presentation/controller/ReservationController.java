@@ -15,7 +15,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.UUID;
@@ -29,7 +36,7 @@ public class ReservationController {
 
     @PostMapping("/preemption")
     public ResponseEntity<ApiResponse<UUID>> preemptReservation(@RequestBody @Valid ReservationPreemptiveRequest reservationPreemptiveRequest, @CurrentUser UserInfo userInfo) {
-        UUID reservationId = reservationService.preemptiveReservation(userInfo.userId(), reservationPreemptiveRequest);
+        UUID reservationId = reservationService.preemtiveReservation(userInfo.userId(), reservationPreemptiveRequest);
         return ResponseEntity.ok(ApiResponse.ok(reservationId));
     }
 
@@ -38,7 +45,7 @@ public class ReservationController {
                                                                  @RequestBody @Valid ReservationRegisterRequest reservationRegisterRequest) {
         Long registeredReservationId = reservationService.registerReservation(reservationId, reservationRegisterRequest);
         return ResponseEntity.created(URI.create(String.format("/api/customer/v1/reservations/%d", registeredReservationId)))
-                .body(ApiResponse.created(null));
+            .body(ApiResponse.created(null));
     }
 
     @PostMapping("/preemption/{reservationId}/cancel")
@@ -57,8 +64,8 @@ public class ReservationController {
 
     @PatchMapping("/{reservationId}")
     public ResponseEntity<ApiResponse<Void>> updateReservation(
-            @PathVariable Long reservationId,
-            @RequestBody @Valid ReservationUpdateRequest request
+        @PathVariable Long reservationId,
+        @RequestBody @Valid ReservationUpdateRequest request
     ) {
         reservationService.updateReservation(reservationId, request);
         return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);
@@ -67,8 +74,8 @@ public class ReservationController {
     @Timed("user.reservation.findAll")
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<ReservationResponses>> findReservations(
-            @CurrentUser UserInfo userInfo,
-            @RequestParam("status") ReservationStatus status
+        @CurrentUser UserInfo userInfo,
+        @RequestParam("status") ReservationStatus status
     ) {
         var reservationResponses = reservationService.findAllReservations(userInfo.userId(), status);
         return new ResponseEntity<>(ApiResponse.ok(reservationResponses), HttpStatus.OK);

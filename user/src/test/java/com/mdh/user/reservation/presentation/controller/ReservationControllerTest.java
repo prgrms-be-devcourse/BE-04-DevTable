@@ -57,28 +57,28 @@ class ReservationControllerTest extends RestDocsSupport {
         var reservationId = UUID.randomUUID();
         var request = new ReservationPreemptiveRequest(List.of(3L, 4L), "요구사항 입니다", 4);
         var userId = 1L;
-        given(reservationService.preemptiveReservation(any(), any(ReservationPreemptiveRequest.class))).willReturn(reservationId);
+        given(reservationService.preemtiveReservation(any(), any(ReservationPreemptiveRequest.class))).willReturn(reservationId);
 
         //when & then
         mockMvc.perform(post("/api/customer/v1/reservations/preemption")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("200"))
-                .andExpect(jsonPath("$.data").value(String.valueOf(reservationId)))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("s",
-                        requestFields(
-                                fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점하려는 좌석들"),
-                                fieldWithPath("requirement").type(JsonFieldType.STRING).description("요구사항"),
-                                fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("선점된 예약 아이디"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
-                        )
-                ));
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.statusCode").value("200"))
+            .andExpect(jsonPath("$.data").value(String.valueOf(reservationId)))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("s",
+                requestFields(
+                    fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점하려는 좌석들"),
+                    fieldWithPath("requirement").type(JsonFieldType.STRING).description("요구사항"),
+                    fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data").type(JsonFieldType.STRING).description("선점된 예약 아이디"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                )
+            ));
     }
 
     @Test
@@ -92,31 +92,31 @@ class ReservationControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(post("/api/customer/v1/reservations/{reservationId}/register", reservationId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", String.format("/api/customer/v1/reservations/%d", registerdReservationId)))
-                .andExpect(jsonPath("$.statusCode").value("201"))
-                .andExpect(jsonPath("$.data").doesNotExist())
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("change-shop-waiting-status",
-                        pathParameters(
-                                parameterWithName("reservationId").description("예약 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("유저 아이디"),
-                                fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점하려는 좌석들"),
-                                fieldWithPath("totalSeatCount").type(JsonFieldType.NUMBER).description("선점하려는 좌석들의 수")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
-                        ),
-                        responseHeaders(
-                                headerWithName("Location").description("새로 생성된 예약의 URI")
-                        )
-                ));
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", String.format("/api/customer/v1/reservations/%d", registerdReservationId)))
+            .andExpect(jsonPath("$.statusCode").value("201"))
+            .andExpect(jsonPath("$.data").doesNotExist())
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("change-shop-waiting-status",
+                pathParameters(
+                    parameterWithName("reservationId").description("예약 id")
+                ),
+                requestFields(
+                    fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                    fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점하려는 좌석들"),
+                    fieldWithPath("totalSeatCount").type(JsonFieldType.NUMBER).description("선점하려는 좌석들의 수")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                ),
+                responseHeaders(
+                    headerWithName("Location").description("새로 생성된 예약의 URI")
+                )
+            ));
     }
 
     @Test
@@ -130,25 +130,25 @@ class ReservationControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(post("/api/customer/v1/reservations/preemption/{reservationId}/cancel", reservationId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("200"))
-                .andExpect(jsonPath("$.data").value(cancelMessage))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("change-shop-waiting-status",
-                        pathParameters(
-                                parameterWithName("reservationId").description("예약 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점 취소하려는 좌석들")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("선점 취소 성공 메시지"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
-                        )
-                ));
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.statusCode").value("200"))
+            .andExpect(jsonPath("$.data").value(cancelMessage))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("change-shop-waiting-status",
+                pathParameters(
+                    parameterWithName("reservationId").description("예약 id")
+                ),
+                requestFields(
+                    fieldWithPath("shopReservationDateTimeSeatIds").type(JsonFieldType.ARRAY).description("선점 취소하려는 좌석들")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data").type(JsonFieldType.STRING).description("선점 취소 성공 메시지"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                )
+            ));
     }
 
     @Test
@@ -161,21 +161,21 @@ class ReservationControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(patch("/api/customer/v1/reservations/{reservationId}/cancel", reservationId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("200"))
-                .andExpect(jsonPath("$.data").value(resultValue))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("change-shop-waiting-status",
-                        pathParameters(
-                                parameterWithName("reservationId").description("예약 id")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("예약 취소 메시지"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.statusCode").value("200"))
+            .andExpect(jsonPath("$.data").value(resultValue))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("change-shop-waiting-status",
+                pathParameters(
+                    parameterWithName("reservationId").description("예약 id")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data").type(JsonFieldType.STRING).description("예약 취소 메시지"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
+                )
+            ));
     }
 
     @Test
@@ -188,21 +188,21 @@ class ReservationControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(patch("/api/customer/v1/reservations/{reservationId}/cancel", reservationId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("200"))
-                .andExpect(jsonPath("$.data").value(resultValue))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("change-shop-waiting-status",
-                        pathParameters(
-                                parameterWithName("reservationId").description("예약 id")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("예약 취소 메시지"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.statusCode").value("200"))
+            .andExpect(jsonPath("$.data").value(resultValue))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("change-shop-waiting-status",
+                pathParameters(
+                    parameterWithName("reservationId").description("예약 id")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data").type(JsonFieldType.STRING).description("예약 취소 메시지"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
+                )
+            ));
     }
 
     @Test
@@ -213,30 +213,30 @@ class ReservationControllerTest extends RestDocsSupport {
         var reservationId = 1L;
 
         doNothing().when(reservationService)
-                .updateReservation(reservationId, request);
+            .updateReservation(reservationId, request);
 
         //when & then
         mockMvc.perform(patch("/api/customer/v1/reservations/{reservationId}", reservationId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("200"))
-                .andExpect(jsonPath("$.data").doesNotExist())
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("update-shop-waiting",
-                        pathParameters(
-                                parameterWithName("reservationId").description("예약 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("shopReservationDateTimeSeatsIds").type(JsonFieldType.ARRAY).description("테이블 좌석 ID들"),
-                                fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원 수")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
-                        )
-                ));
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.statusCode").value("200"))
+            .andExpect(jsonPath("$.data").doesNotExist())
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("update-shop-waiting",
+                pathParameters(
+                    parameterWithName("reservationId").description("예약 id")
+                ),
+                requestFields(
+                    fieldWithPath("shopReservationDateTimeSeatsIds").type(JsonFieldType.ARRAY).description("테이블 좌석 ID들"),
+                    fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원 수")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어있음)"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("변경된 서버 시간")
+                )
+            ));
     }
 
     @Test
@@ -247,39 +247,39 @@ class ReservationControllerTest extends RestDocsSupport {
         var reservationId = 1L;
 
         doThrow(new IllegalStateException("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : " + reservationId))
-                .when(reservationService)
-                .updateReservation(reservationId, request);
+            .when(reservationService)
+            .updateReservation(reservationId, request);
 
         //when & then
         mockMvc.perform(patch("/api/customer/v1/reservations/{reservationId}", reservationId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.statusCode").value("400"))
-                .andExpect(jsonPath("$.data.type").value("about:blank"))
-                .andExpect(jsonPath("$.data.title").value("RuntimeException"))
-                .andExpect(jsonPath("$.data.status").value(400))
-                .andExpect(jsonPath("$.data.detail").value(String.format("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : %d", reservationId)))
-                .andExpect(jsonPath("$.data.instance").value(String.format("/api/customer/v1/reservations/%d", reservationId)))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("today-update-shop-waiting-error",
-                        pathParameters(
-                                parameterWithName("reservationId").description("예약 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("shopReservationDateTimeSeatsIds").type(JsonFieldType.ARRAY).description("테이블 좌석 ID들"),
-                                fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원 수")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                        )
-                ));
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.statusCode").value("400"))
+            .andExpect(jsonPath("$.data.type").value("about:blank"))
+            .andExpect(jsonPath("$.data.title").value("RuntimeException"))
+            .andExpect(jsonPath("$.data.status").value(400))
+            .andExpect(jsonPath("$.data.detail").value(String.format("예약이 24시간 이내로 남은 경우 예약 수정이 불가능합니다. reservationId : %d", reservationId)))
+            .andExpect(jsonPath("$.data.instance").value(String.format("/api/customer/v1/reservations/%d", reservationId)))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("today-update-shop-waiting-error",
+                pathParameters(
+                    parameterWithName("reservationId").description("예약 id")
+                ),
+                requestFields(
+                    fieldWithPath("shopReservationDateTimeSeatsIds").type(JsonFieldType.ARRAY).description("테이블 좌석 ID들"),
+                    fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원 수")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                    fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                    fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                )
+            ));
     }
 
     @ParameterizedTest
@@ -291,39 +291,39 @@ class ReservationControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(patch("/api/customer/v1/reservations/{reservationId}", reservationId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.statusCode").value("400"))
-                .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
-                .andDo(document("reservation-update-invalid-value",
-                        pathParameters(
-                                parameterWithName("reservationId").description("예약 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("shopReservationDateTimeSeatsIds").type(JsonFieldType.ARRAY).description("테이블 좌석 ID들"),
-                                fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원 수")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                                fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
-                                fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                        )
-                ));
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.statusCode").value("400"))
+            .andExpect(jsonPath("$.data.title").value("MethodArgumentNotValidException"))
+            .andDo(document("reservation-update-invalid-value",
+                pathParameters(
+                    parameterWithName("reservationId").description("예약 id")
+                ),
+                requestFields(
+                    fieldWithPath("shopReservationDateTimeSeatsIds").type(JsonFieldType.ARRAY).description("테이블 좌석 ID들"),
+                    fieldWithPath("personCount").type(JsonFieldType.NUMBER).description("예약 인원 수")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                    fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                    fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                    fieldWithPath("data.validationError[].field").type(JsonFieldType.STRING).description("유효성 검사 실패 필드"),
+                    fieldWithPath("data.validationError[].message").type(JsonFieldType.STRING).description("유효성 검사 실패 메시지"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                )
+            ));
     }
 
     static Stream<Arguments> provideReservationUpdateRequestInvalidValue() {
         return Stream.of(
-                Arguments.arguments(new ReservationUpdateRequest(List.of(), 0)),
-                Arguments.arguments(new ReservationUpdateRequest(List.of(1L), 0)),
-                Arguments.arguments(new ReservationUpdateRequest(List.of(), 2))
+            Arguments.arguments(new ReservationUpdateRequest(List.of(), 0)),
+            Arguments.arguments(new ReservationUpdateRequest(List.of(1L), 0)),
+            Arguments.arguments(new ReservationUpdateRequest(List.of(), 2))
         );
     }
 
@@ -345,15 +345,15 @@ class ReservationControllerTest extends RestDocsSupport {
         var reservationStatus = ReservationStatus.VISITED;
 
         var reservationQueryDto = new ReservationQueryDto(
-                shopId,
-                name,
-                shopType,
-                city,
-                district,
-                reservationDate,
-                reservationTime,
-                personCount,
-                reservationStatus
+            shopId,
+            name,
+            shopType,
+            city,
+            district,
+            reservationDate,
+            reservationTime,
+            personCount,
+            reservationStatus
         );
 
         var reservationResponse = new ReservationResponse(reservationQueryDto);
@@ -363,49 +363,49 @@ class ReservationControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(get("/api/customer/v1/reservations/me")
-                        .param("status", reservationStatus.name())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("200"))
-                .andExpect(jsonPath("$.data.reservations[0].shop.id").value(shopId))
-                .andExpect(jsonPath("$.data.reservations[0].shop.name").value(name))
-                .andExpect(jsonPath("$.data.reservations[0].shop.shopType").value(shopType.name()))
-                .andExpect(jsonPath("$.data.reservations[0].shop.region").value(city + " " + district))
-                .andExpect(jsonPath("$.data.reservations[0].reservation.reservationDate").value(formattedReservationDate))
-                .andExpect(jsonPath("$.data.reservations[0].reservation.reservationTime").value(formattedReservationTime))
-                .andExpect(jsonPath("$.data.reservations[0].reservation.personCount").value(personCount))
-                .andExpect(jsonPath("$.data.reservations[0].reservation.reservationStatus").value(reservationStatus.name()))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("find-all-reservations-userId",
-                        queryParameters(
-                                parameterWithName("status").description("예약 상태")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
-                                subsectionWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간"),
+                .param("status", reservationStatus.name())
+                .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.statusCode").value("200"))
+            .andExpect(jsonPath("$.data.reservations[0].shop.id").value(shopId))
+            .andExpect(jsonPath("$.data.reservations[0].shop.name").value(name))
+            .andExpect(jsonPath("$.data.reservations[0].shop.shopType").value(shopType.name()))
+            .andExpect(jsonPath("$.data.reservations[0].shop.region").value(city + " " + district))
+            .andExpect(jsonPath("$.data.reservations[0].reservation.reservationDate").value(formattedReservationDate))
+            .andExpect(jsonPath("$.data.reservations[0].reservation.reservationTime").value(formattedReservationTime))
+            .andExpect(jsonPath("$.data.reservations[0].reservation.personCount").value(personCount))
+            .andExpect(jsonPath("$.data.reservations[0].reservation.reservationStatus").value(reservationStatus.name()))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("find-all-reservations-userId",
+                queryParameters(
+                    parameterWithName("status").description("예약 상태")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+                    subsectionWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간"),
 
-                                // "data" 하위 필드에 대한 문서화 시작
-                                subsectionWithPath("data.reservations").type(JsonFieldType.ARRAY).description("예약 목록"),
+                    // "data" 하위 필드에 대한 문서화 시작
+                    subsectionWithPath("data.reservations").type(JsonFieldType.ARRAY).description("예약 목록"),
 
-                                // "data.reservations" 배열 요소의 문서화 시작
-                                subsectionWithPath("data.reservations[].shop").type(JsonFieldType.OBJECT).description("가게 정보"),
-                                subsectionWithPath("data.reservations[].reservation").type(JsonFieldType.OBJECT).description("예약 정보"),
+                    // "data.reservations" 배열 요소의 문서화 시작
+                    subsectionWithPath("data.reservations[].shop").type(JsonFieldType.OBJECT).description("가게 정보"),
+                    subsectionWithPath("data.reservations[].reservation").type(JsonFieldType.OBJECT).description("예약 정보"),
 
-                                // "data.reservations[].shop" 객체의 문서화
-                                fieldWithPath("data.reservations[].shop.id").type(JsonFieldType.NUMBER).description("가게 ID"),
-                                fieldWithPath("data.reservations[].shop.name").type(JsonFieldType.STRING).description("가게 이름"),
-                                fieldWithPath("data.reservations[].shop.shopType").type(JsonFieldType.STRING).description("가게 유형"),
-                                fieldWithPath("data.reservations[].shop.region").type(JsonFieldType.STRING).description("가게 지역"),
+                    // "data.reservations[].shop" 객체의 문서화
+                    fieldWithPath("data.reservations[].shop.id").type(JsonFieldType.NUMBER).description("가게 ID"),
+                    fieldWithPath("data.reservations[].shop.name").type(JsonFieldType.STRING).description("가게 이름"),
+                    fieldWithPath("data.reservations[].shop.shopType").type(JsonFieldType.STRING).description("가게 유형"),
+                    fieldWithPath("data.reservations[].shop.region").type(JsonFieldType.STRING).description("가게 지역"),
 
-                                // "data.reservations[].reservation" 객체의 문서화
-                                fieldWithPath("data.reservations[].reservation.reservationDate").type(JsonFieldType.STRING).description("예약 날짜"),
-                                fieldWithPath("data.reservations[].reservation.reservationTime").type(JsonFieldType.STRING).description("예약 시간"),
-                                fieldWithPath("data.reservations[].reservation.personCount").type(JsonFieldType.NUMBER).description("인원 수"),
-                                fieldWithPath("data.reservations[].reservation.reservationStatus").type(JsonFieldType.STRING).description("예약 상태")
-                        )
-                ));
+                    // "data.reservations[].reservation" 객체의 문서화
+                    fieldWithPath("data.reservations[].reservation.reservationDate").type(JsonFieldType.STRING).description("예약 날짜"),
+                    fieldWithPath("data.reservations[].reservation.reservationTime").type(JsonFieldType.STRING).description("예약 시간"),
+                    fieldWithPath("data.reservations[].reservation.personCount").type(JsonFieldType.NUMBER).description("인원 수"),
+                    fieldWithPath("data.reservations[].reservation.reservationStatus").type(JsonFieldType.STRING).description("예약 상태")
+                )
+            ));
     }
 
     @Test
@@ -416,25 +416,25 @@ class ReservationControllerTest extends RestDocsSupport {
 
         //when & then
         mockMvc.perform(get("/api/customer/v1/reservations/me")
-                        .param("status", reservationStatusName)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.statusCode").value("400"))
-                .andExpect(jsonPath("$.data.title").value("MethodArgumentTypeMismatchException"))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("find-all-reservations-userId-invalidValue",
-                        queryParameters(
-                                parameterWithName("status").description("예약 상태")
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
-                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
-                                fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
-                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
-                                fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
-                        )
-                ));
+                .param("status", reservationStatusName)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.statusCode").value("400"))
+            .andExpect(jsonPath("$.data.title").value("MethodArgumentTypeMismatchException"))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andDo(document("find-all-reservations-userId-invalidValue",
+                queryParameters(
+                    parameterWithName("status").description("예약 상태")
+                ),
+                responseFields(
+                    fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data.type").type(JsonFieldType.STRING).description("타입"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("타이틀"),
+                    fieldWithPath("data.status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                    fieldWithPath("data.detail").type(JsonFieldType.STRING).description("상세 설명"),
+                    fieldWithPath("data.instance").type(JsonFieldType.STRING).description("인스턴스 URI"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 시간")
+                )
+            ));
     }
 }
