@@ -1,4 +1,4 @@
-package com.mdh.user.global.message;
+package com.mdh.user.global.config;
 
 
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@Configuration(value = "alarmRedisConfig")
+@Configuration(value = "userRedisConfig")
 public class RedisConfig {
 
     @Bean(name = "redisTemplate")
