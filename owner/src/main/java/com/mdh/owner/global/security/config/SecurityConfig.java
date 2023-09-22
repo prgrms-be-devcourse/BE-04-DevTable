@@ -1,6 +1,6 @@
 package com.mdh.owner.global.security.config;
 
-import com.mdh.owner.global.security.LoginService;
+import com.mdh.owner.login.application.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

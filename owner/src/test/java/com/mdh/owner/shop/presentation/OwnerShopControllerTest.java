@@ -204,7 +204,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
         given(ownerShopService.findShopByOwner(any())).willReturn(shopDetailInfoResponse);
 
         // When & Then
-        mockMvc.perform(get("/api/owner/v1/shop")
+        mockMvc.perform(get("/api/owner/v1/shops")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())

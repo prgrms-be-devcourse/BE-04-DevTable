@@ -1,8 +1,8 @@
-package com.mdh.owner.global.security.controller;
+package com.mdh.owner.login.presentation;
 
 import com.mdh.owner.global.ApiResponse;
 import com.mdh.owner.global.security.session.CurrentUser;
-import com.mdh.owner.global.security.LoginService;
+import com.mdh.owner.login.application.LoginService;
 import com.mdh.owner.global.security.session.UserInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

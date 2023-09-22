@@ -1,7 +1,7 @@
-package com.mdh.owner.global.security;
+package com.mdh.owner.login.application;
 
 import com.mdh.common.user.persistence.UserRepository;
-import com.mdh.owner.global.security.controller.SignUpRequest;
+import com.mdh.owner.login.presentation.SignUpRequest;
 import com.mdh.owner.global.security.session.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
