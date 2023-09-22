@@ -20,6 +20,7 @@ public class MenuController {
 
     private final MenuService menuService;
 
+    // TODO Location header로 변경
     @PostMapping("/api/owner/v1/categories/{categoryId}/menus")
     public ResponseEntity<ApiResponse<Void>> createMenu(@PathVariable("categoryId") Long categoryId, @Valid @RequestBody MenuCreateRequest request) {
         var menuId = menuService.createMenu(categoryId, request);
@@ -34,6 +35,7 @@ public class MenuController {
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
 
+    // TODO Location header로 변경
     @PostMapping("/api/owner/v1/shops/{shopId}/categories")
     public ResponseEntity<ApiResponse<Void>> createMenuCategory(@PathVariable("shopId") Long shopId, @Valid @RequestBody MenuCategoryCreateRequest request) {
         var menuCategoryId = menuService.createMenuCategory(shopId, request);
