@@ -65,7 +65,7 @@ public class OwnerShopServiceTest {
         var shop = DataInitializerFactory.shop(ownerId, shopDetails, region, shopAddress);
         var expectedResponse = ShopDetailInfoResponse.from(shop);
 
-        given(ownerShopRepository.findShopById(ownerId)).willReturn(Optional.of(shop));
+        given(ownerShopRepository.findShopByOwnerId(ownerId)).willReturn(Optional.of(shop));
 
         // When
         var actualResponse = ownerShopService.findShopByOwner(ownerId);

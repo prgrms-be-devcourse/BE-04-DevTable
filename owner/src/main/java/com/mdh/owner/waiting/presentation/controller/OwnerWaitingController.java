@@ -25,7 +25,7 @@ public class OwnerWaitingController {
     private final OwnerWaitingService ownerWaitingService;
 
     // TODO Method 명 변경
-    @PatchMapping("/shops/{shopId}")
+    @PatchMapping("/waitings/shops/{shopId}")
     public ResponseEntity<ApiResponse<Void>> changShopWaitingStatus(@RequestBody OwnerShopWaitingStatusChangeRequest request, @PathVariable("shopId") Long shopId) {
         ownerWaitingService.changeShopWaitingStatus(shopId, request);
         return new ResponseEntity<>(ApiResponse.ok(null), HttpStatus.OK);

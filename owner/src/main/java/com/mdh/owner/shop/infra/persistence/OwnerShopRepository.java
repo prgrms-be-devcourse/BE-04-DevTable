@@ -9,5 +9,7 @@ public interface OwnerShopRepository {
 
     Long save(Shop shop);
 
-    Optional<Shop> findShopById(Long ownerId);
+    Optional<Shop> findShopByOwnerId(Long ownerId);
+
+    Optional<Shop> findShopById(Long id);
 }

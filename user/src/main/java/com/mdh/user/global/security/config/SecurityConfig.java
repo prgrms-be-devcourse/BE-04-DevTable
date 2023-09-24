@@ -43,10 +43,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(antMatcher("/hello"),
+                                antMatcher("/"),
                                 antMatcher("/restdocs"),
                                 antMatcher("/api/customer/v1/shops"),
                                 antMatcher("/api/v1/customers"),
-                                antMatcher("/actuator/**"))
+                                antMatcher("/actuator/**"),
+                                antMatcher("/api/v1/login"))
                         .permitAll()
                         .anyRequest()
                         .hasRole("GUEST"))
@@ -56,6 +58,7 @@ public class SecurityConfig {
                 )
 
                 .formLogin((formLogin) -> formLogin
+                        .loginProcessingUrl("/api/v1/login")
                         .defaultSuccessUrl("/")
                         .usernameParameter("username")
                         .passwordParameter("password")//html 로그인 페이지에 username, pawssword에 해당하는 파라미터 값(아이디랑 비밀번호)

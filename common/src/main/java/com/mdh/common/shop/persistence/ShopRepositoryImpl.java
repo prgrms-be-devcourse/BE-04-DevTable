@@ -199,7 +199,6 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
                         cond.getOrDefault(ShopSearchCondParam.MIN_PRICE.getParamName(), Collections.emptyList()),
                         cond.getOrDefault(ShopSearchCondParam.MAX_PRICE.getParamName(), Collections.emptyList())))
                 .and(isPossibleWaiting());
-
     }
 
     private BooleanExpression shopNameContains(List<String> shopName) {

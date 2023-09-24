@@ -30,18 +30,21 @@ public class GlobalControllerAdvice {
                 .stream()
                 .map(ValidationError::of)
                 .toList());
+        log.warn("Valid 예외가 발생했습니다. {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleMessageNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
         var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "HttpMessageNotReadableException");
+        log.warn("Valid 예외가 발생했습니다. {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(OptimisticLockingFailureException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleOptimisticLockingFailure(OptimisticLockingFailureException e, HttpServletRequest request) {
         var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "OptimisticLockingFailureException");
+        log.warn("런타임 예외가 발생했습니다. {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
@@ -55,12 +58,14 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "MethodArgumentTypeMismatchException");
+        log.warn("Valid 예외가 발생했습니다. {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ApiResponse<ProblemDetail>> handleNoSuchElementException(NoSuchElementException e, HttpServletRequest request) {
         var problemDetail = ProblemDetailUtil.createProblemDetail(e, request, HttpStatus.BAD_REQUEST, "NoSuchElementException");
+        log.warn("NoSuchElement 예외가 발생했습니다. {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), problemDetail), HttpStatus.BAD_REQUEST);
     }
 }

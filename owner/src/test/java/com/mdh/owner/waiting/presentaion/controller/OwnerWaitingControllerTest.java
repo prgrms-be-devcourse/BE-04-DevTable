@@ -51,7 +51,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         doNothing().when(ownerWaitingService).changeShopWaitingStatus(shopId, request);
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}", shopId)
+        mockMvc.perform(patch("/api/owner/v1/waitings/shops/{shopId}", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -81,7 +81,7 @@ class OwnerWaitingControllerTest extends RestDocsSupport {
         request.put("shopWaitingStatus", "asf");
 
         //when & then
-        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}", shopId)
+        mockMvc.perform(patch("/api/owner/v1/waitings/shops/{shopId}", shopId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())

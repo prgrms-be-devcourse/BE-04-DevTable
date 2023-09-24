@@ -6,6 +6,7 @@ import com.mdh.owner.global.security.session.UserInfo;
 import com.mdh.owner.shop.application.OwnerShopService;
 import com.mdh.owner.shop.application.dto.ShopDetailInfoResponse;
 import com.mdh.owner.shop.presentation.dto.OwnerShopCreateRequest;
+import com.mdh.owner.shop.presentation.dto.OwnerShopUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +35,11 @@ public class OwnerShopController {
         return ResponseEntity.ok(ApiResponse.ok(shopDetails));
     }
 
+    //TODO 매장 정보 변경 (음 어디갔지..?)
+    @PatchMapping("/{shopId}")
+    public ResponseEntity<ApiResponse<Void>> updateShopInfo(@PathVariable("shopId") Long shopId, @Valid @RequestBody OwnerShopUpdateRequest request) {
+        ownerShopService.updateShop(shopId, request);
+
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
 }
