@@ -19,7 +19,12 @@ public class OwnerShopRepositoryImpl implements OwnerShopRepository {
     }
 
     @Override
-    public Optional<Shop> findShopById(Long ownerId) {
-        return shopRepository.findByUserId(ownerId);
+    public Optional<Shop> findShopByOwnerId(Long ownerId) {
+        return shopRepository.findById(ownerId);
+    }
+
+    @Override
+    public Optional<Shop> findShopById(Long id) {
+        return shopRepository.findById(id);
     }
 }

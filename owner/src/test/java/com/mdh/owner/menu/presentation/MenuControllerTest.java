@@ -1,9 +1,10 @@
 package com.mdh.owner.menu.presentation;
 
-import com.mdh.owner.RestDocsSupport;
-import com.mdh.owner.menu.application.MenuService;
 import com.mdh.common.menu.domain.MealType;
 import com.mdh.common.menu.domain.MenuType;
+import com.mdh.owner.RestDocsSupport;
+import com.mdh.owner.menu.application.MenuService;
+import com.mdh.owner.menu.application.dto.MenuCategoriesResponse;
 import com.mdh.owner.menu.presentation.dto.MenuCategoryCreateRequest;
 import com.mdh.owner.menu.presentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.owner.menu.presentation.dto.MenuCreateRequest;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -431,4 +433,46 @@ class MenuControllerTest extends RestDocsSupport {
                 ));
 
     }
+
+    @DisplayName("특정 Shop ID를 기준으로 MenuCategoriesResponse 리스트를 조회할 수 있다.")
+    @Test
+    void findMenuCategoriesByShop() throws Exception {
+        var shopId = 1L;
+        var mockResponseList = List.of(
+                new MenuCategoriesResponse(1L, "CategoryName1", "Description1", 1000, 2000, List.of())
+        );
+
+        given(menuService.findMenuCategoriesByShopId(shopId)).willReturn(mockResponseList);
+
+        mockMvc.perform(get("/api/owner/v1/shops/{shopId}/categories", shopId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data[0].menuCategoryId").value(1L))
+                .andExpect(jsonPath("$.data[0].name").value("CategoryName1"))
+                .andExpect(jsonPath("$.data[0].description").value("Description1"))
+                .andExpect(jsonPath("$.data[0].minPrice").value(1000))
+                .andExpect(jsonPath("$.data[0].maxPrice").value(2000))
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("shop-categories-fetch",
+                        pathParameters(
+                                parameterWithName("shopId").description("상점 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("메뉴 카테고리 응답 리스트"),
+                                fieldWithPath("data[].menuCategoryId").type(JsonFieldType.NUMBER).description("메뉴 카테고리 ID"),
+                                fieldWithPath("data[].name").type(JsonFieldType.STRING).description("카테고리 이름"),
+                                fieldWithPath("data[].description").type(JsonFieldType.STRING).description("메뉴 카테고리 설명"),
+                                fieldWithPath("data[].minPrice").type(JsonFieldType.NUMBER).description("최소 가격"),
+                                fieldWithPath("data[].maxPrice").type(JsonFieldType.NUMBER).description("최대 가격"),
+                                fieldWithPath("data[].menus").type(JsonFieldType.ARRAY).description("메뉴 목록"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                        )
+                ));
+    }
+
+
+
 }

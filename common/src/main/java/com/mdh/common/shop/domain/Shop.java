@@ -14,7 +14,7 @@ public class Shop extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)//TODO DB에서 조회 후 연결
     @JoinColumn(name = "region_id", referencedColumnName = "id")
     private Region region;
 

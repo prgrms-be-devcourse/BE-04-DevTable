@@ -1,12 +1,12 @@
 package com.mdh.owner.menu.application;
 
-import com.mdh.owner.DataInitializerFactory;
-import com.mdh.common.menu.domain.event.MenuCreatedEvent;
 import com.mdh.common.menu.domain.MealType;
 import com.mdh.common.menu.domain.MenuCategory;
 import com.mdh.common.menu.domain.MenuType;
+import com.mdh.common.menu.domain.event.MenuCreatedEvent;
 import com.mdh.common.menu.persistence.MenuCategoryRepository;
 import com.mdh.common.menu.persistence.MenuRepository;
+import com.mdh.owner.DataInitializerFactory;
 import com.mdh.owner.menu.presentation.dto.MenuCategoryCreateRequest;
 import com.mdh.owner.menu.presentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.owner.menu.presentation.dto.MenuCreateRequest;
@@ -20,8 +20,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -186,5 +188,29 @@ class MenuServiceTest {
                         menuUpdateRequest.mealType()
                 );
 
+    }
+
+    @Test
+    @DisplayName("특정 Shop ID를 기준으로 MenuCategoriesResponse 리스트를 조회할 수 있다.")
+    void findMenuCategoriesByShopId() {
+        // Given
+        var shopId = 1L;
+        var mockMenuCategories = List.of(
+                DataInitializerFactory.menuCategory(shopId),
+                DataInitializerFactory.menuCategory(shopId)
+        );
+        given(menuCategoryRepository.findAllByShopIdWithFetch(shopId)).willReturn(mockMenuCategories);
+
+        // When
+        var responses = menuService.findMenuCategoriesByShopId(shopId);
+
+        // Then
+        verify(menuCategoryRepository, times(1)).findAllByShopIdWithFetch(shopId);
+        Assertions.assertThat(responses.size()).isEqualTo(mockMenuCategories.size());
+        IntStream.range(0, responses.size()).forEach(i -> {
+            var response = responses.get(i);
+            MenuCategory mockMenuCategory = mockMenuCategories.get(i);
+            Assertions.assertThat(response.menuCategoryId()).isEqualTo(mockMenuCategory.getId());
+        });
     }
 }

@@ -4,6 +4,7 @@ import com.mdh.common.menu.domain.event.MenuCreatedEvent;
 import com.mdh.common.menu.domain.event.MenuUpdatedEvent;
 import com.mdh.common.menu.persistence.MenuCategoryRepository;
 import com.mdh.common.menu.persistence.MenuRepository;
+import com.mdh.owner.menu.application.dto.MenuCategoriesResponse;
 import com.mdh.owner.menu.presentation.dto.MenuCategoryCreateRequest;
 import com.mdh.owner.menu.presentation.dto.MenuCategoryUpdateRequest;
 import com.mdh.owner.menu.presentation.dto.MenuCreateRequest;
@@ -13,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
@@ -65,5 +67,13 @@ public class MenuService {
         var menuCategory = menuCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NoSuchElementException("등록된 카테고리 ID가 없습니다." + categoryId));
         menuCategoryRepository.delete(menuCategory);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuCategoriesResponse> findMenuCategoriesByShopId(Long shopId) {
+        return menuCategoryRepository.findAllByShopIdWithFetch(shopId)
+                .stream()
+                .map(MenuCategoriesResponse::from)
+                .toList();
     }
 }

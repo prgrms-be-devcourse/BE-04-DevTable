@@ -6,10 +6,7 @@ import com.mdh.owner.global.security.session.UserInfo;
 import com.mdh.owner.shop.application.OwnerShopService;
 import com.mdh.common.shop.domain.ShopType;
 import com.mdh.owner.shop.application.dto.ShopDetailInfoResponse;
-import com.mdh.owner.shop.presentation.dto.OwnerShopCreateRequest;
-import com.mdh.owner.shop.presentation.dto.RegionRequest;
-import com.mdh.owner.shop.presentation.dto.ShopAddressRequest;
-import com.mdh.owner.shop.presentation.dto.ShopDetailsRequest;
+import com.mdh.owner.shop.presentation.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,11 +19,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -172,6 +169,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
     public void findShopDetailsByOwner() throws Exception {
         // Given
         var shopDetailInfoResponse = new ShopDetailInfoResponse(
+                1L,
                 "Test Shop",
                 "This is a test shop",
                 ShopType.ASIAN,
@@ -210,6 +208,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
                 .andDo(print())
                 .andExpect(jsonPath("$.statusCode").value("200"))
                 .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data.shopId").value(1L))
                 .andExpect(jsonPath("$.data.name").value("Test Shop"))
                 .andExpect(jsonPath("$.data.description").value("This is a test shop"))
                 .andExpect(jsonPath("$.data.shopType").value("ASIAN"))
@@ -234,6 +233,7 @@ class OwnerShopControllerTest extends RestDocsSupport {
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("상점 상세 정보"),
+                                fieldWithPath("data.shopId").type(JsonFieldType.NUMBER).description("매장 ID"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("상점 이름"),
                                 fieldWithPath("data.description").type(JsonFieldType.STRING).description("상점 설명"),
                                 fieldWithPath("data.shopType").type(JsonFieldType.STRING).description("상점 유형"),
@@ -254,6 +254,76 @@ class OwnerShopControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.shopRegion.city").type(JsonFieldType.STRING).description("도시"),
                                 fieldWithPath("data.shopRegion.region").type(JsonFieldType.STRING).description("지역"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("서버 응답 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("점주는 매장 정보를 수정할 수 있다.")
+    @Test
+    void updateShop() throws Exception {
+        // Given
+        var shopId = 1L;
+        var request = new OwnerShopUpdateRequest(
+                "ShopName",
+                "ShopDescription",
+                ShopType.AMERICAN,
+                new ShopDetailsRequest(
+                        "Introduce",
+                        "OpeningHours",
+                        "Info",
+                        "https://example.com",
+                        "01012345678",
+                        "Holiday"
+                ),
+                new ShopAddressRequest(
+                        "123 Main St",
+                        "12345",
+                        "37.7749",
+                        "-122.4194"
+                ),
+                new RegionRequest(
+                        "City",
+                        "District"
+                )
+        );
+        doNothing().when(ownerShopService).updateShop(any(Long.class), any(OwnerShopUpdateRequest.class));
+
+        // When & Then
+        mockMvc.perform(patch("/api/owner/v1/shops/{shopId}", shopId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.serverDateTime").exists())
+                .andDo(document("owner-shop-create",
+                        pathParameters(
+                                parameterWithName("shopId").description("매장 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("매장 이름").optional(),
+                                fieldWithPath("description").type(JsonFieldType.STRING).description("매장 설명").optional(),
+                                fieldWithPath("shopType").type(JsonFieldType.STRING).description("매장 유형").optional(),
+                                fieldWithPath("shopDetailsRequest.introduce").type(JsonFieldType.STRING).description("매장 소개").optional(),
+                                fieldWithPath("shopDetailsRequest.introduce").type(JsonFieldType.STRING).description("Shop introduce").optional(),
+                                fieldWithPath("shopDetailsRequest.openingHours").type(JsonFieldType.STRING).description("Shop opening hours").optional(),
+                                fieldWithPath("shopDetailsRequest.info").type(JsonFieldType.STRING).description("Shop info").optional(),
+                                fieldWithPath("shopDetailsRequest.url").type(JsonFieldType.STRING).description("Shop URL").optional(),
+                                fieldWithPath("shopDetailsRequest.phoneNumber").type(JsonFieldType.STRING).optional().description("Shop phone number").optional(),
+                                fieldWithPath("shopDetailsRequest.holiday").type(JsonFieldType.STRING).description("Shop holiday").optional(),
+                                fieldWithPath("shopDetailsRequest.openingHours").type(JsonFieldType.STRING).description("영업 시간").optional(),
+                                fieldWithPath("shopAddressRequest.address").type(JsonFieldType.STRING).description("주소").optional(),
+                                fieldWithPath("shopAddressRequest.zipcode").type(JsonFieldType.STRING).description("우편번호").optional(),
+                                fieldWithPath("shopAddressRequest.latitude").type(JsonFieldType.STRING).description("위도").optional(),
+                                fieldWithPath("shopAddressRequest.longitude").type(JsonFieldType.STRING).description("경도").optional(),
+                                fieldWithPath("regionRequest.city").type(JsonFieldType.STRING).description("도시").optional(),
+                                fieldWithPath("regionRequest.district").type(JsonFieldType.STRING).description("지역").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답 바디(비어 있음)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("생성된 서버 시간")
                         )
                 ));
     }

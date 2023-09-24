@@ -15,7 +15,7 @@ public class Menu extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private MenuCategory menuCategory;

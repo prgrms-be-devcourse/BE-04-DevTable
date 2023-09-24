@@ -4,6 +4,7 @@ import com.mdh.common.shop.domain.Shop;
 import com.mdh.common.shop.domain.ShopType;
 
 public record ShopDetailInfoResponse(
+        Long shopId,
         String name,
         String description,
         ShopType shopType,
@@ -15,6 +16,7 @@ public record ShopDetailInfoResponse(
     // In ShopDetailInfoResponse.java
     public static ShopDetailInfoResponse from(Shop shop) {
         return new ShopDetailInfoResponse(
+                shop.getId(),
                 shop.getName(),
                 shop.getDescription(),
                 shop.getShopType(),

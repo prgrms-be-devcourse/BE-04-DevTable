@@ -1,7 +1,9 @@
 package com.mdh.owner.global.security.config;
 
 import com.mdh.owner.login.application.LoginService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,9 +16,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
+@Slf4j
 @Profile("!test")
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -38,15 +48,16 @@ public class SecurityConfig {
         var auth = http.getSharedObject(AuthenticationManagerBuilder.class);
         auth.userDetailsService(loginService);
 
-        return http
-                .cors(AbstractHttpConfigurer::disable)
+        return http.cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> corsConfigurationSource())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(
                                 antMatcher("/api/v1/owner"),
                                 antMatcher("/hello"),
                                 antMatcher("/restdocs"),
-                                antMatcher("/actuator/**"))
+                                antMatcher("/actuator/**"),
+                                antMatcher("/api/v1/login"))
                         .permitAll()
                         .anyRequest()
                         .hasRole("OWNER"))
@@ -56,7 +67,15 @@ public class SecurityConfig {
                 )
 
                 .formLogin((formLogin) -> formLogin
-                        .defaultSuccessUrl("/")
+                        .loginProcessingUrl("/api/v1/login")
+                        .successHandler((request, response, authentication) -> {
+                            log.info("로그인 성공");
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                        .failureHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        })
+                        //.defaultSuccessUrl("/")
                         .usernameParameter("username")
                         .passwordParameter("password")//html 로그인 페이지에 username, pawssword에 해당하는 파라미터 값(아이디랑 비밀번호)
                         .permitAll()
@@ -82,4 +101,17 @@ public class SecurityConfig {
                         .maxSessionsPreventsLogin(false) // 새로운 로그인 발생시 기존 로그인이 아닌 새로운 로그인 허용
                 )).build();
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        var configuration = new CorsConfiguration();
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowCredentials(true);
+        var source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+
 }
