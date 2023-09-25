@@ -17,13 +17,13 @@ DROP TABLE IF EXISTS `regions`;
 
 CREATE TABLE `users`
 (
-    `id`           bigint       NOT NULL AUTO_INCREMENT,
-    `email`        varchar(63)  NOT NULL,
-    `role`         varchar(15)  NOT NULL,
+    `id`           bigint      NOT NULL AUTO_INCREMENT,
+    `email`        varchar(63) NOT NULL,
+    `role`         varchar(15) NOT NULL,
     `password`     varchar(255) NOT NULL,
-    `phone_number` varchar(15)  NOT NULL,
-    `created_at`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `phone_number` varchar(15) NOT NULL,
+    `created_at`   datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`email`),
     UNIQUE KEY (`phone_number`)
@@ -107,7 +107,7 @@ CREATE TABLE `menus`
     `description` varchar(63) NULL,
     `label`       varchar(15) NULL,
     `menu_type`   varchar(15) NOT NULL COMMENT '메인메뉴, 에피타이저, 코스, 정식, 오마카세 ...',
-    `meal_type`   varchar(7)  NOT NULL COMMENT '점심, 저녁',
+    `meal_type`   varchar(15)  NOT NULL COMMENT '점심, 저녁',
     `created_at`  datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`  datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
