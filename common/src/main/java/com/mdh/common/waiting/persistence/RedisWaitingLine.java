@@ -1,4 +1,4 @@
-package com.mdh.user.waiting.infra.persistence;
+package com.mdh.common.waiting.persistence;
 
 import com.mdh.common.waiting.persistence.WaitingLine;
 import lombok.RequiredArgsConstructor;
@@ -107,9 +107,10 @@ public class RedisWaitingLine implements WaitingLine {
     @Override
     public Optional<Long> visit(Long shopId) {
         var zSetOperations = redisTemplate.opsForZSet();
-        var first = zSetOperations.popMin(String.valueOf(shopId));
-        if (first == null) throw new IllegalCallerException("파이프라인이나 트랜잭션에서 호출 시 null을 반환합니다.");
-        var firstValue = first.getValue();
+        var firstValue = Optional.ofNullable(zSetOperations.popMin(String.valueOf(shopId)))
+                .map(first -> first.getValue())
+                .orElseThrow(() -> new IllegalCallerException("파이프라인이나 트랜잭션에서 호출 시 null을 반환합니다."));
+
         return Optional.of(Long.valueOf(firstValue));
     }
 }

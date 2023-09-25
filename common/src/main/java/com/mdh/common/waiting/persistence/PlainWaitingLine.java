@@ -1,4 +1,4 @@
-package com.mdh.user.waiting.infra.persistence;
+package com.mdh.common.waiting.persistence;
 
 import com.mdh.common.waiting.persistence.WaitingLine;
 import com.mdh.common.waiting.persistence.dto.WaitingInfo;
