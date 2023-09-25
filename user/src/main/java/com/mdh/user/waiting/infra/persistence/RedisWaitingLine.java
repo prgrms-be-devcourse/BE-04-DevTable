@@ -1,4 +1,4 @@
-package com.mdh.common.waiting.persistence;
+package com.mdh.user.waiting.infra.persistence;
 
 import com.mdh.common.waiting.persistence.WaitingLine;
 import lombok.RequiredArgsConstructor;
