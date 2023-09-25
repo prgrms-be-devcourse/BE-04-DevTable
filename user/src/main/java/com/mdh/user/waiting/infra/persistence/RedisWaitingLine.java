@@ -8,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -22,6 +21,7 @@ import java.util.Optional;
 public class RedisWaitingLine implements WaitingLine {
 
     private final StringRedisTemplate redisTemplate;
+    private static final int RANK_ADD_NUMBER = 1;
 
     @Override
     public void save(Long shopId, Long waitingId, LocalDateTime issuedTime) {
@@ -44,19 +44,20 @@ public class RedisWaitingLine implements WaitingLine {
     }
 
     @Override
-    public long findRank(Long shopId, Long waitingId, LocalDateTime issuedTime) {
+    public Optional<Long> findRank(Long shopId, Long waitingId, LocalDateTime issuedTime) {
         var zSetOperations = redisTemplate.opsForZSet();
-        Long rank = zSetOperations.rank(String.valueOf(shopId), String.valueOf(waitingId));
-        if (rank == null) throw new IllegalArgumentException("매장에 해당 웨이팅이 존재하지 않습니다. waitingId " + waitingId);
-        return rank + 1;
+        var rank = zSetOperations.rank(String.valueOf(shopId), String.valueOf(waitingId));
+        return Optional.ofNullable(rank + RANK_ADD_NUMBER);
     }
 
     @Override
     public long findTotalWaiting(Long shopId) {
         var zSetOperations = redisTemplate.opsForZSet();
-        Long totalWaiting = zSetOperations.size(String.valueOf(shopId));
+        var totalWaiting = zSetOperations.size(String.valueOf(shopId));
         log.info("totalWaiting = {}", totalWaiting);
-        if (totalWaiting == null) throw new IllegalArgumentException("해당 매장의 웨이팅 라인이 존재하지 않습니다. shopId : " + shopId);
+        if (totalWaiting == null) {
+            throw new IllegalArgumentException("해당 매장의 웨이팅 라인이 존재하지 않습니다. shopId : " + shopId);
+        }
         return totalWaiting;
     }
 
@@ -97,7 +98,8 @@ public class RedisWaitingLine implements WaitingLine {
     }
 
     private void validPostpone(Long shopId, Long waitingId, LocalDateTime issuedTime) {
-        if (findRank(shopId, waitingId, issuedTime) == findTotalWaiting(shopId)) {
+        var rank = findRank(shopId, waitingId, issuedTime).orElseThrow(() -> new IllegalStateException("매장에 해당 웨이팅이 없습니다"));
+        if (rank == findTotalWaiting(shopId)) {
             throw new IllegalStateException("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId);
         }
     }
@@ -105,9 +107,9 @@ public class RedisWaitingLine implements WaitingLine {
     @Override
     public Optional<Long> visit(Long shopId) {
         var zSetOperations = redisTemplate.opsForZSet();
-        TypedTuple<String> first = zSetOperations.popMin(String.valueOf(shopId));
+        var first = zSetOperations.popMin(String.valueOf(shopId));
         if (first == null) throw new IllegalCallerException("파이프라인이나 트랜잭션에서 호출 시 null을 반환합니다.");
-        String firstValue = first.getValue();
+        var firstValue = first.getValue();
         return Optional.of(Long.valueOf(firstValue));
     }
 }

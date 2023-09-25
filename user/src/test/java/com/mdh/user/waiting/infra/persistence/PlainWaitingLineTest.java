@@ -28,7 +28,7 @@ class PlainWaitingLineTest {
         waitingLine.save(shopId, waitingId3, waitingId3Time);
 
         //when
-        var rank = waitingLine.findRank(shopId, waitingId3, waitingId3Time);
+        var rank = waitingLine.findRank(shopId, waitingId3, waitingId3Time).orElse(null);
 
         //then
         assertThat(rank).isEqualTo(3);
@@ -116,7 +116,7 @@ class PlainWaitingLineTest {
 
         //when
         waitingLine.postpone(shopId, waitingId1, waitingId1Time, waitingId3Time.plusMinutes(1));
-        var findWaiting = waitingLine.findRank(shopId, waitingId1, waitingId3Time.plusMinutes(1));
+        var findWaiting = waitingLine.findRank(shopId, waitingId1, waitingId3Time.plusMinutes(1)).orElse(null);
 
         //then
         assertThat(findWaiting).isEqualTo(3);
