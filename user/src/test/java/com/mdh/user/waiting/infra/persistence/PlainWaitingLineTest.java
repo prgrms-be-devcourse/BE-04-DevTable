@@ -1,5 +1,6 @@
 package com.mdh.user.waiting.infra.persistence;
 
+import com.mdh.common.waiting.persistence.PlainWaitingLine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
