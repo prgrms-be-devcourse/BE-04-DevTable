@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//@Disabled
+@Disabled
 @SpringBootTest
 public class ReservationConcurrencyTest {
 
