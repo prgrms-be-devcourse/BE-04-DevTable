@@ -2,9 +2,9 @@ package com.mdh.owner.waiting.infra.eventbus;
 
 import com.mdh.common.waiting.domain.Waiting;
 import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsCanceledEvent;
-import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsVisitedEvent;
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.common.waiting.persistence.dto.WaitingAlarmInfo;
+import com.mdh.owner.waiting.infra.eventbus.alarm.SendAlarmAfterChangedWaitingStatusAsCanceledHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +15,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;

@@ -1,6 +1,6 @@
-package com.mdh.owner.waiting.infra.eventbus;
+package com.mdh.owner.waiting.infra.eventbus.alarm;
 
-import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsNoShowEvent;
+import com.mdh.common.waiting.domain.event.WaitingStatusChangedAsVisitedEvent;
 import com.mdh.common.waiting.persistence.WaitingRepository;
 import com.mdh.owner.global.message.AlarmMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Component
-public class SendAlarmAfterChangedWaitingStatusAsNoShowHandler {
+public class SendAlarmAfterChangedWaitingStatusAsVisitedHandler {
 
     @Value("${spring.data.redis.topic.alarm}")
     private String topic;
@@ -27,14 +27,14 @@ public class SendAlarmAfterChangedWaitingStatusAsNoShowHandler {
     @Async
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handle(WaitingStatusChangedAsNoShowEvent event) {
+    public void handle(WaitingStatusChangedAsVisitedEvent event) {
         var waitingId = event.waiting().getId();
         var alarmInfo = waitingRepository.findWaitingAlarmInfoById(waitingId)
                 .orElseThrow(() -> new NoSuchElementException("존재하는 웨이팅 정보가 없습니다: " + waitingId));
 
         var message = new AlarmMessage(String.valueOf(alarmInfo.userId()),
                 alarmInfo.shopName(),
-                alarmInfo.toString() + "웨이팅이 노쇼 처리 됐습니다.");
+                alarmInfo.toString() + "웨이팅이 방문처리 되었습니다.");
         redisTemplate.convertAndSend(topic, message);
     }
 
