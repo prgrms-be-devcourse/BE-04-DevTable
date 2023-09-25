@@ -4,6 +4,7 @@ import com.mdh.common.reservation.domain.Reservation;
 import com.mdh.user.reservation.application.dto.ReservationRedisDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -24,16 +26,23 @@ public class ReservationCache {
 
     private final StringRedisTemplate redisTemplate;
 
+    private static final int TIME_TO_LEAVE = 9;
+
     public UUID preemp(List<Long> shopReservationDateTimeSeatIds, UUID reservationId, Reservation reservation) {
-        shopReservationDateTimeSeatIds.forEach(shopReservationDateTimeSeatId -> {
-            var contains = preemptiveShopReservationDateTimeSeats.contains(shopReservationDateTimeSeatId)
-                .orElseThrow(() -> new IllegalCallerException("파이프라인 혹은 트랜잭션에서 조회 시 null 값입니다."));
-            if (Boolean.TRUE.equals(contains)) {
-                throw new IllegalStateException("이미 선점된 좌석이므로 선점할 수 없습니다.");
+        shopReservationDateTimeSeatIds.forEach(i -> {
+            var key = "lock" + i;
+            var currentValue = redisTemplate.opsForValue().increment(key);
+            if (currentValue != null && currentValue == 1) {
+                redisTemplate.expire(key, TIME_TO_LEAVE, TimeUnit.MINUTES);
+            }
+            if (currentValue != null && currentValue >= 2) {
+                throw new IllegalStateException("좌석 " + i + "의 선점 횟수가 2 이상입니다.");
             }
         });
+
+
         var reservationRedisDto = ReservationRedisDto.of(reservation);
-        log.info("========================선점할 예약 좌석 = {}점", shopReservationDateTimeSeatIds);
+
         redisTemplate.execute(new SessionCallback<Object>() {
             @Override
             public <K, V> Object execute(RedisOperations<K, V> operations) throws DataAccessException {
