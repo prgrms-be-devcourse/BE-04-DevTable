@@ -3,6 +3,7 @@ package com.mdh.user.reservation.infra.persistence;
 import com.mdh.common.reservation.domain.Reservation;
 import com.mdh.user.reservation.application.dto.ReservationRedisDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ReservationCache {
@@ -31,6 +33,7 @@ public class ReservationCache {
             }
         });
         var reservationRedisDto = ReservationRedisDto.of(reservation);
+        log.info("========================선점할 예약 좌석 = {}점", shopReservationDateTimeSeatIds);
         redisTemplate.execute(new SessionCallback<Object>() {
             @Override
             public <K, V> Object execute(RedisOperations<K, V> operations) throws DataAccessException {
@@ -49,18 +52,18 @@ public class ReservationCache {
 
     public Reservation register(List<Long> shopReservationDateTimeSeatIds, UUID reservationId) {
         shopReservationDateTimeSeatIds.forEach(shopReservationDateTimeSeatId -> {
-            Boolean contains = preemptiveShopReservationDateTimeSeats.contains(shopReservationDateTimeSeatId)
+            var contains = preemptiveShopReservationDateTimeSeats.contains(shopReservationDateTimeSeatId)
                 .orElseThrow(() -> new IllegalCallerException("파이프라인 혹은 트랜잭션에서 조회 시 null 값입니다."));
             if (Boolean.FALSE.equals(contains)) {
                 throw new IllegalStateException("선점된 좌석이 아니므로 예약 확정할 수 없습니다.");
             }
         });
-        Boolean contains = preemptiveReservations.contains(reservationId)
+        var contains = preemptiveReservations.contains(reservationId)
             .orElseThrow(() -> new IllegalCallerException("파이프라인 혹은 트랜잭션에서 조회 시 null 값입니다."));
         if (Boolean.FALSE.equals(contains)) {
             throw new IllegalStateException("선점된 예약이 아니므로 예약 확정할 수 없습니다.");
         }
-        ReservationRedisDto reservationRedisDto = preemptiveReservations.get(reservationId);
+        var reservationRedisDto = preemptiveReservations.get(reservationId);
         return reservationRedisDto.toEntity();
     }
 

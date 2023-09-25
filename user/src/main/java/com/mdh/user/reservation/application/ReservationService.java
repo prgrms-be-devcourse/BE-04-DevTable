@@ -62,7 +62,7 @@ public class ReservationService {
     public Long registerReservation(UUID reservationId, ReservationRegisterRequest reservationRegisterRequest) {
         // 선점된 좌석인지 확인하면서 미리 만들어둔 예약 가져옴
         var shopReservationDateTimeSeatIds = reservationRegisterRequest.shopReservationDateTimeSeatIds();
-        Reservation reservation = reservationCache.register(shopReservationDateTimeSeatIds, reservationId);
+        var reservation = reservationCache.register(shopReservationDateTimeSeatIds, reservationId);
 
         // 예약 검증
         reservation.validSeatSizeAndPersonCount(reservationRegisterRequest.totalSeatCount());

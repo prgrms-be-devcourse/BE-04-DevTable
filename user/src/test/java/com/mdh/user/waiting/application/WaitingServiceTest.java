@@ -173,7 +173,7 @@ class WaitingServiceTest {
         var waitingRank = 5L;
 
         given(waitingRepository.findByWaitingDetails(any(Long.class))).willReturn(Optional.ofNullable(waitingDetails));
-        given(waitingLine.findRank(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(waitingRank);
+        given(waitingLine.findRank(any(Long.class), any(Long.class), any(LocalDateTime.class))).willReturn(Optional.ofNullable(waitingRank));
 
         //when
         var waitingDetailsResponse = waitingService.findWaitingDetails(waitingId);
@@ -213,7 +213,7 @@ class WaitingServiceTest {
 
         //then
         verify(waitingRepository, times(1)).findByWaitingDetails(any(Long.class));
-        verify(waitingLine, never()).findRank(any(Long.class),
+        verify(waitingLine, times(1)).findRank(any(Long.class),
             any(Long.class),
             any(LocalDateTime.class));
 

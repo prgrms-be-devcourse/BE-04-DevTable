@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,7 +51,7 @@ class RedisWaitingLineTest {
         waitingLine.save(shopId, waitingId3, issuedDate3);
 
         // when
-        long rank = waitingLine.findRank(shopId, waitingId3, issuedDate3);
+        Long rank = waitingLine.findRank(shopId, waitingId3, issuedDate3).orElse(null);
 
         // then
         assertThat(rank).isEqualTo(3);
@@ -135,7 +134,7 @@ class RedisWaitingLineTest {
         waitingLine.postpone(shopId, waitingId2, issuedDate2, postponedDate);
 
         // then
-        long rank = waitingLine.findRank(shopId, waitingId2, postponedDate);
+        var rank = waitingLine.findRank(shopId, waitingId2, postponedDate).orElse(null);
         assertThat(rank).isEqualTo(3);
     }
 
@@ -178,7 +177,7 @@ class RedisWaitingLineTest {
         waitingLine.save(shopId, waitingId3, waitingId3Time);
 
         //when
-        Optional<Long> waitingId = waitingLine.visit(shopId);
+        var waitingId = waitingLine.visit(shopId);
 
         //then
         assertThat(waitingId.orElse(null)).isEqualTo(waitingId1);

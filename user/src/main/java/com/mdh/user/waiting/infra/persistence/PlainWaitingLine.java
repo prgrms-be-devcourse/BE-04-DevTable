@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,11 +28,11 @@ public class PlainWaitingLine implements WaitingLine {
     }
 
     @Override
-    public long findRank(Long shopId, Long waitingId, LocalDateTime issuedTime) {
+    public Optional<Long> findRank(Long shopId, Long waitingId, LocalDateTime issuedTime) {
         var waitingInfo = new WaitingInfo(waitingId, issuedTime);
         var waitingInfos = waitingLine.get(shopId);
-
-        return waitingInfos.headSet(waitingInfo).size() + 1;
+        var rank = waitingInfos.headSet(waitingInfo).size() + 1;
+        return Optional.of((long) rank);
     }
 
     @Override
@@ -74,7 +75,8 @@ public class PlainWaitingLine implements WaitingLine {
     }
 
     private void validPosponed(Long shopId, Long waitingId, LocalDateTime issuedTime) {
-        if (findRank(shopId, waitingId, issuedTime) == findTotalWaiting(shopId)) {
+        var rank = findRank(shopId, waitingId, issuedTime).orElseThrow(() -> new IllegalStateException("매장에 해당 웨이팅이 없습니다"));
+        if (rank == findTotalWaiting(shopId)) {
             throw new IllegalStateException("미루기를 수행 할 수 없는 웨이팅 입니다. " + waitingId);
         }
     }

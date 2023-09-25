@@ -39,12 +39,8 @@ public class WaitingService {
         var shopId = waitingDetails.shopId();
         var createdDate = waitingDetails.createdDate();
 
-        if (waitingDetails.waitingStatus().isProgress()) {
-            var rank = waitingLine.findRank(shopId, waitingId, createdDate);
-            return new WaitingDetailsResponse(waitingDetails, rank);
-        }
-
-        return new WaitingDetailsResponse(waitingDetails);
+        var rank = waitingLine.findRank(shopId, waitingId, createdDate);
+        return new WaitingDetailsResponse(waitingDetails, rank.orElse(null));
     }
 
     @Counted("user.waiting.register")
