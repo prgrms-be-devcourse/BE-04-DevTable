@@ -37,7 +37,7 @@ public class Menu extends BaseTimeEntity {
     private MenuType menuType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "meal_type", nullable = false, length = 7)
+    @Column(name = "meal_type", nullable = false, length = 15)
     private MealType mealType;
 
     @Builder
