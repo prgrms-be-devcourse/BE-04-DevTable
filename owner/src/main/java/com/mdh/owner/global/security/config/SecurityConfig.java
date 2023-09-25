@@ -48,7 +48,7 @@ public class SecurityConfig {
         var auth = http.getSharedObject(AuthenticationManagerBuilder.class);
         auth.userDetailsService(loginService);
 
-        return http.cors(AbstractHttpConfigurer::disable)
+        return http
                 .cors(cors -> corsConfigurationSource())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
@@ -101,6 +101,7 @@ public class SecurityConfig {
                         .maxSessionsPreventsLogin(false) // 새로운 로그인 발생시 기존 로그인이 아닌 새로운 로그인 허용
                 )).build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         var configuration = new CorsConfiguration();

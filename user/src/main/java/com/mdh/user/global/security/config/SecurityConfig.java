@@ -64,7 +64,7 @@ public class SecurityConfig {
 
                 .formLogin((formLogin) -> formLogin
                         .loginProcessingUrl("/api/v1/login")
-                        .defaultSuccessUrl("/")
+//                        .defaultSuccessUrl("/")
                         .usernameParameter("username")
                         .passwordParameter("password")//html 로그인 페이지에 username, pawssword에 해당하는 파라미터 값(아이디랑 비밀번호)
                         .permitAll()
