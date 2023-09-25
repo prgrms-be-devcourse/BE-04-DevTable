@@ -34,8 +34,4 @@ public record WaitingDetailsResponse(
                 waitingDetailsQueryDto.createdDate(),
                 waitingDetailsQueryDto.modifiedDate());
     }
-
-    public WaitingDetailsResponse(WaitingDetailsQueryDto waitingDetailsQueryDto) {
-        this(waitingDetailsQueryDto, null);
-    }
 }

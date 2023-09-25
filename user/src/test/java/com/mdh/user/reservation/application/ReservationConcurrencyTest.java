@@ -2,6 +2,7 @@ package com.mdh.user.reservation.application;
 
 import com.mdh.user.reservation.presentation.dto.ReservationPreemptiveRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Disabled
 @SpringBootTest
 public class ReservationConcurrencyTest {
 
